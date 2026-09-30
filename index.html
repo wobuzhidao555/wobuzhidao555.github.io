@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>朱政翰 · 把想法变成能玩的东西</title>
+<meta name="description" content="朱政翰，数字媒体技术专业大二。15 天做了 15 个游戏概念，其中两个做成了真能打开玩的原型。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="朱政翰 · 把想法变成能玩的东西">
+<meta property="og:description" content="数字媒体技术 · 大二 · Vibe Coding 探索者。15 天，15 个游戏概念，两个已成原型。">
+<meta property="og:image" content="assets/gearball.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2317171A'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='Songti SC,SimSun,serif' font-size='38' font-weight='700' fill='%23F6F4EF'%3E%E6%9C%B1%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F4EF;
+    --paper-raise:#FBFAF7;
+    --ink:#17171A;
+    --ink-soft:#3D3D42;
+    --muted:#8B867C;
+    --line:#E3DED3;
+    --line-strong:#CFC8B9;
+    --accent:#A6563A;
+    --accent-soft:#C87B5C;
+    --serif:"Noto Serif SC","Source Han Serif SC","Songti SC","SimSun",serif;
+    --sans:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    --latin:"Cormorant Garamond","Times New Roman",serif;
+    --maxw:1000px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{
+    scroll-behavior:smooth;
+    -webkit-text-size-adjust:100%;
+  }
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-weight:400;
+    font-size:16px;
+    line-height:1.9;
+    letter-spacing:.01em;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  ::selection{background:var(--accent);color:#fff;}
+
+  img{max-width:100%;display:block;}
+
+  a{color:inherit;text-decoration:none;}
+
+  /* ---------- 顶部细进度条 ---------- */
+  #progress{
+    position:fixed;top:0;left:0;height:2px;width:0;
+    background:var(--accent);z-index:120;
+    transition:width .12s linear;
+  }
+
+  /* ---------- 导航 ---------- */
+  header.nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(246,244,239,.82);
+    backdrop-filter:saturate(160%) blur(14px);
+    -webkit-backdrop-filter:saturate(160%) blur(14px);
+    border-bottom:1px solid transparent;
+    transition:border-color .4s ease,background .4s ease;
+  }
+  header.nav.scrolled{border-bottom-color:var(--line);}
+  .nav-inner{
+    max-width:var(--maxw);margin:0 auto;
+    padding:20px 32px;
+    display:flex;align-items:center;justify-content:space-between;
+    transition:padding .4s ease;
+  }
+  header.nav.scrolled .nav-inner{padding:14px 32px;}
+  .brand{
+    font-family:var(--serif);font-weight:700;font-size:17px;
+    letter-spacing:.06em;
+  }
+  .brand i{color:var(--accent);font-style:normal;}
+  nav ul{display:flex;gap:34px;list-style:none;}
+  nav a{
+    font-size:13px;color:var(--muted);letter-spacing:.14em;
+    position:relative;padding-bottom:2px;transition:color .3s ease;
+  }
+  nav a::after{
+    content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
+    background:var(--accent);transition:width .35s cubic-bezier(.22,.61,.36,1);
+  }
+  nav a:hover{color:var(--ink);}
+  nav a:hover::after,nav a.active::after{width:100%;}
+  nav a.active{color:var(--ink);}
+
+  /* ---------- 版心 ---------- */
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+
+  section{position:relative;}
+
+  /* 小标签 / 大标题 */
+  .label{
+    display:flex;align-items:center;gap:14px;
+    margin-bottom:22px;
+  }
+  .label .en{
+    font-family:var(--latin);
+    text-transform:uppercase;
+    letter-spacing:.34em;
+    font-size:12px;
+    color:var(--accent);
+    white-space:nowrap;
+  }
+  .label .rule{
+    flex:1;height:1px;background:var(--line);max-width:64px;
+  }
+  .label .idx{
+    font-family:var(--latin);font-size:12px;letter-spacing:.2em;color:var(--muted);
+  }
+
+  h2{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(26px,3.6vw,38px);
+    line-height:1.4;
+    letter-spacing:.02em;
+    margin-bottom:14px;
+  }
+  .lede{
+    color:var(--muted);font-size:15px;font-weight:300;
+    max-width:600px;margin-bottom:52px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;align-items:center;
+    padding:120px 0 90px;
+    position:relative;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 78% 12%,rgba(166,86,58,.055) 0%,rgba(166,86,58,0) 62%);
+  }
+  .hero .wrap{position:relative;z-index:2;width:100%;}
+
+  .hero .kicker{
+    font-size:12px;letter-spacing:.3em;color:var(--muted);
+    margin-bottom:38px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .hero .kicker .dot{
+    width:5px;height:5px;border-radius:50%;background:var(--accent);
+    flex:none;
+  }
+
+  h1{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(38px,8.6vw,84px);
+    line-height:1.24;
+    letter-spacing:.01em;
+    margin-bottom:30px;
+    position:relative;
+    z-index:2;
+  }
+  h1 .name{
+    position:relative;
+    white-space:nowrap;
+  }
+  h1 .name::after{
+    content:"";position:absolute;left:-3px;right:-3px;bottom:.06em;height:.32em;
+    background:linear-gradient(180deg,rgba(166,86,58,0),rgba(166,86,58,.16));
+    z-index:-1;
+  }
+
+  .roles{
+    display:flex;flex-wrap:wrap;align-items:center;gap:0 14px;
+    font-size:clamp(13px,1.5vw,15px);
+    color:var(--ink-soft);
+    letter-spacing:.08em;
+    margin-bottom:34px;
+  }
+  .roles span{position:relative;}
+  .roles span+span::before{
+    content:"/";color:var(--line-strong);margin-right:14px;font-weight:300;
+  }
+  .roles .wink{
+    cursor:help;border-bottom:1px dashed var(--line-strong);
+  }
+  .roles .wink:hover{color:var(--accent);border-bottom-color:var(--accent);}
+
+  .slogan{
+    font-family:var(--serif);
+    font-size:clamp(17px,2.3vw,22px);
+    line-height:2;
+    color:var(--ink-soft);
+    max-width:640px;
+    padding-left:24px;
+    border-left:2px solid var(--accent);
+    margin-bottom:56px;
+  }
+  .slogan em{
+    font-style:normal;
+    color:var(--accent);
+    font-weight:500;
+  }
+
+  .cta{
+    display:inline-flex;align-items:center;gap:12px;
+    font-size:13px;letter-spacing:.2em;color:var(--ink);
+    padding-bottom:6px;border-bottom:1px solid var(--line-strong);
+    transition:color .3s ease,border-color .3s ease,gap .3s ease;
+  }
+  .cta:hover{color:var(--accent);border-color:var(--accent);gap:18px;}
+  .cta .arw{
+    display:inline-block;
+    animation:nudge 2.4s ease-in-out infinite;
+  }
+  @keyframes nudge{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(4px);}
+  }
+
+  /* ---------- 通用区块间距 ---------- */
+  .block{padding:120px 0;}
+  .block + .block{border-top:1px solid var(--line);}
+
+  /* ---------- 关于 ---------- */
+  .about-grid{
+    display:grid;grid-template-columns:1.35fr 1fr;gap:72px;align-items:start;
+  }
+  .prose p{margin-bottom:22px;color:var(--ink-soft);font-weight:300;}
+  .prose p:last-child{margin-bottom:0;}
+  .prose em{
+    font-style:normal;font-weight:500;color:var(--ink);
+    background:linear-gradient(180deg,rgba(166,86,58,0),rgba(166,86,58,.13));
+    padding:0 2px;
+  }
+  .closing{
+    margin-top:34px;padding-top:26px;
+    border-top:1px solid var(--line);
+    font-family:var(--serif);font-size:17px;color:var(--ink);
+    line-height:1.95;
+  }
+
+  .now{
+    background:var(--paper-raise);
+    border:1px solid var(--line);
+    padding:8px 26px 10px;
+  }
+  .now h3{
+    font-family:var(--latin);font-size:12px;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--muted);
+    font-weight:400;padding:22px 0 14px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:6px;
+  }
+  .now dl{display:block;}
+  .now .row{
+    display:flex;justify-content:space-between;gap:20px;
+    padding:15px 0;border-bottom:1px solid var(--line);
+  }
+  .now .row:last-child{border-bottom:none;}
+  .now dt{font-size:12px;letter-spacing:.16em;color:var(--muted);flex:none;}
+  .now dd{font-size:14px;color:var(--ink);text-align:right;line-height:1.7;}
+
+  /* ---------- 探索 ---------- */
+  .cards{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);
+  }
+  .card{
+    background:var(--paper);
+    padding:44px 38px 46px;
+    position:relative;overflow:hidden;
+    transition:background .45s ease;
+  }
+  .card:hover{background:var(--paper-raise);}
+  .card .num{
+    font-family:var(--latin);font-size:15px;font-weight:600;letter-spacing:.22em;
+    color:var(--accent);display:block;margin-bottom:26px;
+  }
+  .card h3{
+    font-family:var(--serif);font-weight:600;font-size:21px;
+    margin-bottom:14px;letter-spacing:.02em;
+  }
+  .card p{font-size:14px;color:var(--muted);font-weight:300;line-height:1.95;}
+  .card::after{
+    content:"";position:absolute;left:0;bottom:0;height:2px;width:0;
+    background:var(--accent);transition:width .5s cubic-bezier(.22,.61,.36,1);
+  }
+  .card:hover::after{width:100%;}
+
+  /* ---------- 作品 ---------- */
+  .work-intro{
+    font-size:15px;color:var(--muted);font-weight:300;
+    max-width:620px;margin-bottom:64px;line-height:2;
+  }
+  .work-intro strong{color:var(--ink);font-weight:500;}
+
+  .project{margin-bottom:96px;}
+  .project:last-child{margin-bottom:0;}
+
+  .p-head{
+    display:flex;flex-wrap:wrap;align-items:baseline;
+    gap:12px 20px;margin-bottom:8px;
+  }
+  .p-head h3{
+    font-family:var(--latin);font-size:clamp(30px,4.6vw,46px);
+    font-weight:600;letter-spacing:.04em;line-height:1.1;
+  }
+  .p-head .cn{
+    font-family:var(--serif);font-size:15px;color:var(--muted);
+    letter-spacing:.2em;
+  }
+  .p-meta{
+    display:flex;flex-wrap:wrap;gap:10px 18px;
+    font-size:12px;letter-spacing:.14em;color:var(--muted);
+    padding-bottom:22px;margin-bottom:28px;
+    border-bottom:1px solid var(--line);
+  }
+  .p-meta .pill{
+    color:var(--accent);
+  }
+
+  .p-body{display:grid;grid-template-columns:1fr 1.15fr;gap:56px;align-items:start;}
+  .project.flip .p-body{grid-template-columns:1.15fr 1fr;}
+  .project.flip .p-text{order:2;}
+  .project.flip .p-figure{order:1;}
+
+  .p-text .concept{
+    font-family:var(--serif);font-size:17px;line-height:2;color:var(--ink);
+    padding-left:20px;border-left:2px solid var(--accent);
+    margin-bottom:26px;
+  }
+  .p-text p{font-size:14.5px;color:var(--ink-soft);font-weight:300;line-height:2;margin-bottom:18px;}
+
+  .p-figure{
+    border:1px solid var(--line);
+    background:var(--paper-raise);
+    padding:14px;
+  }
+  .p-figure img{
+    width:100%;height:auto;display:block;
+    border:1px solid var(--line);
+  }
+  .p-figure figcaption{
+    display:flex;justify-content:space-between;gap:16px;
+    font-size:11px;letter-spacing:.14em;color:var(--muted);
+    padding-top:14px;line-height:1.6;
+  }
+
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .tags span{
+    font-size:11.5px;letter-spacing:.1em;color:var(--ink-soft);
+    border:1px solid var(--line-strong);padding:5px 12px;
+    transition:border-color .3s ease,color .3s ease;
+  }
+  .tags span:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* ---------- 轨迹 ---------- */
+  .timeline{position:relative;padding-left:0;}
+  .tl-item{
+    display:grid;grid-template-columns:150px 1fr;gap:36px;
+    padding:30px 0;border-top:1px solid var(--line);
+    position:relative;
+  }
+  .tl-item:last-child{border-bottom:1px solid var(--line);}
+  .tl-when{
+    font-family:var(--latin);font-size:13px;letter-spacing:.16em;
+    color:var(--muted);padding-top:4px;
+  }
+  .tl-what h3{
+    font-family:var(--serif);font-weight:600;font-size:17px;
+    margin-bottom:8px;letter-spacing:.02em;
+    display:flex;align-items:center;gap:12px;
+  }
+  .tl-what h3::before{
+    content:"";width:7px;height:7px;border-radius:50%;
+    background:var(--line-strong);flex:none;
+    transition:background .4s ease,box-shadow .4s ease;
+  }
+  .tl-item.now-item .tl-what h3::before{
+    background:var(--accent);box-shadow:0 0 0 5px rgba(166,86,58,.14);
+  }
+  .tl-what p{font-size:14px;color:var(--muted);font-weight:300;}
+  .tl-item.todo .tl-what h3{color:var(--muted);font-style:normal;}
+
+  /* ---------- 结尾 ---------- */
+  footer{
+    padding:130px 0 60px;
+    border-top:1px solid var(--line);
+    text-align:center;
+  }
+  .end-quote{
+    font-family:var(--serif);font-weight:600;
+    font-size:clamp(24px,4vw,42px);
+    line-height:1.6;letter-spacing:.02em;
+    margin-bottom:30px;
+  }
+  .end-en{
+    font-family:var(--latin);font-style:italic;
+    font-size:clamp(15px,2vw,19px);
+    color:var(--muted);letter-spacing:.06em;
+    margin-bottom:60px;
+  }
+  .to-top{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:12px;letter-spacing:.2em;color:var(--muted);
+    padding-bottom:5px;border-bottom:1px solid var(--line);
+    transition:color .3s ease,border-color .3s ease;
+  }
+  .to-top:hover{color:var(--accent);border-color:var(--accent);}
+  .colophon{
+    margin-top:80px;padding-top:26px;
+    border-top:1px solid var(--line);
+    font-size:11.5px;letter-spacing:.16em;color:var(--muted);
+    display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
+  }
+
+  /* ---------- 滚动入场 ---------- */
+  .js .reveal{
+    opacity:0;transform:translateY(18px);
+    transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1);
+  }
+  .js .reveal.in{opacity:1;transform:none;}
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width:900px){
+    .about-grid{grid-template-columns:1fr;gap:48px;}
+    .p-body,.project.flip .p-body{grid-template-columns:1fr;gap:34px;}
+    .project.flip .p-text{order:2;}
+    .project.flip .p-figure{order:3;}
+    .block{padding:88px 0;}
+    .tl-item{grid-template-columns:1fr;gap:10px;padding:26px 0;}
+  }
+  @media (max-width:680px){
+    .wrap{padding:0 22px;}
+    .nav-inner{padding:16px 22px;}
+    header.nav.scrolled .nav-inner{padding:12px 22px;}
+    nav ul{gap:20px;}
+    nav a{font-size:11.5px;letter-spacing:.1em;}
+    .hero{padding:110px 0 70px;}
+    .cards{grid-template-columns:1fr;}
+    .card{padding:34px 26px 36px;}
+    .slogan{padding-left:18px;margin-bottom:44px;}
+    .p-figure{padding:10px;}
+    .now{padding:6px 20px 8px;}
+    .now .row{flex-direction:column;gap:2px;padding:13px 0;}
+    .now dd{text-align:left;}
+    .colophon{justify-content:flex-start;}
+    footer{padding:90px 0 44px;}
+  }
+  @media (max-width:480px){
+    nav ul{gap:14px;}
+    .brand{font-size:15px;}
+    .roles{gap:0 10px;}
+    .roles span+span::before{margin-right:10px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .js .reveal{opacity:1;transform:none;transition:none;}
+    .cta .arw{animation:none;}
+    #progress{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#hero" class="brand">朱政翰<i>.</i></a>
+    <nav>
+      <ul>
+        <li><a href="#about">关于</a></li>
+        <li><a href="#exploring">探索</a></li>
+        <li><a href="#work">作品</a></li>
+        <li><a href="#journey">轨迹</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="wrap">
+    <div class="kicker reveal"><span class="dot"></span>朱政翰 · 正在把想法变成能玩的东西</div>
+
+    <h1 class="reveal">你好，我是<br><span class="name">朱政翰</span>。</h1>
+
+    <div class="roles reveal">
+      <span>数字媒体技术</span>
+      <span>大二</span>
+      <span class="wink" title="没错，就是你想的那个意思">中登</span>
+    </div>
+
+    <p class="slogan reveal">我做的事很简单：把想法变成<em>能被打开、能被使用</em>的东西。</p>
+
+    <a href="#about" class="cta reveal">认识我 <span class="arw">↓</span></a>
+  </div>
+</section>
+
+<!-- ============ 关于 ============ -->
+<section class="block" id="about">
+  <div class="wrap">
+    <div class="label reveal"><span class="en">About Me</span><span class="rule"></span><span class="idx">01</span></div>
+    <h2 class="reveal">关于我</h2>
+
+    <div class="about-grid">
+      <div class="prose reveal">
+        <p>我是朱政翰，数字媒体技术专业大二学生。选这个专业的原因挺简单——它同时逼我写代码和看画面，正好是我两个都想要的东西。</p>
+        <p>到现在我一直在试：学过 3D 建模，刷过算法，跟着国赛集训啃过数学建模，也拍过照、剪过片。有不少事做到一半就放下了，但每一样都留下了一点东西。</p>
+        <p>真正让我停不下来的，是 <em>Vibe Coding</em>。当 AI 把"我暂时写不出来的那部分"补上之后，脑子里那些平时一闪而过的念头，第一次有了变成真东西的可能——而且第二天就能发给朋友看。</p>
+        <p>所以我的方法很不讲究：想到就做，做出来算数。</p>
+
+        <div class="closing">我没什么宏大规划，只是不太想让想法烂在脑子里。</div>
+      </div>
+
+      <aside class="now reveal">
+        <h3>Now · 此刻</h3>
+        <dl>
+          <div class="row"><dt>身份</dt><dd>数字媒体技术 · 大二</dd></div>
+          <div class="row"><dt>正在做</dt><dd>做游戏（3D 方向）</dd></div>
+          <div class="row"><dt>正在学</dt><dd>3D 建模 / 算法</dd></div>
+          <div class="row"><dt>状态</dt><dd>边做边学，持续开工中</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 探索 ============ -->
+<section class="block" id="exploring">
+  <div class="wrap">
+    <div class="label reveal"><span class="en">What I'm Exploring</span><span class="rule"></span><span class="idx">02</span></div>
+    <h2 class="reveal">我正在探索什么？</h2>
+    <p class="lede reveal">与其急着给自己贴一个标签，不如先多走几条路。</p>
+
+    <div class="cards reveal">
+      <div class="card">
+        <span class="num">01</span>
+        <h3>游戏与 3D 世界</h3>
+        <p>用建模和引擎把想象搭成一个能走进去转一圈的空间——这是我最想做成的事。</p>
+      </div>
+      <div class="card">
+        <span class="num">02</span>
+        <h3>Vibe Coding 做东西</h3>
+        <p>不只会写代码，也会用 AI 把想法直接做成能被打开、能被使用的东西。</p>
+      </div>
+      <div class="card">
+        <span class="num">03</span>
+        <h3>算法与数学建模</h3>
+        <p>写代码，也推公式。把真实世界的数据变成能说话、能下判断的东西。</p>
+      </div>
+      <div class="card">
+        <span class="num">04</span>
+        <h3>影像与表达</h3>
+        <p>摄影、剪辑、视觉设计——专业里美学的那一半，也是我判断"好不好"的底气。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 作品 ============ -->
+<section class="block" id="work">
+  <div class="wrap">
+    <div class="label reveal"><span class="en">Selected Work</span><span class="rule"></span><span class="idx">03</span></div>
+    <h2 class="reveal">我正在做的东西</h2>
+    <p class="work-intro reveal">下面这两个原型，来自我做的一个叫<strong>「每日灵感」</strong>的自我训练：连续 15 天，每天交出一个完整的游戏概念——世界观、核心动作、AI 方案全部写完。其中两个我没忍住，把它做成了<strong>真能打开玩的东西</strong>。</p>
+
+    <!-- 项目 1 -->
+    <article class="project reveal">
+      <div class="p-head">
+        <h3>GEARBALL</h3>
+        <span class="cn">齿轮弹珠</span>
+      </div>
+      <div class="p-meta">
+        <span>第 008 期</span>
+        <span>2026.07.14</span>
+        <span class="pill">蒸汽朋克</span>
+        <span class="pill">可玩原型</span>
+      </div>
+
+      <div class="p-body">
+        <div class="p-text">
+          <p class="concept">你是一颗蒸汽弹珠——发射后在齿轮与管道组成的弹珠台里高速弹射，用鼠标实时画挡板改变弹道，一弹穿走廊五杀清场。</p>
+          <p>我把玩了上百年的弹珠台翻了个面：你不站在台子外面按拨片，你就是那颗球。飞行途中用鼠标拖一条线段，线段立刻变成金属挡板，球碰到就反弹——画 V 字折返，画斜板加速，画个弹簧板把球送上天空，从正上方砸碎 Boss。每一笔都在实时改写弹道。</p>
+          <p>AI 在这里不是装饰。一个轻量 MLP 实时预测弹珠未来 1.5 秒的路径，用渐变虚线画在屏幕上——它刻意保留了一点误差，所以新手能靠它瞄准，高手能反过来利用它的误差骗过对手。关卡则由 Wave Function Collapse 生成，每一关有唯一种子码，可以发给朋友说"这关超好玩"。</p>
+          <div class="tags">
+            <span>实时画挡板</span><span>弹道预测 MLP</span><span>WFC 程序化关卡</span><span>Roguelike</span><span>单文件 HTML</span>
+          </div>
+        </div>
+        <figure class="p-figure">
+          <img src="assets/gearball.png" alt="《齿轮弹珠》GEARBALL 标题封面" loading="lazy">
+          <figcaption><span>GEARBALL · 标题封面</span><span>蒸汽朋克 / 黄铜齿轮</span></figcaption>
+        </figure>
+      </div>
+    </article>
+
+    <!-- 项目 2 -->
+    <article class="project flip reveal">
+      <div class="p-head">
+        <h3>DEFRAG</h3>
+        <span class="cn">碎片整理</span>
+      </div>
+      <div class="p-meta">
+        <span>第 009 期</span>
+        <span>2026.07.15</span>
+        <span class="pill">故障艺术</span>
+        <span class="pill">可玩原型</span>
+      </div>
+
+      <div class="p-body">
+        <div class="p-text">
+          <p class="concept">你在拖鼠标框选文件——但框住的是敌人，松手就是「删除」。十只怪挤在一起，你一框全选，屏幕一白，全没了。</p>
+          <p>你是台旧电脑里最后的杀毒程序。这台电脑属于一个正在长大的孩子，他已经很久没有打开了。数字世界在遗忘里一点点崩塌，文件碎裂成 Glitch 怪物。</p>
+          <p>框选这个动作刻在每个人的肌肉记忆里，我把它变成了武器：框住敌人，松手即删除。框得越大打得越爽，但也越可能漏掉两只——贪心和稳妥的博弈就发生在一瞬间。</p>
+          <p>更重要的是它想讲的事：每一关你打败的怪物，都曾是那个孩子创造的美好事物——他画的第一只恐龙、循环播放了几百遍的那首歌、不敢给别人看的日记。所以 Boss 战结束时不写"胜利"，写"修复"。</p>
+          <div class="tags">
+            <span>框选战斗</span><span>强化学习敌人</span><span>叙事驱动</span><span>Glitch 视觉</span><span>单文件 HTML</span>
+          </div>
+        </div>
+        <figure class="p-figure">
+          <img src="assets/defrag.png" alt="《碎片整理》DEFRAG 标题封面" loading="lazy">
+          <figcaption><span>DEFRAG · 标题封面</span><span>故障艺术 / 数字废墟</span></figcaption>
+        </figure>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 轨迹 ============ -->
+<section class="block" id="journey">
+  <div class="wrap">
+    <div class="label reveal"><span class="en">My Journey</span><span class="rule"></span><span class="idx">04</span></div>
+    <h2 class="reveal">我的探索轨迹</h2>
+    <p class="lede reveal">从写代码到看画面，路线还在往外延伸。</p>
+
+    <div class="timeline reveal">
+      <div class="tl-item">
+        <div class="tl-when">起点</div>
+        <div class="tl-what">
+          <h3>进入大学 · 数字媒体技术</h3>
+          <p>第一次同时面对代码和画面这两件事，也第一次意识到自己两个都放不下。</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">2026 春</div>
+        <div class="tl-what">
+          <h3>开始学 3D 建模</h3>
+          <p>把脑子里的东西第一次变成立体的——一个能转、能看、有厚度的东西。</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">2026</div>
+        <div class="tl-what">
+          <h3>接触算法与数学建模</h3>
+          <p>跟着国赛集训啃模型，学会了用公式把一堆乱数据说清楚。</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">2026 夏</div>
+        <div class="tl-what">
+          <h3>用 Vibe Coding 做出第一个作品</h3>
+          <p>想法第一次真的能被别人打开、能被别人用上——这个感受很难忘记。</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">2026.07</div>
+        <div class="tl-what">
+          <h3>「每日灵感」：15 天，15 个游戏概念</h3>
+          <p>每天逼自己交一个完整的想法，从声音、皮影、武侠一路写到浮世绘和扩散模型。</p>
+        </div>
+      </div>
+      <div class="tl-item now-item">
+        <div class="tl-when">现在</div>
+        <div class="tl-what">
+          <h3>把概念做成能玩的东西</h3>
+          <p>齿轮弹珠和碎片整理已经从文档变成了原型，接下来想认真做一个 3D 的。</p>
+        </div>
+      </div>
+      <div class="tl-item todo">
+        <div class="tl-when">—</div>
+        <div class="tl-what">
+          <h3>To be continued…</h3>
+          <p>下一个正在画。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 结尾 ============ -->
+<footer>
+  <div class="wrap">
+    <p class="end-quote reveal">想法不写下来就会消失。</p>
+    <p class="end-en reveal">Write it down. Build it anyway.</p>
+    <a href="#hero" class="to-top reveal">回到顶部 ↑</a>
+
+    <div class="colophon">
+      <span>© 2026 朱政翰</span>
+      <span>Made with WorkBuddy &amp; AI</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+
+/* ---- 滚动入场 ---- */
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){
+    for(var i=0;i<els.length;i++) els[i].classList.add('in');
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  },{rootMargin:'0px 0px -8% 0px',threshold:0.08});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+/* ---- 顶部进度条 + 导航描边 ---- */
+(function(){
+  var bar = document.getElementById('progress');
+  var nav = document.getElementById('nav');
+  var ticking = false;
+  function update(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var y = window.pageYOffset || document.documentElement.scrollTop;
+    bar.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', y > 24);
+    ticking = false;
+  }
+  window.addEventListener('scroll', function(){
+    if(!ticking){ ticking = true; window.requestAnimationFrame(update); }
+  }, {passive:true});
+  update();
+})();
+
+/* ---- 导航高亮 ---- */
+(function(){
+  var links = document.querySelectorAll('nav a[href^="#"]');
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  var secs = ['about','exploring','work','journey']
+    .map(function(id){ return document.getElementById(id); })
+    .filter(Boolean);
+  if(!secs.length || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(a){ a.classList.remove('active'); });
+        var a = map[e.target.id];
+        if(a) a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-45% 0px -50% 0px'});
+  secs.forEach(function(s){ io.observe(s); });
+})();
+</script>
+
+</body>
+</html>
