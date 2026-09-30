@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《噬》DEVOUR — 第007期每日灵感</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@300;400;700;900&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #12121f;
+    --card: #1a1a2e;
+    --border: #2a2a4a;
+    --text: #e0e0f0;
+    --dim: #8888aa;
+    --accent: #00ff88;
+    --accent2: #ff4466;
+    --accent3: #ffcc00;
+    --accent4: #44aaff;
+    --accent5: #aa44ff;
+    --pixel-font: 'Press Start 2P', monospace;
+    --cn-font: 'Noto Sans SC', sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--cn-font);
+    line-height: 1.7;
+    overflow-x: hidden;
+    image-rendering: pixelated;
+  }
+
+  /* ===== 像素扫描线效果 ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: radial-gradient(ellipse at center, #1a1a3e 0%, #0a0a0f 70%);
+    overflow: hidden;
+  }
+
+  .hero canvas {
+    position: absolute;
+    top:0; left:0;
+    width: 100%; height: 100%;
+    opacity: 0.3;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .hero-pixel-logo {
+    font-family: var(--pixel-font);
+    font-size: clamp(2rem, 8vw, 5rem);
+    color: var(--accent);
+    text-shadow:
+      4px 0 var(--accent2),
+      -4px 0 var(--accent4),
+      0 0 20px rgba(0,255,136,0.3);
+    margin-bottom: 1rem;
+    animation: glitch 3s infinite;
+    letter-spacing: 0.1em;
+  }
+
+  @keyframes glitch {
+    0%, 90%, 100% { transform: translate(0); }
+    92% { transform: translate(-2px, 1px); }
+    94% { transform: translate(2px, -1px); }
+    96% { transform: translate(-1px, 2px); }
+  }
+
+  .hero-tagline {
+    font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+    color: var(--dim);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: 1.8;
+  }
+
+  .hero-tagline strong {
+    color: var(--accent3);
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .meta-tag {
+    font-family: var(--pixel-font);
+    font-size: 0.6rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--border);
+    background: var(--card);
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+
+  .meta-tag.highlight { border-color: var(--accent); color: var(--accent); }
+  .meta-tag.highlight2 { border-color: var(--accent2); color: var(--accent2); }
+  .meta-tag.highlight3 { border-color: var(--accent4); color: var(--accent4); }
+
+  /* ===== SECTIONS ===== */
+  section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-family: var(--pixel-font);
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: var(--accent);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid var(--border);
+    position: relative;
+  }
+
+  .section-title::before {
+    content: '▸';
+    margin-right: 0.5rem;
+    color: var(--accent2);
+  }
+
+  .section-title .num {
+    color: var(--dim);
+    font-size: 0.7em;
+    margin-left: 1rem;
+  }
+
+  /* ===== CORE LOOP ===== */
+  .loop-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .loop-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 2rem;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+
+  .loop-card:hover { border-color: var(--accent); }
+
+  .loop-card h3 {
+    font-family: var(--pixel-font);
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .loop-card.phase2 h3 { color: var(--accent4); }
+
+  .loop-step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .loop-step:last-child { border-bottom: none; }
+
+  .step-icon {
+    width: 32px; height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .step-text { font-size: 0.95rem; }
+  .step-text b { color: var(--accent3); }
+
+  .loop-arrow {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--accent2);
+    grid-column: 1 / -1;
+  }
+
+  /* ===== NAMING PIPELINE ===== */
+  .pipeline {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .pipeline-flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+
+  .pipe-stage {
+    flex: 1;
+    min-width: 180px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    position: relative;
+    border: 2px solid var(--border);
+    margin: 0.5rem;
+    background: var(--bg2);
+  }
+
+  .pipe-stage.input { border-color: var(--accent3); }
+  .pipe-stage.llm { border-color: var(--accent5); }
+  .pipe-stage.engine { border-color: var(--accent4); }
+  .pipe-stage.output { border-color: var(--accent); }
+
+  .pipe-stage::after {
+    content: '→';
+    position: absolute;
+    right: -1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    color: var(--dim);
+    z-index: 1;
+  }
+
+  .pipe-stage:last-child::after { display: none; }
+
+  .pipe-label {
+    font-family: var(--pixel-font);
+    font-size: 0.5rem;
+    color: var(--dim);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .pipe-content {
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  .pipe-content .tag {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    margin: 0.2rem;
+    font-size: 0.75rem;
+    border-radius: 2px;
+  }
+
+  .tag.fire { background: rgba(255,68,102,0.2); color: var(--accent2); border: 1px solid var(--accent2); }
+  .tag.dash { background: rgba(68,170,255,0.2); color: var(--accent4); border: 1px solid var(--accent4); }
+  .tag.self { background: rgba(255,204,0,0.2); color: var(--accent3); border: 1px solid var(--accent3); }
+
+  /* ===== ABILITY EXAMPLES ===== */
+  .ability-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .ability-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 1.5rem;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .ability-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+  }
+
+  .ability-eat {
+    font-size: 0.8rem;
+    color: var(--dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .ability-name {
+    font-family: var(--pixel-font);
+    font-size: 0.75rem;
+    color: var(--accent3);
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    background: var(--bg2);
+    border-left: 3px solid var(--accent3);
+  }
+
+  .ability-desc {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .ability-pixel {
+    display: flex;
+    gap: 2px;
+    margin: 0.8rem 0;
+  }
+
+  .px {
+    width: 12px; height: 12px;
+    display: inline-block;
+  }
+
+  /* ===== PIXEL EVOLUTION ===== */
+  .evolution-track {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 2rem 0;
+  }
+
+  .evo-stage {
+    text-align: center;
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .evo-pixel {
+    height: 120px;
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    margin-bottom: 0.8rem;
+  }
+
+  .evo-label {
+    font-family: var(--pixel-font);
+    font-size: 0.5rem;
+    color: var(--dim);
+    margin-bottom: 0.3rem;
+  }
+
+  .evo-desc {
+    font-size: 0.8rem;
+    color: var(--text);
+  }
+
+  .evo-arrow {
+    color: var(--accent2);
+    font-size: 1.5rem;
+    align-self: center;
+    padding-bottom: 3rem;
+  }
+
+  /* ===== SYNERGY ===== */
+  .synergy-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+
+  .synergy-table th,
+  .synergy-table td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+
+  .synergy-table th {
+    font-family: var(--pixel-font);
+    font-size: 0.55rem;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .synergy-table tr:hover { background: rgba(0,255,136,0.05); }
+
+  .syn-combo {
+    font-weight: 700;
+    color: var(--accent3);
+  }
+
+  .syn-result {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ===== ACCUMULATION ===== */
+  .accum-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .accum-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 2rem;
+  }
+
+  .accum-card h3 {
+    font-family: var(--pixel-font);
+    font-size: 0.7rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .accum-card.inrun h3 { color: var(--accent2); }
+  .accum-card.cross h3 { color: var(--accent4); }
+
+  .accum-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 0.9rem;
+  }
+
+  .accum-item:last-child { border-bottom: none; }
+
+  .accum-bullet {
+    color: var(--accent);
+    flex-shrink: 0;
+    font-weight: bold;
+  }
+
+  /* ===== STATS ===== */
+  .stats-bar {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--card);
+    border: 2px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: var(--pixel-font);
+    font-size: 1.5rem;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--dim);
+    margin-top: 0.5rem;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 2px solid var(--border);
+    color: var(--dim);
+    font-size: 0.85rem;
+  }
+
+  footer .pixel-heart {
+    color: var(--accent2);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .loop-container,
+    .accum-container {
+      grid-template-columns: 1fr;
+    }
+    .pipe-stage::after { display: none; }
+    .evo-arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <canvas id="pixel-bg"></canvas>
+  <div class="hero-content">
+    <div class="hero-pixel-logo">DEVOUR</div>
+    <div class="hero-pixel-logo" style="font-size: clamp(1.5rem, 5vw, 3rem); margin-top: -0.5rem;">噬</div>
+    <p class="hero-tagline">
+      你是一个<strong>像素黑洞</strong>——吃掉一切敌人，<br>
+      但必须用一句话给吞噬来的能力命名，<br>
+      <strong>AI把你的命名变成真实可用的技能。</strong>
+    </p>
+    <div class="hero-meta">
+      <span class="meta-tag highlight">像素艺术</span>
+      <span class="meta-tag highlight2">吞噬进化 Roguelike</span>
+      <span class="meta-tag highlight3">LLM 意图解析</span>
+      <span class="meta-tag">第007期</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CORE LOOP ===== -->
+<section>
+  <div class="section-title">核心循环 <span class="num">01 / EAT → NAME → DEVOUR</span></div>
+
+  <div class="loop-container">
+    <div class="loop-card">
+      <h3>⚔️ 战斗阶段</h3>
+      <div class="loop-step">
+        <div class="step-icon">🎮</div>
+        <div class="step-text">实时动作战斗，用当前能力杀敌</div>
+      </div>
+      <div class="loop-step">
+        <div class="step-icon">💢</div>
+        <div class="step-text">敌人血量<b>&lt;20%</b>进入可吞噬状态</div>
+      </div>
+      <div class="loop-step">
+        <div class="step-icon">👄</div>
+        <div class="step-text">按住右键<b>0.5秒</b>吞噬，获得原始精华</div>
+      </div>
+      <div class="loop-step">
+        <div class="step-icon">📦</div>
+        <div class="step-text">精华存入背包，进入安全屋消化</div>
+      </div>
+    </div>
+
+    <div class="loop-card phase2">
+      <h3>🧪 消化阶段（安全屋）</h3>
+      <div class="loop-step">
+        <div class="step-icon">⌨️</div>
+        <div class="step-text">输入能力名称，如<b>"烈焰冲刺"</b></div>
+      </div>
+      <div class="loop-step">
+        <div class="step-icon">🧠</div>
+        <div class="step-text">AI解析意图：<b>火元素+冲刺+自身</b></div>
+      </div>
+      <div class="loop-step">
+        <div class="step-icon">⚙️</div>
+        <div class="step-text">引擎合成平衡能力+程序化像素精灵</div>
+      </div>
+      <div class="loop-step">
+        <div class="step-icon">✨</div>
+        <div class="step-text">技能加入Build，带新能力进下一关</div>
+      </div>
+    </div>
+
+    <div class="loop-arrow">↻ 循环往复，Build越来越强 ↻</div>
+  </div>
+
+  <div style="text-align:center; padding:1rem; color:var(--dim); font-size:0.9rem;">
+    战斗 = 纯动作爽感（类Dead Cells）　|　消化 = 策略创造（类Slay the Spire选牌，但你在发明牌）
+  </div>
+</section>
+
+<!-- ===== NAMING PIPELINE ===== -->
+<section>
+  <div class="section-title">命名→能力 AI管道 <span class="num">02 / NAMING → ABILITY</span></div>
+
+  <div class="pipeline">
+    <div class="pipeline-flow">
+      <div class="pipe-stage input">
+        <div class="pipe-label">玩家输入</div>
+        <div class="pipe-content">
+          <div style="font-family:var(--pixel-font); font-size:0.7rem; color:var(--accent3);">烈焰冲刺</div>
+          <div style="font-size:0.7rem; color:var(--dim); margin-top:0.3rem;">限15字符</div>
+        </div>
+      </div>
+      <div class="pipe-stage llm">
+        <div class="pipe-label">LLM意图解析</div>
+        <div class="pipe-content">
+          <div style="font-size:0.75rem; color:var(--dim); margin-bottom:0.3rem;">Phi-3-mini ONNX</div>
+          <span class="tag fire">元素:火</span>
+          <span class="tag dash">运动:冲刺</span>
+          <span class="tag self">范围:自身</span>
+        </div>
+      </div>
+      <div class="pipe-stage engine">
+        <div class="pipe-label">能力合成引擎</div>
+        <div class="pipe-content">
+          <div style="font-size:0.8rem;">
+            原型:冲刺攻击<br>
+            + 火元素附着<br>
+            + 路径留火<br>
+            + 碰撞引燃
+          </div>
+        </div>
+      </div>
+      <div class="pipe-stage output">
+        <div class="pipe-label">输出能力</div>
+        <div class="pipe-content">
+          <div style="font-family:var(--pixel-font); font-size:0.65rem; color:var(--accent);">烈焰冲刺</div>
+          <div style="font-size:0.75rem; margin-top:0.3rem;">
+            冲刺时路径起火<br>
+            碰撞敌人引燃3秒<br>
+            冷却: 4秒
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="font-size:0.85rem; color:var(--dim); padding:0 1rem;">
+    <strong style="color:var(--accent3);">关键设计：</strong>LLM做意图解析（文本→结构化标签），不做能力发明。能力数值由预平衡原型库决定，确保每次生成的能力既有趣又平衡。本地推理&lt;500ms，消化阶段完全可接受。
+  </div>
+</section>
+
+<!-- ===== ABILITY EXAMPLES ===== -->
+<section>
+  <div class="section-title">能力命名示例 <span class="num">03 / YOUR IMAGINATION = YOUR SKILL TREE</span></div>
+
+  <div class="ability-grid">
+    <div class="ability-card">
+      <div class="ability-eat">🦇 吃了 Boss 的右臂</div>
+      <div class="ability-name">"毁灭重拳"</div>
+      <div class="ability-desc">慢速挥拳，但一击秒杀小怪。命中Boss造成3倍暴击。<strong style="color:var(--accent2);">用Boss的拳头打Boss的兵。</strong></div>
+    </div>
+
+    <div class="ability-card">
+      <div class="ability-eat">🦇 吃了飞行石像鬼</div>
+      <div class="ability-name">"陨石俯冲"</div>
+      <div class="ability-desc">跳到高处后俯冲砸地，产生AOE爆炸。俯冲高度越高伤害越大。<strong style="color:var(--accent2);">天降正义。</strong></div>
+    </div>
+
+    <div class="ability-card">
+      <div class="ability-eat">🦇 吃了冰霜精灵</div>
+      <div class="ability-name">"绝对零度"</div>
+      <div class="ability-desc">3秒全场冻结，敌方子弹停在空中。期间你可以重新走位。<strong style="color:var(--accent2);">时间停止般的支配感。</strong></div>
+    </div>
+
+    <div class="ability-card">
+      <div class="ability-eat">🦇 吃了追踪猎犬</div>
+      <div class="ability-name">"影遁"</div>
+      <div class="ability-desc">短暂隐身1.5秒+移速翻倍。隐身期间攻击背刺伤害+200%。<strong style="color:var(--accent2);">从猎物变猎人。</strong></div>
+    </div>
+
+    <div class="ability-card">
+      <div class="ability-eat">🦇 吃了…随便</div>
+      <div class="ability-name">"随便"</div>
+      <div class="ability-desc">AI走混沌协议：随机原型+随机元素+随机修饰。第一次使用才揭示效果。<strong style="color:var(--accent2);">拆盲盒的惊喜。</strong></div>
+    </div>
+
+    <div class="ability-card">
+      <div class="ability-eat">🦇 吃了雷电核心</div>
+      <div class="ability-name">"闪电链"</div>
+      <div class="ability-desc">攻击在敌人间弹跳最多5次，每次衰减20%。潮湿敌人弹跳次数翻倍。<strong style="color:var(--accent2);">链式闪电的连锁爽感。</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PIXEL EVOLUTION ===== -->
+<section>
+  <div class="section-title">像素进化 <span class="num">04 / FROM GAMEBOY TO FULL COLOR</span></div>
+
+  <p style="color:var(--dim); margin-bottom:1.5rem; font-size:0.95rem;">
+    你的像素角色和世界画面随吞噬进化，从GameBoy单色逐步解锁到全彩——<strong style="color:var(--accent3);">美学成长是游戏进程的可视化</strong>。
+  </p>
+
+  <div class="evolution-track">
+    <div class="evo-stage">
+      <div class="evo-pixel">
+        <svg width="40" height="40" viewBox="0 0 8 8" style="image-rendering:pixelated;">
+          <rect x="3" y="3" width="2" height="2" fill="#0f380f"/>
+        </svg>
+      </div>
+      <div class="evo-label">LV.1 起始</div>
+      <div class="evo-desc">GameBoy绿<br>4色</div>
+    </div>
+
+    <div class="evo-arrow">→</div>
+
+    <div class="evo-stage">
+      <div class="evo-pixel">
+        <svg width="60" height="60" viewBox="0 0 8 8" style="image-rendering:pixelated;">
+          <rect x="2" y="2" width="4" height="4" fill="#306230"/>
+          <rect x="3" y="1" width="2" height="1" fill="#8bac0f"/>
+          <rect x="2" y="5" width="1" height="1" fill="#9bbc0f"/>
+          <rect x="5" y="5" width="1" height="1" fill="#9bbc0f"/>
+        </svg>
+      </div>
+      <div class="evo-label">LV.2 吃10个</div>
+      <div class="evo-desc">GameBoy色<br>8色</div>
+    </div>
+
+    <div class="evo-arrow">→</div>
+
+    <div class="evo-stage">
+      <div class="evo-pixel">
+        <svg width="80" height="80" viewBox="0 0 10 10" style="image-rendering:pixelated;">
+          <rect x="3" y="2" width="4" height="5" fill="#c84c0c"/>
+          <rect x="2" y="3" width="1" height="3" fill="#e85820"/>
+          <rect x="7" y="3" width="1" height="3" fill="#e85820"/>
+          <rect x="3" y="1" width="2" height="1" fill="#f8b800"/>
+          <rect x="4" y="7" width="1" height="1" fill="#008058"/>
+          <rect x="5" y="7" width="1" height="1" fill="#008058"/>
+          <rect x="3" y="4" width="1" height="1" fill="#f8f8f8"/>
+          <rect x="5" y="4" width="1" height="1" fill="#f8f8f8"/>
+        </svg>
+      </div>
+      <div class="evo-label">LV.3 吃25个</div>
+      <div class="evo-desc">NES调色板<br>16色</div>
+    </div>
+
+    <div class="evo-arrow">→</div>
+
+    <div class="evo-stage">
+      <div class="evo-pixel">
+        <svg width="100" height="100" viewBox="0 0 12 12" style="image-rendering:pixelated;">
+          <rect x="4" y="2" width="4" height="7" fill="#aa2244"/>
+          <rect x="3" y="3" width="1" height="5" fill="#ff4466"/>
+          <rect x="8" y="3" width="1" height="5" fill="#ff4466"/>
+          <rect x="4" y="1" width="4" height="1" fill="#ffcc00"/>
+          <rect x="3" y="1" width="1" height="1" fill="#ff8800"/>
+          <rect x="8" y="1" width="1" height="1" fill="#ff8800"/>
+          <rect x="4" y="9" width="2" height="1" fill="#2266aa"/>
+          <rect x="6" y="9" width="2" height="1" fill="#2266aa"/>
+          <rect x="4" y="4" width="1" height="1" fill="#ffffff"/>
+          <rect x="6" y="4" width="1" height="1" fill="#ffffff"/>
+          <rect x="2" y="5" width="1" height="2" fill="#44ff88"/>
+          <rect x="9" y="5" width="1" height="2" fill="#44ff88"/>
+        </svg>
+      </div>
+      <div class="evo-label">LV.4 吃50个</div>
+      <div class="evo-desc">SNES调色板<br>256色</div>
+    </div>
+
+    <div class="evo-arrow">→</div>
+
+    <div class="evo-stage">
+      <div class="evo-pixel">
+        <svg width="120" height="120" viewBox="0 0 14 14" style="image-rendering:pixelated;">
+          <rect x="5" y="2" width="4" height="9" fill="#6a0a3a"/>
+          <rect x="4" y="3" width="1" height="7" fill="#ff2266"/>
+          <rect x="9" y="3" width="1" height="7" fill="#ff2266"/>
+          <rect x="5" y="1" width="4" height="1" fill="#ffcc00"/>
+          <rect x="3" y="1" width="2" height="1" fill="#ff6600"/>
+          <rect x="9" y="1" width="2" height="1" fill="#ff6600"/>
+          <rect x="5" y="11" width="4" height="1" fill="#2266aa"/>
+          <rect x="4" y="12" width="2" height="1" fill="#44aaff"/>
+          <rect x="8" y="12" width="2" height="1" fill="#44aaff"/>
+          <rect x="5" y="5" width="1" height="1" fill="#ffffff"/>
+          <rect x="7" y="5" width="1" height="1" fill="#ffffff"/>
+          <rect x="6" y="6" width="1" height="1" fill="#ff44aa"/>
+          <rect x="2" y="4" width="2" height="3" fill="#44ff88"/>
+          <rect x="10" y="4" width="2" height="3" fill="#44ff88"/>
+          <rect x="1" y="5" width="1" height="1" fill="#aaff44"/>
+          <rect x="12" y="5" width="1" height="1" fill="#aaff44"/>
+          <rect x="6" y="3" width="2" height="1" fill="#ffaa00"/>
+        </svg>
+      </div>
+      <div class="evo-label">LV.5 满进化</div>
+      <div class="evo-desc">全彩像素<br>无限制</div>
+    </div>
+  </div>
+
+  <p style="text-align:center; color:var(--dim); font-size:0.85rem; margin-top:1.5rem;">
+    第1层看到的世界是绿黑的，第5层才看到敌人的真实色彩——"揭开世界真面目"的探索动机
+  </p>
+</section>
+
+<!-- ===== SYNERGY ===== -->
+<section>
+  <div class="section-title">能力Synergy组合 <span class="num">05 / EMERGENT COMBINATIONS</span></div>
+
+  <table class="synergy-table">
+    <thead>
+      <tr>
+        <th>组合条件</th>
+        <th>Synergy名称</th>
+        <th>效果</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="syn-combo">火 + 冰</td>
+        <td class="syn-result">蒸汽爆炸</td>
+        <td>攻击产生蒸汽场，致盲+烫伤区域敌人</td>
+      </tr>
+      <tr>
+        <td class="syn-combo">电 + 金属</td>
+        <td class="syn-result">电磁感应</td>
+        <td>近战攻击连锁电击附近敌人</td>
+      </tr>
+      <tr>
+        <td class="syn-combo">暗 + 光</td>
+        <td class="syn-result">蚀</td>
+        <td>创造日食区域，敌人持续掉血</td>
+      </tr>
+      <tr>
+        <td class="syn-combo">3个同元素</td>
+        <td class="syn-result">元素共鸣</td>
+        <td>该元素所有效果+50%</td>
+      </tr>
+      <tr>
+        <td class="syn-combo">6槽全不同元素</td>
+        <td class="syn-result">🌈 彩虹</td>
+        <td>每秒随机触发一个元素效果</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== ACCUMULATION ===== -->
+<section>
+  <div class="section-title">双轨积累层 <span class="num">06 / DUAL-TRACK PROGRESSION</span></div>
+
+  <div class="accum-container">
+    <div class="accum-card inrun">
+      <h3>⚔️ 单局积累 (BUILD)</h3>
+      <div class="accum-item">
+        <span class="accum-bullet">▸</span>
+        <div>每局5区域×3间房+1Boss，吃敌人获精华</div>
+      </div>
+      <div class="accum-item">
+        <span class="accum-bullet">▸</span>
+        <div>安全屋消化→命名→AI生成能力，最多6槽</div>
+      </div>
+      <div class="accum-item">
+        <span class="accum-bullet">▸</span>
+        <div>能力Synergy组合产生隐藏效果</div>
+      </div>
+      <div class="accum-item">
+        <span class="accum-bullet">▸</span>
+        <div><strong style="color:var(--accent2);">风险机制：</strong>Boss击中你会吃掉你的能力！</div>
+      </div>
+      <div class="accum-item">
+        <span class="accum-bullet">▸</span>
+        <div>击败Boss→吃掉Boss→必出强力精华</div>
+      </div>
+    </div>
+
+    <div class="accum-card cross">
+      <h3>🏛️ 跨局积累 (永久)</h3>
+      <div class="accum-item">
+        <span class="accum-bullet" style="color:var(--accent4);">▸</span>
+        <div><strong>消化图鉴：</strong>永久记录创造过的能力，后续可直接选用</div>
+      </div>
+      <div class="accum-item">
+        <span class="accum-bullet" style="color:var(--accent4);">▸</span>
+        <div><strong>精华槽位：</strong>起始3槽→永久升级至8槽</div>
+      </div>
+      <div class="accum-item">
+        <span class="accum-bullet" style="color:var(--accent4);">▸</span>
+        <div><strong>变异实验：</strong>8元素×5层=40个永久强化节点</div>
+      </div>
+      <div class="accum-item">
+        <span class="accum-bullet" style="color:var(--accent4);">▸</span>
+        <div><strong>命名词典：</strong>解锁高级词汇，直接影响AI能力合成</div>
+      </div>
+      <div class="accum-item">
+        <span class="accum-bullet" style="color:var(--accent4);">▸</span>
+        <div><strong>敌人图鉴：</strong>解锁新敌人类型增加run多样性</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num">1440+</div>
+      <div class="stat-label">基础能力组合</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">200+</div>
+      <div class="stat-label">Synergy组合</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">128</div>
+      <div class="stat-label">永久升级目标</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">50-80h</div>
+      <div class="stat-label">预估可玩时长</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FINAL BOSS ===== -->
+<section>
+  <div class="section-title">最终Boss：噬 <span class="num">07 / YOU ARE THE FINAL BOSS</span></div>
+
+  <div style="background:var(--card); border:2px solid var(--border); padding:2rem; border-left:4px solid var(--accent5);">
+    <p style="font-size:1.1rem; margin-bottom:1.5rem;">
+      你遇到的最终Boss是<strong style="color:var(--accent5);">你自己的完全体</strong>——一个吞噬了一切的像素黑洞。
+    </p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-top:1.5rem;">
+      <div style="background:var(--bg2); padding:1.2rem; border:1px solid var(--border);">
+        <div style="font-family:var(--pixel-font); font-size:0.55rem; color:var(--accent2); margin-bottom:0.5rem;">PHASE 1</div>
+        <div style="font-weight:700; margin-bottom:0.5rem;">模仿</div>
+        <div style="font-size:0.85rem; color:var(--dim);">Boss使用你本局创造的所有能力对抗你</div>
+      </div>
+      <div style="background:var(--bg2); padding:1.2rem; border:1px solid var(--border);">
+        <div style="font-family:var(--pixel-font); font-size:0.55rem; color:var(--accent3); margin-bottom:0.5rem;">PHASE 2</div>
+        <div style="font-weight:700; margin-bottom:0.5rem;">超越</div>
+        <div style="font-size:0.85rem; color:var(--dim);">Boss组合你的能力产生从未见过的Synergy</div>
+      </div>
+      <div style="background:var(--bg2); padding:1.2rem; border:1px solid var(--border);">
+        <div style="font-family:var(--pixel-font); font-size:0.55rem; color:var(--accent); margin-bottom:0.5rem;">PHASE 3</div>
+        <div style="font-weight:700; margin-bottom:0.5rem;">互噬</div>
+        <div style="font-size:0.85rem; color:var(--dim);">双方互吞噬，谁先吃掉对方核心谁赢</div>
+      </div>
+    </div>
+
+    <p style="margin-top:1.5rem; font-style:italic; color:var(--dim); text-align:center;">
+      你吞噬了一路，最终发现自己也在被吞噬。世界是一个循环。
+    </p>
+  </div>
+</section>
+
+<!-- ===== TECH STACK ===== -->
+<section>
+  <div class="section-title">技术栈 <span class="num">08 / TECH STACK</span></div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem;">
+    <div style="background:var(--card); border:1px solid var(--border); padding:1.5rem;">
+      <div style="font-family:var(--pixel-font); font-size:0.55rem; color:var(--accent); margin-bottom:0.5rem;">ENGINE</div>
+      <div style="font-weight:700;">Godot 4</div>
+      <div style="font-size:0.8rem; color:var(--dim); margin-top:0.3rem;">2D像素原生支持</div>
+    </div>
+    <div style="background:var(--card); border:1px solid var(--border); padding:1.5rem;">
+      <div style="font-family:var(--pixel-font); font-size:0.55rem; color:var(--accent5); margin-bottom:0.5rem;">LLM</div>
+      <div style="font-weight:700;">Phi-3-mini</div>
+      <div style="font-size:0.8rem; color:var(--dim); margin-top:0.3rem;">3.8B int4 / 2.3GB</div>
+    </div>
+    <div style="background:var(--card); border:1px solid var(--border); padding:1.5rem;">
+      <div style="font-family:var(--pixel-font); font-size:0.55rem; color:var(--accent4); margin-bottom:0.5rem;">INFERENCE</div>
+      <div style="font-weight:700;">ONNX Runtime</div>
+      <div style="font-size:0.8rem; color:var(--dim); margin-top:0.3rem;">+ DirectML GPU加速</div>
+    </div>
+    <div style="background:var(--card); border:1px solid var(--border); padding:1.5rem;">
+      <div style="font-family:var(--pixel-font); font-size:0.55rem; color:var(--accent3); margin-bottom:0.5rem;">PIXEL ART</div>
+      <div style="font-weight:700;">程序化拼装</div>
+      <div style="font-size:0.8rem; color:var(--dim); margin-top:0.3rem;">组件库+调色板系统</div>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem; padding:1.5rem; background:var(--card); border:1px solid var(--border); border-left:4px solid var(--accent);">
+    <strong style="color:var(--accent);">设计哲学：</strong>
+    <span style="color:var(--dim);">LLM做意图解析（文本→结构化标签），不做能力发明。能力数值由预平衡原型库决定。这确保了：能力永远平衡 + 不会生成破坏游戏的奇葩能力 + 本地推理可行 + 响应快。</span>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>《噬》DEVOUR — 第007期 每日游戏灵感</p>
+  <p style="margin-top:0.5rem;">2026-07-14 · 像素艺术 / 吞噬进化 / LLM意图解析</p>
+  <p style="margin-top:1rem;">
+    <span class="pixel-heart">●</span>
+    你的想象力是唯一的技能树
+    <span class="pixel-heart">●</span>
+  </p>
+</footer>
+
+<script>
+// ===== 像素背景动画 =====
+const canvas = document.getElementById('pixel-bg');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const pixels = [];
+const pixelSize = 8;
+const colors = ['#00ff88', '#ff4466', '#ffcc00', '#44aaff', '#aa44ff'];
+
+for (let i = 0; i < 60; i++) {
+  pixels.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.5,
+    vy: (Math.random() - 0.5) * 0.5,
+    size: pixelSize * (Math.random() * 2 + 1),
+    color: colors[Math.floor(Math.random() * colors.length)],
+    alpha: Math.random() * 0.3 + 0.1
+  });
+}
+
+function animate() {
+  ctx.fillStyle = 'rgba(10, 10, 15, 0.1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  pixels.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(Math.floor(p.x / pixelSize) * pixelSize, Math.floor(p.y / pixelSize) * pixelSize, p.size, p.size);
+  });
+
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>

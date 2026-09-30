@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《断喝》KIAI · 第010期概念可视化</title>
+<style>
+  :root{
+    --bg:#0E1014; --panel:#161A22; --panel2:#1E232E;
+    --ink:#1A1A1A; --gold:#D4AF37; --gold-dim:#8a6f1f;
+    --red:#B22222; --red-bright:#E23B3B;
+    --paper:#E8E0D0; --paper-dim:#b8b0a0;
+    --text:#E8E6E1; --text-dim:#9a978f;
+    --line:#2A2F3A; --jade:#5B7A6B; --jade-dim:#34504a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6;overflow-x:hidden}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+  /* 标题区 */
+  .hero{text-align:center;padding:80px 20px 40px;position:relative;background:radial-gradient(ellipse at 50% 30%, rgba(212,175,55,0.08), transparent 60%)}
+  .hero .tag{display:inline-block;font-size:12px;letter-spacing:4px;color:var(--gold);border:1px solid var(--gold-dim);padding:4px 14px;border-radius:2px;margin-bottom:18px}
+  .hero h1{font-size:74px;font-weight:900;letter-spacing:8px;color:var(--paper);text-shadow:0 0 40px rgba(178,34,34,0.4);margin-bottom:6px}
+  .hero .en{font-size:18px;letter-spacing:10px;color:var(--gold-dim);font-weight:300;margin-bottom:24px}
+  .hero .pitch{max-width:640px;margin:0 auto;font-size:16px;color:var(--paper-dim);line-height:1.9;border-left:2px solid var(--red);padding:4px 0 4px 18px;text-align:left;font-style:italic}
+  .hero .pitch b{color:var(--red-bright);font-style:normal}
+  .hero .meta{margin-top:28px;font-size:13px;color:var(--text-dim);letter-spacing:1px}
+  .hero .meta span{margin:0 10px;color:var(--gold-dim)}
+  /* 章节 */
+  section{margin-top:56px}
+  .sec-title{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+  .sec-title .num{font-size:13px;color:var(--bg);background:var(--gold);padding:2px 10px;font-weight:700;letter-spacing:1px}
+  .sec-title h2{font-size:24px;font-weight:700;color:var(--paper);letter-spacing:2px}
+  .sec-title .sub{font-size:13px;color:var(--text-dim);margin-left:auto}
+  /* 八式啸诀 */
+  .kiai-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .kiai-card{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:16px 14px;position:relative;overflow:hidden;cursor:pointer;transition:transform .25s,border-color .25s}
+  .kiai-card:hover{transform:translateY(-3px);border-color:var(--gold-dim)}
+  .kiai-card .idx{position:absolute;top:8px;right:10px;font-size:11px;color:var(--gold-dim)}
+  .kiai-card .feat{font-size:12px;color:var(--gold);margin-bottom:4px;letter-spacing:1px}
+  .kiai-card .name{font-size:19px;font-weight:700;color:var(--paper);margin-bottom:6px;letter-spacing:2px}
+  .kiai-card .eff{font-size:12px;color:var(--text-dim);line-height:1.5;min-height:54px}
+  .kiai-card .kick{font-size:12px;color:var(--red-bright);margin-top:8px;border-top:1px dashed var(--line);padding-top:8px}
+  /* 波形迷你画 */
+  .wave{height:34px;margin:8px 0;display:flex;align-items:center;gap:2px}
+  .wave i{display:block;width:3px;background:var(--gold);border-radius:1px;opacity:.7}
+  /* 核心循环 */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;justify-content:center;margin:10px 0}
+  .flow .step{flex:1;min-width:140px;background:var(--panel);border:1px solid var(--line);padding:14px 12px;text-align:center;position:relative}
+  .flow .step .ico{font-size:22px;margin-bottom:6px}
+  .flow .step .t{font-size:13px;color:var(--gold);font-weight:700;margin-bottom:4px;letter-spacing:1px}
+  .flow .step .d{font-size:11px;color:var(--text-dim);line-height:1.5}
+  .flow .arrow{display:flex;align-items:center;justify-content:center;color:var(--gold-dim);font-size:18px;padding:0 2px}
+  /* 双手分工 */
+  .dual{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  .dual .box{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:18px}
+  .dual .box h3{font-size:14px;letter-spacing:2px;margin-bottom:10px}
+  .dual .box.mouse h3{color:#7aa3d6}
+  .dual .box.voice h3{color:var(--red-bright)}
+  .dual .box ul{list-style:none;font-size:13px;color:var(--text-dim)}
+  .dual .box li{padding:4px 0;border-bottom:1px dashed var(--line)}
+  .dual .box li:last-child{border:0}
+  .dual .box li b{color:var(--paper)}
+  /* 故事弧 */
+  .arc{background:linear-gradient(180deg,var(--panel) 0%,#0c0e12 100%);border:1px solid var(--line);border-radius:4px;padding:8px 0}
+  .arc .row{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--line);min-height:64px}
+  .arc .row:last-child{border:0}
+  .arc .ch{flex:0 0 90px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gold);border-right:1px solid var(--line);padding:8px;text-align:center;font-weight:700;letter-spacing:1px;flex-direction:column}
+  .arc .ch .n{font-size:20px;color:var(--paper);margin-bottom:2px}
+  .arc .bd{flex:1;padding:10px 16px;font-size:13px;color:var(--text-dim)}
+  .arc .bd .nm{color:var(--red-bright);font-weight:700}
+  .arc .bd .how{color:var(--gold)}
+  /* 反弹时机 */
+  .parry{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:24px;margin-top:8px;position:relative}
+  .parry .bar{height:40px;background:var(--panel2);border-radius:2px;position:relative;margin:18px 0;overflow:hidden}
+  .parry .seg{position:absolute;top:0;bottom:0}
+  .parry .wind{left:0;width:55%;background:linear-gradient(90deg,#3a2a2a,#5a3a2a)}
+  .parry .win{left:55%;width:16%;background:linear-gradient(90deg,#8a6f1f,var(--gold));box-shadow:inset 0 0 12px rgba(255,255,255,.2)}
+  .parry .recover{left:71%;width:29%;background:linear-gradient(90deg,#2a2a3a,#1a1a2a)}
+  .parry .label{position:absolute;top:-22px;font-size:11px;color:var(--text-dim);letter-spacing:1px}
+  .parry .label.l{left:0}
+  .parry .label.g{left:55%;color:var(--gold)}
+  .parry .label.r{right:0}
+  .parry .note{font-size:13px;color:var(--text-dim);text-align:center;margin-top:8px}
+  .parry .note b{color:var(--red-bright)}
+  /* 积累层 */
+  .acc{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .acc .col h3{font-size:14px;letter-spacing:2px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .acc .col.run h3{color:var(--gold)}
+  .acc .col.perm h3{color:var(--jade)}
+  .acc .item{background:var(--panel);border:1px solid var(--line);padding:10px 12px;margin-bottom:8px;font-size:12px;color:var(--text-dim)}
+  .acc .item b{color:var(--paper);display:block;margin-bottom:2px;font-size:13px}
+  .acc .item span{color:var(--gold-dim)}
+  /* 对比表 */
+  .cmp{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+  .cmp th,.cmp td{border:1px solid var(--line);padding:7px 8px;text-align:center}
+  .cmp th{background:var(--panel2);color:var(--gold);font-weight:700;letter-spacing:1px}
+  .cmp td:first-child{text-align:left;color:var(--text-dim)}
+  .cmp tr.hl td{background:rgba(178,34,34,0.12);color:var(--paper)}
+  .cmp tr.hl td:first-child{color:var(--red-bright);font-weight:700}
+  /* 风险 */
+  .risk{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+  .risk th,.risk td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+  .risk th{background:var(--panel2);color:var(--gold)}
+  .risk .sev{font-weight:700;white-space:nowrap}
+  .risk .h{color:var(--red-bright)}.risk .m{color:var(--gold)}.risk .l{color:var(--jade)}
+  /* 灵魂 */
+  .soul{background:linear-gradient(135deg,rgba(178,34,34,0.08),rgba(212,175,55,0.05));border:1px solid var(--gold-dim);border-radius:4px;padding:30px;margin-top:8px;position:relative}
+  .soul::before{content:"气";position:absolute;top:10px;right:20px;font-size:88px;color:rgba(212,175,55,0.08);font-weight:900}
+  .soul p{font-size:14px;color:var(--paper-dim);line-height:1.9;margin-bottom:12px}
+  .soul p b{color:var(--red-bright)}
+  .soul .fin{font-size:15px;color:var(--gold);font-weight:700;letter-spacing:1px;border-top:1px dashed var(--gold-dim);padding-top:14px;margin-top:18px}
+  /* footer */
+  .foot{text-align:center;margin-top:50px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--text-dim);letter-spacing:2px}
+  @media(max-width:760px){.kiai-grid{grid-template-columns:repeat(2,1fr)}.dual,.acc{grid-template-columns:1fr}.arc .ch{flex:0 0 70px}.hero h1{font-size:48px}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">第 010 期 · 每日游戏灵感</div>
+  <h1>断　喝</h1>
+  <div class="en">K I A I</div>
+  <div class="pitch">你对着屏幕吼一声<b>"哈！"</b>——面前的铁甲武士应声裂甲，护甲碎片飞溅。<b>你的嗓音就是剑气，气合即杀招。</b></div>
+  <div class="meta">武侠 / 江湖<span>·</span>声控动作格斗<span>·</span>语音情感识别 (SER)</div>
+</div>
+
+<div class="wrap">
+
+  <section>
+    <div class="sec-title">
+      <span class="num">01</span><h2>八式啸诀 · 嗓音即招式</h2>
+      <span class="sub">AI 不识别你说了什么词，只读 力度 × 音高 × 时长</span>
+    </div>
+    <div class="kiai-grid" id="grid"></div>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:14px;text-align:center">点击任意啸诀卡片，下方会出现"这一吼是什么样"的波形示意</p>
+    <div id="detail" style="margin-top:16px"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">
+      <span class="num">02</span><h2>双手分工 · 鼠标定方向，嗓音定招式</h2>
+      <span class="sub">吼不是普攻，是"放大招"——攒满啸气，在决定性瞬间吼出去</span>
+    </div>
+    <div class="dual">
+      <div class="box mouse">
+        <h3>🖱 鼠标 · 日常控制</h3>
+        <ul>
+          <li><b>移动 / 瞄准</b>　角色朝鼠标方向，决定啸诀打向哪</li>
+          <li><b>轻攻击</b>　快速·低伤·攒啸气（撑场面的日常动作）</li>
+          <li><b>重攻击</b>　慢·高伤·可破防</li>
+          <li><b>闪避 / 跳跃</b>　翻滚无敌帧，接飞龙升天 / 落雷</li>
+        </ul>
+      </div>
+      <div class="box voice">
+        <h3>🎙 麦克风 · 绝杀啸诀</h3>
+        <ul>
+          <li><b>吼 / 啸 / 喝 / 气声</b>　AI 识别特征自动选八式之一</li>
+          <li><b>消耗啸气槽</b>　满 1 格才能吼 1 次，最多 3→5 格</li>
+          <li><b>触发延迟 &lt;50ms</b>　比按手柄还快</li>
+          <li><b>静音模式</b>　气声也有效，深夜小声玩不扰民</li>
+        </ul>
+      </div>
+    </div>
+    <div class="flow" style="margin-top:18px">
+      <div class="step"><div class="ico">🗡</div><div class="t">普攻命中</div><div class="d">攒啸气</div></div>
+      <div class="arrow">▶</div>
+      <div class="step"><div class="ico">🔵</div><div class="t">啸气满格</div><div class="d">可以吼了</div></div>
+      <div class="arrow">▶</div>
+      <div class="step"><div class="ico">🎙</div><div class="t">你吼出去</div><div class="d">VAD&lt;30ms 启动</div></div>
+      <div class="arrow">▶</div>
+      <div class="step"><div class="ico">✨</div><div class="t">墨相炸开</div><div class="d">命中 + 震屏</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-title">
+      <span class="num">03</span><h2>气合反弹 · 只狼式精准格挡</h2>
+      <span class="sub">颤音 = 内力护体，卡准窗口反弹 Boss 重击</span>
+    </div>
+    <div class="parry">
+      <div class="bar">
+        <div class="seg wind"></div>
+        <div class="seg win"></div>
+        <div class="seg recover"></div>
+        <span class="label l wind l">蓄势</span>
+        <span class="label g win">精准窗口 ≈200ms</span>
+        <span class="label r recover">收招</span>
+      </div>
+      <div class="note">Boss 重击挥出的瞬间，你开始持续颤音 → 卡进金色窗口 = <b>气合反弹</b>，架势崩坏 → 破甲一击必中</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-title">
+      <span class="num">04</span><h2>复仇故事弧 · 无舌剑客杀回京城</h2>
+      <span class="sub">六大高手每人代表一种武学极致，也代表当年伤害你的一种方式</span>
+    </div>
+    <div class="arc" id="arc"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">
+      <span class="num">05</span><h2>积累层 · 双轨成长</h2>
+      <span class="sub">单局 Build + 跨局永久，撑得起 50h+ 动机</span>
+    </div>
+    <div class="acc">
+      <div class="col run">
+        <h3>⚔ 单局 · 啸诀 Build</h3>
+        <div class="item"><b>啸气槽</b><span>3→5 格，普攻/反弹/击杀积攒</span></div>
+        <div class="item"><b>6 啸诀槽</b><span>八式选六，每式强化 3 次</span></div>
+        <div class="item"><b>气合过载</b><span>破甲+3→裂甲崩天 等</span></div>
+        <div class="item"><b>Synergy</b><span>破甲+推墙=碎甲穿墙 等 5 组</span></div>
+      </div>
+      <div class="col perm">
+        <h3>🏛 跨局 · 永久层</h3>
+        <div class="item"><b>六大高手残谱</b><span>6 个永久新啸诀变体</span></div>
+        <div class="item"><b>兵器残片</b><span>12 件被动</span></div>
+        <div class="item"><b>江湖声望</b><span>侠 / 魔 / 隐 三路</span></div>
+        <div class="item"><b>挑战模式</b><span>32 个（含"静默通关"）</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-title">
+      <span class="num">06</span><h2>十期对比 · 全新维度</h2>
+      <span class="sub">首个武侠题材 · 首个声控格斗 · 首个语音情感识别</span>
+    </div>
+    <table class="cmp">
+      <tr><th>期</th><th>风格</th><th>玩法</th><th>AI 方向</th><th>积累</th></tr>
+      <tr><td>001</td><td>水墨东方</td><td>声音创作</td><td>音乐生成</td><td>✗</td></tr>
+      <tr><td>002</td><td>赛博朋克</td><td>RL潜行</td><td>目标检测</td><td>单局</td></tr>
+      <tr><td>003</td><td>暗黑哥特</td><td>画线斩击</td><td>笔迹CNN</td><td>✗</td></tr>
+      <tr><td>004</td><td>浮世绘</td><td>变身动作</td><td>涂鸦识别</td><td>单局</td></tr>
+      <tr><td>005</td><td>黏土动画</td><td>物理变形</td><td>形状+语音</td><td>消耗</td></tr>
+      <tr><td>006</td><td>梦境超现实</td><td>时间回声</td><td>行为LSTM</td><td>双轨</td></tr>
+      <tr><td>007</td><td>像素复古</td><td>吞噬进化</td><td>LLM意图</td><td>双轨</td></tr>
+      <tr><td>008</td><td>蒸汽朋克</td><td>弹珠操控</td><td>弹道+WFC</td><td>双轨</td></tr>
+      <tr><td>009</td><td>Glitch</td><td>框选战斗</td><td>RL敌人</td><td>双轨</td></tr>
+      <tr class="hl"><td>010</td><td>武侠江湖</td><td>声控格斗</td><td>语音情感识别</td><td>双轨</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="sec-title">
+      <span class="num">07</span><h2>风险与对策</h2>
+    </div>
+    <table class="risk">
+      <tr><th style="width:34%">风险</th><th style="width:14%">严重度</th><th>对策</th></tr>
+      <tr><td>语音识别不准</td><td class="sev h">高</td><td>用 SER 特征分类而非 ASR 词识别；个人调音；置信度&lt;0.6 不触发</td></tr>
+      <tr><td>吼叫扰民 / 社死</td><td class="sev h">高</td><td>静音模式（气声也有效）；最低音量可调；按键替代 fallback</td></tr>
+      <tr><td>长时间嗓子累</td><td class="sev m">中</td><td>啸诀是大招非普攻；普攻靠鼠标；每局吼次数有上限</td></tr>
+      <tr><td>麦克风延迟</td><td class="sev m">中</td><td>VAD&lt;30ms；ONNX&lt;5ms；可预判触发预启动特效</td></tr>
+      <tr><td>镜像 Boss 与 006 影魔重复</td><td class="sev m">中</td><td>006 是动作模仿，010 是声音回声；视觉用水镜倒影区分</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="sec-title">
+      <span class="num">08</span><h2>灵魂</h2>
+    </div>
+    <div class="soul">
+      <p>《断喝》的灵魂是：<b>你的声音被夺走了，你要用它杀回来。</b></p>
+      <p>气合不是设计出来的操作——它是人的本能。打沙袋会喊"哈！"，受惊会喊"啊！"，愤怒会低吼。每个武术家都知道，力量是从喉咙里"送"出来的。《断喝》只是把这个本能接上了屏幕：你吼，东西就碎。</p>
+      <p>AI 不识别你"说了什么"，它读你的力气、音高、时长。所以<b>哑巴能玩，方言能玩，外语能玩</b>——因为它不需要你说任何话，只需要你发出声音。</p>
+      <p>终章的"吞声诀"要你在最深的寂静里，用三年雪原悟出的最后一口气，吼破他的沉默。那一刻不是数值胜利，是<b>存在主义的胜利</b>——割了舌头的人，也能让天下听见。</p>
+      <div class="fin">你不需要剑。你的喉咙，就是天下第一的剑。</div>
+    </div>
+  </section>
+
+  <div class="foot">第 010 期 · 每日游戏灵感 · 2026-07-24 · 风格轮换池：武侠 / 江湖</div>
+</div>
+
+<script>
+const KIAI=[
+  {i:'一',feat:'短促爆喝 · 响·短·突发',name:'破甲一击',eff:'无视护盾直击本体，护甲碎裂',kick:'铁甲武士应声裂甲，碎片飞溅',wave:[8,6,2,1,1,0,0,0,0,0,0,0]},
+  {i:'二',feat:'低沉长啸 · 响·长·低频',name:'狮子吼',eff:'前方扇形气墙，敌人被推飞穿墙',kick:'八仙桌带人一起被推穿墙',wave:[5,6,7,7,7,7,6,6,5,5,4,3]},
+  {i:'三',feat:'急促连喝 · 极短·连续3+',name:'暴雨连击',eff:'高速多段连击，面前一排倒下',kick:'连喝五声，五人依次飞起',wave:[7,1,7,1,7,1,7,1,7,1,0,0]},
+  {i:'四',feat:'尖锐高音 · 响·短·高频',name:'点穴',eff:'定身，敌人冻成雕塑3秒',kick:'刺客半空冻住，走过去一掌碎',wave:[9,8,7,8,9,8,3,0,0,0,0,0]},
+  {i:'五',feat:'极低气声 · 弱·长·气音',name:'隐息',eff:'潜行 + 瞬移到鼠标位置',kick:'毒雾里消失，绕到背后背刺',wave:[2,2,2,2,2,2,2,2,2,2,2,2]},
+  {i:'六',feat:'低→高滑音 · 上行',name:'飞龙升天',eff:'挑飞起手，敌人上天接空中连段',kick:'一声滑音，Boss被挑到半空挨打',wave:[2,3,4,5,6,7,8,9,0,0,0,0]},
+  {i:'七',feat:'高→低滑音 · 下行',name:'落雷下劈',eff:'空中下劈，带霸体砸地冲击',kick:'跳起一声，剑气从天劈下清屏',wave:[9,8,7,6,5,4,3,2,0,0,0,0]},
+  {i:'八',feat:'持续颤音 · 长·颤动',name:'内力护体',eff:'格挡架势，精准则气合反弹',kick:'Boss重击瞬间颤音，反弹震碎他臂骨',wave:[5,6,5,6,5,6,5,6,5,6,5,6]}
+];
+const grid=document.getElementById('grid');
+KIAI.forEach((k,idx)=>{
+  const c=document.createElement('div');
+  c.className='kiai-card';
+  c.innerHTML=`<span class="idx">${k.i}</span>
+    <div class="feat">${k.feat}</div>
+    <div class="name">${k.name}</div>
+    <div class="wave">${k.wave.map(h=>`<i style="height:${h*3}px;background:${idx===7?'#D4AF37':idx===4?'#4a6fa5':'#B22222'}"></i>`).join('')}</div>
+    <div class="eff">${k.eff}</div>
+    <div class="kick">💥 ${k.kick}</div>`;
+  c.onclick=()=>showDetail(k,idx);
+  grid.appendChild(c);
+});
+const detail=document.getElementById('detail');
+function showDetail(k,idx){
+  detail.innerHTML=`<div style="background:var(--panel);border:1px solid var(--gold-dim);border-radius:4px;padding:20px">
+    <div style="font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:6px">第${k.i}式 · 这一声是什么样</div>
+    <div style="font-size:22px;color:var(--paper);font-weight:700;letter-spacing:3px;margin-bottom:10px">${k.name}</div>
+    <div style="display:flex;align-items:center;gap:6px;height:48px;margin:12px 0">
+      ${k.wave.map((h,i)=>`<i style="display:block;width:8px;height:${h*4}px;background:linear-gradient(180deg,#D4AF37,#B22222);border-radius:2px;opacity:${0.4+h/12}"></i>`).join('')}
+    </div>
+    <div style="font-size:13px;color:var(--text-dim)"><b style="color:var(--paper)">特征：</b>${k.feat}</div>
+    <div style="font-size:13px;color:var(--text-dim);margin-top:4px"><b style="color:var(--paper)">效果：</b>${k.eff}</div>
+    <div style="font-size:13px;color:var(--red-bright);margin-top:4px">💥 爽点：${k.kick}</div>
+    <div style="font-size:11px;color:var(--text-dim);margin-top:10px;border-top:1px dashed var(--line);padding-top:8px">💡 映射逻辑：越响越暴力(破甲/狮子吼)·越快越连续(暴雨)·越高越尖锐(点穴)·越弱越气声(隐息)·滑音=轨迹·颤音=蓄力时机</div>
+  </div>`;
+}
+// 默认显示第一式
+showDetail(KIAI[0],0);
+
+// 故事弧
+const ARC=[
+  {n:'开',ch:'雪原',nm:'无名',bd:'你对着空谷吼出第一声气合，雪崩如雷。老僧的竹简在怀中发烫。该上路了。'},
+  {n:'一',ch:'客栈',nm:'铁罗·铁布衫',how:'短促爆喝破甲',bd:'江湖第一硬功。他笑你哑。你"哈！"一声——他的铁布衫裂了。他第一次害怕。'},
+  {n:'二',ch:'竹林',nm:'风行·疾风腿',how:'尖锐高音点穴',bd:'轻功第一。嘲笑你"连喊抓小偷都喊不了"。你"咿！"——他的腿冻在半空。'},
+  {n:'三',ch:'观音堂',nm:'妙音·千手观音',how:'低沉长啸推墙',bd:'暗器第一，掌法如雨。她当年递的刀。你"嗷——"——千掌被气墙推穿墙。'},
+  {n:'四',ch:'毒沼',nm:'花蝶·毒娘子',how:'极低气声隐息',bd:'毒术第一。她说"哑巴尝不出毒"。你"呼..."隐息，绕到身后一吼了账。'},
+  {n:'五',ch:'古刹',nm:'震山·雷音掌',how:'颤音内力护体',bd:'内力第一，掌出雷鸣。你颤音——他的雷音被你反弹，震碎他自己臂骨。'},
+  {n:'六',ch:'镜湖',nm:'镜·无名之影',how:'最终式破镜像',bd:'戴你旧面具的人。他会你所有啸诀。你必须用他从没见过的一招。'},
+  {n:'终',ch:'禁宫',nm:'魏九千·吞声诀',how:'沉默中最后一吼',bd:'权阉。吞声诀制造寂静结界，你吼不出来。在沉默里吼破他的沉默。'}
+];
+const arcEl=document.getElementById('arc');
+ARC.forEach(a=>{
+  const row=document.createElement('div');
+  row.className='row';
+  row.innerHTML=`<div class="ch"><span class="n">${a.n}</span>${a.ch}</div>
+    <div class="bd"> <span class="nm">${a.nm}</span>　<span class="how">【${a.how}】</span><br>${a.bd}</div>`;
+  arcEl.appendChild(row);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>残响 REVERB — 概念可视化</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,700;1,300&display=swap');
+
+  :root {
+    --void: #0a0612;
+    --dream: #1a0f2e;
+    --echo: #6b4ce6;
+    --echo-glow: rgba(107, 76, 230, 0.4);
+    --phantom: #b794f6;
+    --impossible: #ff6b9d;
+    --gold: #ffd93d;
+    --text: #e0d4f7;
+    --text-dim: #8b7da8;
+    --border: rgba(107, 76, 230, 0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'Noto Serif SC', serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* === 动态背景 === */
+  .bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -2;
+    background: 
+      radial-gradient(ellipse at 20% 30%, rgba(107, 76, 230, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, rgba(255, 107, 157, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(26, 15, 46, 0.5) 0%, var(--void) 100%);
+  }
+
+  .breath-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(10, 6, 18, 0.3) 100%);
+    animation: breath 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes breath {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.05); }
+  }
+
+  /* === 浮动粒子 === */
+  .particle {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* === Hero === */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 2rem;
+  }
+
+  .hero-tag {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    letter-spacing: 4px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .hero-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(4rem, 12vw, 8rem);
+    background: linear-gradient(135deg, var(--phantom) 0%, var(--echo) 50%, var(--impossible) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    letter-spacing: 0.3em;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+
+  .hero-title::after {
+    content: '残响';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, var(--echo) 0%, transparent 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: blur(20px);
+    opacity: 0.5;
+    z-index: -1;
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 300;
+    color: var(--text-dim);
+    letter-spacing: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .hero-concept {
+    max-width: 600px;
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text);
+    line-height: 1.8;
+    padding: 1.5rem 2rem;
+    border-left: 2px solid var(--echo);
+    border-right: 2px solid var(--impossible);
+    background: rgba(26, 15, 46, 0.4);
+    backdrop-filter: blur(10px);
+  }
+
+  .hero-concept strong {
+    color: var(--phantom);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+    50% { transform: translateX(-50%) translateY(10px); opacity: 1; }
+  }
+
+  /* === Section 通用 === */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--impossible);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--echo), var(--impossible));
+  }
+
+  /* === 回声机制图示 === */
+  .echo-demo {
+    background: rgba(26, 15, 46, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .echo-timeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .timeline-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 120px;
+  }
+
+  .node-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    position: relative;
+  }
+
+  .node-player {
+    background: linear-gradient(135deg, var(--echo), var(--phantom));
+    box-shadow: 0 0 30px var(--echo-glow);
+  }
+
+  .node-echo {
+    background: transparent;
+    border: 2px dashed var(--phantom);
+    color: var(--phantom);
+    opacity: 0.6;
+  }
+
+  .node-boss {
+    background: linear-gradient(135deg, var(--impossible), #ff3b6b);
+    box-shadow: 0 0 30px rgba(255, 107, 157, 0.4);
+  }
+
+  .node-label {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .timeline-arrow {
+    flex: 1;
+    min-width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--echo), var(--phantom), var(--impossible));
+    position: relative;
+    max-width: 100px;
+  }
+
+  .timeline-arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--impossible);
+    border-top: 2px solid var(--impossible);
+  }
+
+  .timeline-time {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  /* === 残响叠加可视化 === */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .stack-card {
+    background: rgba(26, 15, 46, 0.8);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stack-card:hover {
+    border-color: var(--echo);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px var(--echo-glow);
+  }
+
+  .stack-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: var(--gradient);
+  }
+
+  .stack-time {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .stack-count {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .stack-desc {
+    font-size: 0.85rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .stack-1 { --gradient: linear-gradient(90deg, #4a90d9, #6b4ce6); }
+  .stack-1 .stack-time { color: #6b4ce6; }
+  .stack-2 { --gradient: linear-gradient(90deg, #6b4ce6, #9b6dff); }
+  .stack-2 .stack-time { color: #9b6dff; }
+  .stack-3 { --gradient: linear-gradient(90deg, #9b6dff, #c77dff); }
+  .stack-3 .stack-time { color: #c77dff; }
+  .stack-4 { --gradient: linear-gradient(90deg, #c77dff, #ff6b9d); }
+  .stack-4 .stack-time { color: #ff6b9d; }
+
+  /* === AI 行为建模 === */
+  .ai-flow {
+    background: rgba(26, 15, 46, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .ai-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ai-step:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .ai-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--echo), var(--phantom));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 15px var(--echo-glow);
+  }
+
+  .ai-content h4 {
+    color: var(--phantom);
+    font-size: 1.05rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .ai-content p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .ai-content code {
+    color: var(--gold);
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    background: rgba(255, 217, 61, 0.08);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  /* === 美学色板 === */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .palette-item {
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+
+  .palette-item:hover { transform: scale(1.05); }
+
+  .palette-swatch {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+  }
+
+  .palette-info {
+    padding: 0.8rem;
+    background: rgba(26, 15, 46, 0.8);
+  }
+
+  .palette-name {
+    font-size: 0.85rem;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+
+  .palette-hex {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  /* === Boss 三阶段 === */
+  .boss-phases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .phase-card {
+    background: rgba(26, 15, 46, 0.8);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.8rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phase-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    border-radius: 0 12px 0 80px;
+    opacity: 0.1;
+  }
+
+  .phase-1::before { background: var(--echo); }
+  .phase-2::before { background: var(--phantom); }
+  .phase-3::before { background: var(--impossible); }
+
+  .phase-tag {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-1 .phase-tag { color: var(--echo); }
+  .phase-2 .phase-tag { color: var(--phantom); }
+  .phase-3 .phase-tag { color: var(--impossible); }
+
+  .phase-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    color: var(--text);
+  }
+
+  .phase-desc {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .phase-quote {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--phantom);
+  }
+
+  /* === 积累层 === */
+  .progression-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  @media (max-width: 768px) {
+    .progression-box { grid-template-columns: 1fr; }
+  }
+
+  .prog-card {
+    background: rgba(26, 15, 46, 0.8);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.8rem;
+  }
+
+  .prog-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .prog-card.run h4 { color: var(--echo); }
+  .prog-card.perm h4 { color: var(--impossible); }
+
+  .prog-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .prog-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .prog-list li:last-child { border-bottom: none; }
+  .prog-list li::before { content: '◇'; color: var(--phantom); flex-shrink: 0; }
+
+  /* === 爽点时刻 === */
+  .moment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .moment-item {
+    background: rgba(26, 15, 46, 0.6);
+    border-left: 3px solid var(--echo);
+    border-radius: 0 12px 12px 0;
+    padding: 1.2rem 1.5rem;
+    transition: all 0.3s;
+  }
+
+  .moment-item:hover {
+    border-left-color: var(--impossible);
+    background: rgba(26, 15, 46, 0.9);
+    transform: translateX(8px);
+  }
+
+  .moment-scene {
+    font-size: 0.8rem;
+    color: var(--impossible);
+    margin-bottom: 0.3rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+
+  .moment-action {
+    color: var(--text);
+    font-size: 0.92rem;
+  }
+
+  .moment-action strong {
+    color: var(--gold);
+  }
+
+  /* === Footer === */
+  .footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  .footer-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--phantom);
+    margin-bottom: 0.5rem;
+  }
+
+  /* === 对比表 === */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin: 1rem 0;
+  }
+
+  .compare-table th {
+    background: rgba(107, 76, 230, 0.15);
+    color: var(--phantom);
+    padding: 0.6rem;
+    text-align: center;
+    border-bottom: 2px solid var(--echo);
+    font-weight: 700;
+  }
+
+  .compare-table td {
+    padding: 0.5rem 0.6rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .compare-table td:first-child {
+    text-align: left;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .compare-table .highlight {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .compare-container {
+    overflow-x: auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+<div class="breath-overlay"></div>
+
+<!-- 浮动粒子 -->
+<script>
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 1;
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.background = ['#6b4ce6', '#b794f6', '#ff6b9d'][Math.floor(Math.random()*3)];
+    p.style.opacity = Math.random() * 0.5 + 0.1;
+    p.style.boxShadow = '0 0 6px currentColor';
+    p.style.animation = `float ${Math.random()*10+5}s ease-in-out infinite`;
+    p.style.animationDelay = Math.random() * 5 + 's';
+    document.body.appendChild(p);
+  }
+</script>
+<style>
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(30px, -30px); }
+    66% { transform: translate(-20px, 20px); }
+  }
+</style>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="hero-tag">N°006 · 2026-07-12 · 超现实 / 梦境</div>
+  <h1 class="hero-title">残响</h1>
+  <div class="hero-subtitle">R E V E R B</div>
+  <div class="hero-concept">
+    你的每个动作在<strong>3秒后</strong>化为分身重演。<br>
+    你既是猎人，也是自己的援军，<br>
+    更是<strong>最终的敌人</strong>。
+  </div>
+  <div class="scroll-hint">↓ 向下探索梦境</div>
+</section>
+
+<!-- ==================== 核心动作 ==================== -->
+<section class="section">
+  <div class="section-label">CORE MECHANIC</div>
+  <h2 class="section-title">回声：3秒后的你</h2>
+
+  <div class="echo-demo">
+    <p style="color: var(--text-dim); margin-bottom: 1rem; font-size: 0.95rem;">
+      你做的每一个动作（移动、攻击、闪避），在<strong style="color:var(--phantom)">3秒后</strong>会生成一个半透明分身，精确重演。不需要额外按键——回声是动作的副产品。
+    </p>
+
+    <div class="echo-timeline">
+      <div class="timeline-node">
+        <div class="node-circle node-player">⚔</div>
+        <div class="node-label">你<br><span style="color:var(--echo)">此刻</span></div>
+      </div>
+      <div class="timeline-arrow">
+        <span class="timeline-time">+3秒</span>
+      </div>
+      <div class="timeline-node">
+        <div class="node-circle node-echo">⚔</div>
+        <div class="node-label">残响分身<br><span style="color:var(--phantom)">重演</span></div>
+      </div>
+      <div class="timeline-arrow">
+        <span class="timeline-time">+6秒</span>
+      </div>
+      <div class="timeline-node">
+        <div class="node-circle node-echo">⚔</div>
+        <div class="node-label">第二残响<br><span style="color:var(--phantom)">再演</span></div>
+      </div>
+      <div class="timeline-arrow">
+        <span class="timeline-time">...</span>
+      </div>
+      <div class="timeline-node">
+        <div class="node-circle node-boss">☠</div>
+        <div class="node-label">影魔<br><span style="color:var(--impossible)">学透你</span></div>
+      </div>
+    </div>
+
+    <p style="text-align: center; color: var(--gold); font-size: 0.9rem; font-style: italic;">
+      "3秒前的你帮你挡了一刀，6秒前的你在背后偷袭"
+    </p>
+  </div>
+
+  <h3 style="color: var(--text); margin: 2rem 0 1rem; font-size: 1.15rem;">残响叠加：活得越久，你身边的"你"越多</h3>
+
+  <div class="stack-grid">
+    <div class="stack-card stack-1">
+      <div class="stack-time">0-3s</div>
+      <div class="stack-count">1个残响</div>
+      <div class="stack-desc">你在打，影子在打<br>基础交叉火力</div>
+    </div>
+    <div class="stack-card stack-2">
+      <div class="stack-time">3-6s</div>
+      <div class="stack-count">2个残响</div>
+      <div class="stack-desc">三路同时攻击<br>覆盖正面+侧翼</div>
+    </div>
+    <div class="stack-card stack-3">
+      <div class="stack-time">6-9s</div>
+      <div class="stack-count">3个残响</div>
+      <div class="stack-desc">三角阵围殴<br>屏幕开始震</div>
+    </div>
+    <div class="stack-card stack-4">
+      <div class="stack-time">9s+</div>
+      <div class="stack-count">4个残响</div>
+      <div class="stack-desc">满编小队<br>一人成军</div>
+    </div>
+  </div>
+
+  <div style="background: rgba(255, 107, 157, 0.1); border: 1px solid var(--impossible); border-radius: 12px; padding: 1.2rem 1.5rem; margin-top: 1rem;">
+    <strong style="color: var(--impossible);">献祭技 · 引爆：</strong>
+    <span style="color: var(--text-dim); font-size: 0.9rem;">随时按 Shift 牺牲所有残响，每个分身爆炸造成范围伤害。4个残响同时引爆 = 屏幕清空。留还是炸？——每场战斗的核心抉择。</span>
+  </div>
+</section>
+
+<!-- ==================== 爽点时刻 ==================== -->
+<section class="section">
+  <div class="section-label">FUN MOMENTS</div>
+  <h2 class="section-title">那些让你笑出声的瞬间</h2>
+
+  <div class="moment-list">
+    <div class="moment-item">
+      <div class="moment-scene">走廊遭遇战</div>
+      <div class="moment-action">冲刺穿过敌群杀死一个。3秒后残响再次冲刺——<strong>撞飞追上来的第二个敌人</strong>。你甚至没看到它，但它死了。</div>
+    </div>
+    <div class="moment-item">
+      <div class="moment-scene">Boss战</div>
+      <div class="moment-action">故意站着不动3秒。然后开始攻击。4个残响同时开始攻击——<strong>5个人围殴Boss</strong>。这不是召唤术，这是你自己。</div>
+    </div>
+    <div class="moment-item">
+      <div class="moment-scene">陷阱房间</div>
+      <div class="moment-action">走过尖刺陷阱。残响也走过陷阱，但分身的死亡<strong>触发爆炸清场</strong>。你用3秒前的自己当炸弹。</div>
+    </div>
+    <div class="moment-item">
+      <div class="moment-scene">狭路相逢</div>
+      <div class="moment-action">向左闪避。残响3秒后也向左闪避，恰好<strong>挡住敌人的冲锋路线</strong>。人墙挡刀，临场机智。</div>
+    </div>
+    <div class="moment-item">
+      <div class="moment-scene">影魔Boss · Phase 3</div>
+      <div class="moment-action">影魔"优化"了你的操作——去掉你的失误，强化你的优势。<strong>你只能用"不像你"的操作来打乱它的预测。</strong>打败它意味着超越自己。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== AI 行为建模 ==================== -->
+<section class="section">
+  <div class="section-label">AI TECHNOLOGY</div>
+  <h2 class="section-title">玩家行为建模：你在打你自己</h2>
+
+  <div class="ai-flow">
+    <div class="ai-step">
+      <div class="ai-num">1</div>
+      <div class="ai-content">
+        <h4>战斗数据采集</h4>
+        <p>游戏持续记录：移动偏好（左/右、速度、闪避时机）、攻击习惯（连击长度、间隔、距离）、节奏特征（急躁/稳健/爆发/游走）、空间偏好（贴墙/中央/绕圈）</p>
+      </div>
+    </div>
+    <div class="ai-step">
+      <div class="ai-num">2</div>
+      <div class="ai-content">
+        <h4>LSTM 战斗指纹</h4>
+        <p>500帧动作序列 → Embedding → <code>LSTM(2层, hidden=128)</code> → 64维"战斗风格向量"</p>
+        <p style="margin-top:0.3rem; font-size: 0.85rem;">模型约200KB (ONNX)，每0.5秒推理一次，延迟≤2ms</p>
+      </div>
+    </div>
+    <div class="ai-step">
+      <div class="ai-num">3</div>
+      <div class="ai-content">
+        <h4>影魔Boss — 用你的招式打你</h4>
+        <p>如果你喜欢贴脸连砍 → 影魔贴脸连砍你。如果你习惯向右闪避 → 影魔预判右闪截击。如果你贪刀 → 影魔也贪刀，你们互相贪。</p>
+      </div>
+    </div>
+    <div class="ai-step">
+      <div class="ai-num">4</div>
+      <div class="ai-content">
+        <h4>梦境叙事（LLM辅助）</h4>
+        <p><code>Phi-3-mini</code> (4bit量化, ~2GB) 本地运行。NPC说碎片化梦境台词，关卡根据风格命名，死亡评语个性化："你死于第47次向右闪避——影魔记得"</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="background: rgba(107, 76, 230, 0.1); border-radius: 12px; padding: 1.5rem; margin-top: 1rem;">
+    <p style="color: var(--phantom); font-style: italic; text-align: center; font-size: 1rem;">
+      最终Boss不是什么魔王，而是"完美的你"——<br>一个学透了你所有习惯的AI分身。<strong style="color: var(--impossible);">打败它意味着超越自己。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ==================== 美学 ==================== -->
+<section class="section">
+  <div class="section-label">AESTHETICS</div>
+  <h2 class="section-title">梦境超现实主义</h2>
+
+  <div class="palette-grid">
+    <div class="palette-item">
+      <div class="palette-swatch" style="background: #0a0612; color: #6b4ce6;">VOID</div>
+      <div class="palette-info">
+        <div class="palette-name">虚空底色</div>
+        <div class="palette-hex">#0A0612</div>
+      </div>
+    </div>
+    <div class="palette-item">
+      <div class="palette-swatch" style="background: #1a0f2e; color: #b794f6;">DREAM</div>
+      <div class="palette-info">
+        <div class="palette-name">梦境深紫</div>
+        <div class="palette-hex">#1A0F2E</div>
+      </div>
+    </div>
+    <div class="palette-item">
+      <div class="palette-swatch" style="background: #6b4ce6; color: #fff;">ECHO</div>
+      <div class="palette-info">
+        <div class="palette-name">回声紫</div>
+        <div class="palette-hex">#6B4CE6</div>
+      </div>
+    </div>
+    <div class="palette-item">
+      <div class="palette-swatch" style="background: #b794f6; color: #1a0f2e;">PHANTOM</div>
+      <div class="palette-info">
+        <div class="palette-name">幻影紫</div>
+        <div class="palette-hex">#B794F6</div>
+      </div>
+    </div>
+    <div class="palette-item">
+      <div class="palette-swatch" style="background: #ff6b9d; color: #fff;">IMPOSSIBLE</div>
+      <div class="palette-info">
+        <div class="palette-name">不可能粉</div>
+        <div class="palette-hex">#FF6B9D</div>
+      </div>
+    </div>
+    <div class="palette-item">
+      <div class="palette-swatch" style="background: #ffd93d; color: #1a0f2e;">GOLD</div>
+      <div class="palette-info">
+        <div class="palette-name">碎梦金</div>
+        <div class="palette-hex">#FFD93D</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+    <div style="background: rgba(26,15,46,0.6); border-radius: 12px; padding: 1.2rem; border: 1px solid var(--border);">
+      <h4 style="color: var(--phantom); margin-bottom: 0.5rem; font-size: 0.95rem;">建筑 · 非欧几何</h4>
+      <p style="color: var(--text-dim); font-size: 0.85rem;">楼梯通向天花板，门打开是深渊，走廊无限延伸。埃舍尔 × Antichamber</p>
+    </div>
+    <div style="background: rgba(26,15,46,0.6); border-radius: 12px; padding: 1.2rem; border: 1px solid var(--border);">
+      <h4 style="color: var(--phantom); margin-bottom: 0.5rem; font-size: 0.95rem;">角色 · 实体度=生命值</h4>
+      <p style="color: var(--text-dim); font-size: 0.85rem;">满血时边缘锐利；受伤后半透明；濒死时只剩轮廓线。没有血条。</p>
+    </div>
+    <div style="background: rgba(26,15,46,0.6); border-radius: 12px; padding: 1.2rem; border: 1px solid var(--border);">
+      <h4 style="color: var(--phantom); margin-bottom: 0.5rem; font-size: 0.95rem;">环境 · 呼吸感</h4>
+      <p style="color: var(--text-dim); font-size: 0.85rem;">墙壁缓慢起伏，地面有涟漪，天空倒映在脚下。场景活着。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== Boss 三阶段 ==================== -->
+<section class="section">
+  <div class="section-label">BOSS DESIGN</div>
+  <h2 class="section-title">影魔：三阶段的自我超越</h2>
+
+  <div class="boss-phases">
+    <div class="phase-card phase-1">
+      <div class="phase-tag">Phase 1 · 100%-70%</div>
+      <div class="phase-title">模仿</div>
+      <div class="phase-desc">影魔使用你的"移动偏好"和"攻击节奏"对抗你。它像一面镜子，映出你的习惯。</div>
+      <div class="phase-quote">"原来我闪避总是向右——它也知道了"</div>
+    </div>
+    <div class="phase-card phase-2">
+      <div class="phase-tag">Phase 2 · 70%-40%</div>
+      <div class="phase-title">复制</div>
+      <div class="phase-desc">影魔复制你最近30秒的完整操作序列，精确重演。你打出的连招，它原封不动还给你。</div>
+      <div class="phase-quote">"它刚才用的那套连招……是我10秒前用的"</div>
+    </div>
+    <div class="phase-card phase-3">
+      <div class="phase-tag">Phase 3 · 40%-0%</div>
+      <div class="phase-title">超越</div>
+      <div class="phase-desc">影魔"优化"你的操作——去掉失误，强化优势。这是"完美的你"。唯一胜法：用"不像你"的操作打乱预测。</div>
+      <div class="phase-quote">"要赢自己，就得变成另一个人"</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 积累层 ==================== -->
+<section class="section">
+  <div class="section-label">PROGRESSION</div>
+  <h2 class="section-title">双轨积累：单局Build × 跨局成长</h2>
+
+  <div class="progression-box">
+    <div class="prog-card run">
+      <h4>◆ 单局积累 · 残响Build</h4>
+      <ul class="prog-list">
+        <li>房间1-4：获得残响模组（火焰/冰冻/链电/巨型/影刃/共鸣）</li>
+        <li>房间5-9：残响强化（存续时间+1s / 死亡引爆 / 攻击回血）</li>
+        <li>房间10：残响质变（获得独立AI，智能辅助攻击）</li>
+        <li>6模组 × 3强化 × 1质变 = 每局Build不同</li>
+      </ul>
+    </div>
+    <div class="prog-card perm">
+      <h4>◆ 跨局积累 · 梦境碎片</h4>
+      <ul class="prog-list">
+        <li>初始模组选择（带入1个模组开局）</li>
+        <li>解锁残响变体（毒雾/磁暴/镜面——行为反转！）</li>
+        <li>解锁角色（重梦者/暴梦者/空梦者——极难模式）</li>
+        <li>3角色 × 9变体 × 12升级 = 50小时动机</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 前期对比 ==================== -->
+<section class="section">
+  <div class="section-label">COMPARISON</div>
+  <h2 class="section-title">与前期灵感对比</h2>
+
+  <div class="compare-container">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>001 回声绘卷</th>
+          <th>002 霓虹突触</th>
+          <th>003 一笔斩</th>
+          <th>004 千面盗贼</th>
+          <th>005 捏造师</th>
+          <th style="color:var(--gold);">006 残响</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>风格</td>
+          <td>水墨东方</td>
+          <td>赛博朋克</td>
+          <td>暗黑哥特</td>
+          <td>浮世绘</td>
+          <td>黏土动画</td>
+          <td class="highlight">超现实梦境</td>
+        </tr>
+        <tr>
+          <td>玩法</td>
+          <td>声音创作</td>
+          <td>Roguelike潜行</td>
+          <td>画线斩击</td>
+          <td>变身动作</td>
+          <td>物理变形</td>
+          <td class="highlight">时间回声动作</td>
+        </tr>
+        <tr>
+          <td>AI方向</td>
+          <td>音频生成</td>
+          <td>目标检测</td>
+          <td>笔迹分析</td>
+          <td>涂鸦识别</td>
+          <td>形状+语音</td>
+          <td class="highlight">行为建模</td>
+        </tr>
+        <tr>
+          <td>积累层</td>
+          <td>单局</td>
+          <td>单局</td>
+          <td>单局</td>
+          <td>单局</td>
+          <td>消耗型</td>
+          <td class="highlight">双轨积累</td>
+        </tr>
+        <tr>
+          <td>核心爽点</td>
+          <td>声画同步</td>
+          <td>环境变武器</td>
+          <td>一刀切裂</td>
+          <td>画面具变身</td>
+          <td>捏橡皮泥</td>
+          <td class="highlight">一人成军+打自己</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== Footer ==================== -->
+<div class="footer">
+  <div class="footer-title">残响 · REVERB</div>
+  <p>每日灵感 · 第006期 · 2026-07-12</p>
+  <p style="margin-top: 0.3rem; font-size: 0.8rem;">风格轮换：超现实主义/梦境 ｜ 玩法轮换：时间回声动作 ｜ AI轮换：玩家行为建模</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-dim);">"你的每个动作3秒后变成分身。活得越久身边的'你'越多。但Boss会学透你的习惯——你只能打败自己。"</p>
+</div>
+
+</body>
+</html>

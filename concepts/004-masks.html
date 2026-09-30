@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>千面盗贼 — 概念可视化</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a2e;
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    color: #e8e0d0;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  .title-block {
+    text-align: center;
+    margin-bottom: 50px;
+    padding: 30px;
+    background: linear-gradient(135deg, #0d1b2a, #1b2838);
+    border: 1px solid #c9a84c;
+    border-radius: 4px;
+  }
+  .title-jp {
+    font-size: 14px;
+    color: #c9a84c;
+    letter-spacing: 8px;
+    margin-bottom: 10px;
+    font-family: 'Georgia', serif;
+  }
+  .title-cn {
+    font-size: 42px;
+    font-weight: bold;
+    color: #f0e6d0;
+    letter-spacing: 6px;
+    text-shadow: 0 0 20px rgba(201,168,76,0.3);
+  }
+  .subtitle {
+    font-size: 16px;
+    color: #a09080;
+    margin-top: 12px;
+    line-height: 1.8;
+  }
+
+  /* Core Loop Section */
+  .section {
+    margin-bottom: 40px;
+    background: #121220;
+    border: 1px solid #2a2a40;
+    border-radius: 4px;
+    padding: 30px;
+  }
+  .section-title {
+    font-size: 20px;
+    color: #c9a84c;
+    margin-bottom: 25px;
+    padding-left: 12px;
+    border-left: 3px solid #c9a84c;
+  }
+
+  /* Loop Flow */
+  .loop-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .loop-step {
+    background: #1a1a30;
+    border: 2px solid #3a3a55;
+    border-radius: 50%;
+    width: 110px;
+    height: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .loop-step:hover {
+    border-color: #c9a84c;
+    box-shadow: 0 0 20px rgba(201,168,76,0.3);
+    transform: scale(1.05);
+  }
+  .loop-step .icon { font-size: 28px; margin-bottom: 6px; }
+  .loop-step .label { font-size: 13px; color: #d0c8b0; line-height: 1.3; }
+  .loop-arrow {
+    color: #c9a84c;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  /* Mask Table */
+  .mask-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+  .mask-card {
+    background: #1a1a30;
+    border: 1px solid #3a3a55;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .mask-card:hover {
+    border-color: #c9a84c;
+    background: #20203a;
+  }
+  .mask-card .mask-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+  .mask-card .mask-name {
+    font-size: 16px;
+    color: #c9a84c;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .mask-card .mask-skill {
+    font-size: 13px;
+    color: #a09080;
+  }
+  .mask-card .mask-type {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-top: 8px;
+  }
+  .type-attack { background: rgba(220,60,60,0.2); color: #e05050; border: 1px solid #c04040; }
+  .type-defense { background: rgba(60,120,220,0.2); color: #5090e0; border: 1px solid #4070c0; }
+  .type-mobility { background: rgba(60,200,120,0.2); color: #50d080; border: 1px solid #40b060; }
+
+  /* AI Pipeline */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pipe-box {
+    background: #1a1a30;
+    border: 1px solid #3a3a55;
+    padding: 14px 20px;
+    border-radius: 4px;
+    text-align: center;
+    min-width: 120px;
+  }
+  .pipe-box .pipe-title { font-size: 13px; color: #c9a84c; margin-bottom: 4px; }
+  .pipe-box .pipe-desc { font-size: 11px; color: #807060; }
+  .pipe-arrow {
+    color: #c9a84c;
+    font-size: 20px;
+    padding: 0 8px;
+  }
+
+  /* Fun Points */
+  .fun-list {
+    list-style: none;
+  }
+  .fun-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border-bottom: 1px solid #2a2a40;
+    transition: background 0.2s;
+  }
+  .fun-item:hover { background: #1a1a35; }
+  .fun-item:last-child { border-bottom: none; }
+  .fun-num {
+    background: #c9a84c;
+    color: #1a1a2e;
+    font-weight: bold;
+    font-size: 14px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .fun-content { flex: 1; }
+  .fun-title { font-size: 15px; color: #e8e0d0; font-weight: bold; margin-bottom: 4px; }
+  .fun-desc { font-size: 13px; color: #908070; line-height: 1.5; }
+  .fun-quote { font-size: 13px; color: #c9a84c; font-style: italic; margin-top: 4px; }
+
+  /* Visual Style Preview */
+  .style-preview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .style-box {
+    background: #1a1a30;
+    border: 1px solid #3a3a55;
+    border-radius: 4px;
+    padding: 20px;
+  }
+  .style-box h4 {
+    color: #c9a84c;
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+  .style-box ul {
+    list-style: none;
+  }
+  .style-box li {
+    font-size: 13px;
+    color: #a09080;
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+  .style-box li::before {
+    content: "◆";
+    color: #c9a84c;
+    position: absolute;
+    left: 0;
+    font-size: 10px;
+    top: 6px;
+  }
+
+  /* Color Palette */
+  .palette {
+    display: flex;
+    gap: 0;
+    height: 60px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 15px;
+  }
+  .color-swatch {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.8);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #605040;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .footer strong { color: #c9a84c; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Title -->
+  <div class="title-block">
+    <div class="title-jp">THOUSAND MASKS</div>
+    <div class="title-cn">千面盗贼</div>
+    <div class="subtitle">
+      画一笔面具，你就变成那个怪物——画条龙能喷火，画只蝙蝠能飞<br>
+      战斗中边画边变，手速即战力
+    </div>
+  </div>
+
+  <!-- Core Loop -->
+  <div class="section">
+    <div class="section-title">核心循环</div>
+    <div class="loop-container">
+      <div class="loop-step">
+        <div class="icon">👹</div>
+        <div class="label">敌人出现<br>暴露弱点</div>
+      </div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-step">
+        <div class="icon">🖌️</div>
+        <div class="label">快速画<br>对应面具</div>
+      </div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-step">
+        <div class="icon">🎨</div>
+        <div class="label">水墨炸开<br>变身完成</div>
+      </div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-step">
+        <div class="icon">⚔️</div>
+        <div class="label">克制攻击<br>击杀敌人</div>
+      </div>
+      <div class="loop-arrow">↻</div>
+      <div class="loop-step">
+        <div class="icon">😱</div>
+        <div class="label">下一个<br>来了！</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Pipeline -->
+  <div class="section">
+    <div class="section-title">AI 识别管线（玩家无感知，20ms内完成）</div>
+    <div class="pipeline">
+      <div class="pipe-box">
+        <div class="pipe-title">🖱️ 鼠标笔画</div>
+        <div class="pipe-desc">实时轨迹捕获</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-box">
+        <div class="pipe-title">📸 64×64截图</div>
+        <div class="pipe-desc">灰度化预处理</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-box">
+        <div class="pipe-title">🧠 MobileNetV3</div>
+        <div class="pipe-desc">ONNX本地推理</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-box">
+        <div class="pipe-title">🏷️ Top-3类别</div>
+        <div class="pipe-desc">+ 置信度分数</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-box">
+        <div class="pipe-title">🎭 变身映射</div>
+        <div class="pipe-desc">置信度=强度</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mask Table -->
+  <div class="section">
+    <div class="section-title">面具变身表（MVP三种 + 扩展）</div>
+    <div class="mask-grid">
+      <div class="mask-card">
+        <div class="mask-icon">🐉</div>
+        <div class="mask-name">龙</div>
+        <div class="mask-skill">火焰吐息</div>
+        <div class="mask-type type-attack">攻击型</div>
+      </div>
+      <div class="mask-card">
+        <div class="mask-icon">🐟</div>
+        <div class="mask-name">鱼</div>
+        <div class="mask-skill">水幕护盾</div>
+        <div class="mask-type type-defense">防御型</div>
+      </div>
+      <div class="mask-card">
+        <div class="mask-icon">🐦</div>
+        <div class="mask-name">鸟</div>
+        <div class="mask-skill">滑翔闪避</div>
+        <div class="mask-type type-mobility">机动型</div>
+      </div>
+      <div class="mask-card">
+        <div class="mask-icon">🦊</div>
+        <div class="mask-name">狐</div>
+        <div class="mask-skill">高速突进</div>
+        <div class="mask-type type-attack">攻击型</div>
+      </div>
+      <div class="mask-card">
+        <div class="mask-icon">🐢</div>
+        <div class="mask-name">龟</div>
+        <div class="mask-skill">铁壁防御</div>
+        <div class="mask-type type-defense">防御型</div>
+      </div>
+      <div class="mask-card">
+        <div class="mask-icon">👻</div>
+        <div class="mask-name">鬼</div>
+        <div class="mask-skill">穿墙隐身</div>
+        <div class="mask-type type-mobility">机动型</div>
+      </div>
+      <div class="mask-card">
+        <div class="mask-icon">🐍</div>
+        <div class="mask-name">蛇</div>
+        <div class="mask-skill">毒液喷射</div>
+        <div class="mask-type type-attack">攻击型</div>
+      </div>
+      <div class="mask-card">
+        <div class="mask-icon">🕷️</div>
+        <div class="mask-name">蜘蛛</div>
+        <div class="mask-skill">蛛网困敌</div>
+        <div class="mask-type type-defense">控制型</div>
+      </div>
+    </div>
+    <div style="text-align:center; color:#605040; font-size:12px; margin-top:16px;">
+      …共 20+ 类别，基于 Google QuickDraw 数据集训练
+    </div>
+  </div>
+
+  <!-- Fun Points -->
+  <div class="section">
+    <div class="section-title">六个爽点瞬间</div>
+    <ul class="fun-list">
+      <li class="fun-item">
+        <div class="fun-num">1</div>
+        <div class="fun-content">
+          <div class="fun-title">3秒龙</div>
+          <div class="fun-desc">战斗中3秒画完一条龙，变身瞬间吐出火焰扫清杂兵</div>
+          <div class="fun-quote">"我居然在战斗中画了条龙！"</div>
+        </div>
+      </li>
+      <li class="fun-item">
+        <div class="fun-num">2</div>
+        <div class="fun-content">
+          <div class="fun-title">画歪翻盘</div>
+          <div class="fun-desc">画的龙被识别成蛇，蛇的毒液反而克制当前冰系Boss</div>
+          <div class="fun-quote">"歪打正着比正经打还爽"</div>
+        </div>
+      </li>
+      <li class="fun-item">
+        <div class="fun-num">3</div>
+        <div class="fun-content">
+          <div class="fun-title">三连变身</div>
+          <div class="fun-desc">不抬笔连续画三个不同面具，三段变身带无敌帧，形成连招</div>
+          <div class="fun-quote">"我是变身机器"</div>
+        </div>
+      </li>
+      <li class="fun-item">
+        <div class="fun-num">4</div>
+        <div class="fun-content">
+          <div class="fun-title">完美临摹</div>
+          <div class="fun-desc">画的置信度>0.95，触发"完整体"特效，金光爆发，属性翻倍</div>
+          <div class="fun-quote">"这一笔值了"</div>
+        </div>
+      </li>
+      <li class="fun-item">
+        <div class="fun-num">5</div>
+        <div class="fun-content">
+          <div class="fun-title">以画破阵</div>
+          <div class="fun-desc">Boss释放弹幕，画一面盾→变成铁壁挡住，反弹弹幕</div>
+          <div class="fun-quote">"画盾挡弹幕太帅了"</div>
+        </div>
+      </li>
+      <li class="fun-item">
+        <div class="fun-num">6</div>
+        <div class="fun-content">
+          <div class="fun-title">墨色处决</div>
+          <div class="fun-desc">击杀敌人时泼一滩墨汁遮屏，墨汁散开露出战利品，开盲盒快感</div>
+          <div class="fun-quote">"每次击杀都是惊喜"</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Visual Style -->
+  <div class="section">
+    <div class="section-title">美学方向：浮世绘 × 动作水墨</div>
+    <div class="style-preview">
+      <div class="style-box">
+        <h4>视觉元素</h4>
+        <ul>
+          <li>葛饰北斋式墨色层次</li>
+          <li>木版画纹理底色</li>
+          <li>毛笔笔触描边</li>
+          <li>变身=墨汁泼溅特效</li>
+          <li>鸟山石燕妖怪图谱风格敌人</li>
+          <li>卷轴展开式UI</li>
+        </ul>
+      </div>
+      <div class="style-box">
+        <h4>色彩体系</h4>
+        <ul>
+          <li>靛蓝底色 — 江户夜色</li>
+          <li>朱砂红 — 强调与危险</li>
+          <li>金箔色 — 完全体特效</li>
+          <li>墨黑 — 线条与剪影</li>
+          <li>宣纸白 — 留白与呼吸</li>
+        </ul>
+        <div class="palette">
+          <div class="color-swatch" style="background:#1a2744;">靛蓝</div>
+          <div class="color-swatch" style="background:#c0392b;">朱砂</div>
+          <div class="color-swatch" style="background:#c9a84c;">金箔</div>
+          <div class="color-swatch" style="background:#1a1a1a;">墨黑</div>
+          <div class="color-swatch" style="background:#f5f0e0;color:#333;">宣纸</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <strong>每日游戏制作灵感 · 第004期</strong><br>
+    2026年7月10日 · 风格：浮世绘/和风 · 玩法：动作变身 · AI：涂鸦识别CNN<br>
+    设计哲学：AI是让"画一笔变一个怪"成立的基础设施，不是展品
+  </div>
+
+</div>
+</body>
+</html>

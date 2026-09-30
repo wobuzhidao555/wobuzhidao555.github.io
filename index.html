@@ -471,6 +471,82 @@
   }
   body.locked{overflow:hidden;}
 
+  /* ---------- 每日灵感 ---------- */
+  .stats{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    margin-bottom:66px;
+  }
+  .stat{padding:28px 22px;border-right:1px solid var(--line);}
+  .stat:last-child{border-right:none;}
+  .stat:first-child{padding-left:0;}
+  .stat b{
+    font-family:var(--latin);font-weight:600;
+    font-size:clamp(30px,4.4vw,44px);line-height:1;
+    display:inline-block;color:var(--ink);
+    font-variant-numeric:tabular-nums;
+  }
+  .stat i{font-family:var(--serif);font-style:normal;font-size:14px;color:var(--ink-soft);margin-left:5px;}
+  .stat em{display:block;font-style:normal;font-size:11.5px;letter-spacing:.14em;color:var(--muted);margin-top:12px;}
+
+  .idea-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .idea{
+    display:block;width:100%;text-align:left;margin:0;
+    background:var(--paper-raise);
+    border:1px solid var(--line);
+    padding:28px 24px 26px;
+    font-family:inherit;font-size:inherit;color:inherit;
+    position:relative;overflow:hidden;
+    cursor:default;
+    transition:transform .5s cubic-bezier(.22,.61,.36,1),border-color .4s ease,box-shadow .5s ease;
+  }
+  button.idea{cursor:pointer;-webkit-appearance:none;appearance:none;}
+  .idea::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--c);transform:scaleY(0);transform-origin:top;
+    transition:transform .5s cubic-bezier(.22,.61,.36,1);
+  }
+  .idea:hover,.idea:focus-visible{
+    transform:translateY(-4px);
+    border-color:var(--c);
+    box-shadow:0 20px 44px -30px rgba(20,20,20,.5);
+    outline:none;
+  }
+  .idea:hover::before,.idea:focus-visible::before{transform:scaleY(1);}
+  .idea-no{
+    display:block;font-family:var(--latin);font-size:12px;font-weight:600;
+    letter-spacing:.22em;color:var(--c);margin-bottom:16px;
+  }
+  .idea h3{
+    font-family:var(--serif);font-weight:600;font-size:19px;
+    letter-spacing:.02em;line-height:1.4;
+  }
+  .idea-en{
+    display:block;font-family:var(--latin);font-size:10.5px;
+    letter-spacing:.24em;text-transform:uppercase;
+    color:var(--muted);margin:5px 0 15px;
+  }
+  .idea-story{font-size:13.5px;line-height:1.95;color:var(--ink-soft);font-weight:300;}
+  .idea-tag{
+    display:inline-block;margin-top:18px;
+    font-size:10.5px;letter-spacing:.1em;color:var(--muted);
+    border:1px solid var(--line);padding:4px 10px;
+  }
+  .idea-open{
+    display:flex;align-items:center;gap:7px;margin-top:16px;
+    font-size:11.5px;letter-spacing:.14em;color:var(--c);
+    opacity:.5;transition:opacity .4s ease,gap .4s ease;
+  }
+  .idea:hover .idea-open,.idea:focus-visible .idea-open{opacity:1;gap:11px;}
+  .idea-open svg{width:13px;height:13px;flex:none;}
+
+  .ideas-outro{
+    margin-top:56px;padding-top:30px;border-top:1px solid var(--line);
+    font-family:var(--serif);font-size:17px;line-height:2;color:var(--ink);
+    max-width:680px;
+  }
+
   /* ---------- 轨迹 ---------- */
   .timeline{position:relative;padding-left:0;}
   .tl-item{
@@ -546,6 +622,12 @@
     .project.flip .p-figure{order:3;}
     .block{padding:88px 0;}
     .tl-item{grid-template-columns:1fr;gap:10px;padding:26px 0;}
+    .idea-grid{grid-template-columns:repeat(2,1fr);}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .stat{padding:24px 18px 24px 0;border-bottom:1px solid var(--line);}
+    .stat:nth-child(even){border-right:none;padding-left:18px;}
+    .stat:nth-child(3),.stat:nth-child(4){border-bottom:none;}
+    .group-head.second{margin-top:84px;}
   }
   @media (max-width:680px){
     .wrap{padding:0 22px;}
@@ -555,6 +637,9 @@
     nav a{font-size:11.5px;letter-spacing:.1em;}
     .hero{padding:110px 0 70px;}
     .cards{grid-template-columns:1fr;}
+    .idea-grid{grid-template-columns:1fr;}
+    .stat{padding:22px 14px 22px 0;}
+    .stat:nth-child(even){padding-left:14px;}
     .card{padding:34px 26px 36px;}
     .slogan{padding-left:18px;margin-bottom:44px;}
     .p-figure{padding:10px;}
@@ -565,7 +650,8 @@
     footer{padding:90px 0 44px;}
   }
   @media (max-width:480px){
-    nav ul{gap:14px;}
+    nav ul{gap:12px;}
+    nav a{font-size:11px;letter-spacing:.06em;}
     .brand{font-size:15px;}
     .roles{gap:0 10px;}
     .roles span+span::before{margin-right:10px;}
@@ -591,6 +677,7 @@
         <li><a href="#about">关于</a></li>
         <li><a href="#exploring">探索</a></li>
         <li><a href="#work">作品</a></li>
+        <li><a href="#ideas">灵感</a></li>
         <li><a href="#journey">轨迹</a></li>
       </ul>
     </nav>
@@ -624,12 +711,13 @@
 
     <div class="about-grid">
       <div class="prose reveal">
-        <p>我是朱政翰，数字媒体技术专业大二学生。选这个专业的原因挺简单——它同时逼我写代码和看画面，正好是我两个都想要的东西。</p>
-        <p>到现在我一直在试：学过 3D 建模，刷过算法，跟着国赛集训啃过数学建模，也拍过照、剪过片。有不少事做到一半就放下了，但每一样都留下了一点东西。</p>
-        <p>真正让我停不下来的，是 <em>Vibe Coding</em>。当 AI 把"我暂时写不出来的那部分"补上之后，脑子里那些平时一闪而过的念头，第一次有了变成真东西的可能——而且第二天就能发给朋友看。</p>
-        <p>所以我的方法很不讲究：想到就做，做出来算数。</p>
+        <p>我是朱政翰，数字媒体技术专业大二。当初选这个专业我没想太多，只知道它同时逼我写代码和看画面——后来才慢慢明白，这两件事恰好是我最舍不得放下的两件。</p>
+        <p>在那之前我一直在"试"。拍过一阵子照片，学过 3D 建模，跟着国赛集训啃数学建模，剪过片，也写过几行自己第二天就看不懂的算法。大部分事都做到一半就放下了——不是不认真，是每一样都刚好够我明白"这件事大概是怎么回事"，然后就忍不住想去试下一件。</p>
+        <p>我一度觉得这是缺点。直到我开始用 AI 写东西。</p>
+        <p>那些半途而废的东西其实没有消失，它们成了我脑子里的素材库：学过建模，所以知道一个东西该有多少面；剪过片，所以知道节奏该在哪一秒变；推过公式，所以知道什么叫做"这个结论我真敢下"。真正让我停不下来的，是 <em>Vibe Coding</em>——当 AI 把我暂时写不出来的那部分补上之后，那些一闪而过的念头第一次有了变成真东西的可能，而且第二天就能发给别人打开。</p>
+        <p>所以我做了一件很小的事：从今年 7 月开始，每天写一个游戏概念。不是为了做出来，是为了逼自己把"想过"变成"想完"。写了 15 天，然后停下来，挑了其中两个真的做出来。</p>
 
-        <div class="closing">我没什么宏大规划，只是不太想让想法烂在脑子里。</div>
+        <div class="closing">我没什么宏大规划。我只是发现，想法放在脑子里不会自己长大。</div>
       </div>
 
       <aside class="now reveal">
@@ -682,7 +770,7 @@
   <div class="wrap">
     <div class="label reveal"><span class="en">Selected Work</span><span class="rule"></span><span class="idx">03</span></div>
     <h2 class="reveal">我正在做的东西</h2>
-    <p class="work-intro reveal">到目前为止我真正做出来的东西分两类：一类是<strong>游戏原型</strong>，来自一个叫「每日灵感」的自我训练——连续 15 天，每天交出一个完整的游戏概念（世界观、核心动作、AI 方案全部写完），其中两个我没忍住，做成了<strong>真能打开玩的东西</strong>；另一类是 <strong>3D</strong>，在 Blender 里从基础几何体开始搭场景，一路做到动画。</p>
+    <p class="work-intro reveal">到目前为止我真正做出来的东西分两类：一类是<strong>游戏原型</strong>——从「每日灵感」那 15 个概念里挑了两个，做成了真能打开玩的东西；另一类是 <strong>3D</strong>，在 Blender 里从基础几何体开始搭场景，一路做到动画。</p>
 
     <div class="group-head reveal"><span class="en">Game Prototypes</span><span class="rule"></span></div>
 
@@ -821,16 +909,173 @@
   </div>
 </section>
 
+<!-- ============ 每日灵感 ============ -->
+<section class="block" id="ideas">
+  <div class="wrap">
+    <div class="label reveal"><span class="en">Daily Spark</span><span class="rule"></span><span class="idx">04</span></div>
+    <h2 class="reveal">15 天，15 个世界</h2>
+    <p class="lede reveal">2026 年 7 月，我给自己定了一条规矩：每天交出一个完整的游戏概念——一句话概念、核心动作、AI 方案、世界观，全部写完才算数。不是为了做出来，是为了逼自己把"想过"变成"想完"。下面是那 15 天留下的东西。</p>
+
+    <div class="stats reveal">
+      <div class="stat"><b data-count="15">15</b><i>天</i><em>一天没断</em></div>
+      <div class="stat"><b data-count="15">15</b><i>个</i><em>完整概念</em></div>
+      <div class="stat"><b data-count="10">10</b><i>个</i><em>做成了可看的页面</em></div>
+      <div class="stat"><b data-count="15">15</b><i>种</i><em>互不重复的视觉风格</em></div>
+    </div>
+
+    <div class="idea-grid reveal">
+      <article class="idea" style="--c:#4A7C8C">
+        <span class="idea-no">001</span>
+        <h3>回声绘卷</h3>
+        <span class="idea-en">Echo Canvas</span>
+        <p class="idea-story">一个以"回声"为能量的世界里，声音被什么东西吞掉了：大地沉默、河流凝固、生灵石化。你是唯一还留着耳朵的人，只能用声音作画、用笔触作曲。</p>
+        <span class="idea-tag">声音生成 · 双重创作</span>
+      </article>
+
+      <article class="idea" style="--c:#E0447A">
+        <span class="idea-no">002</span>
+        <h3>霓虹突触</h3>
+        <span class="idea-en">Neon Synapse</span>
+        <p class="idea-story">2087 年的新东京，现实和数字的边界已经糊掉了。你桌上那盏台灯会变成一束激光，咖啡杯变成冷却装置——摄像头把你的房间直接读成一座赛博迷宫。</p>
+        <span class="idea-tag">计算机视觉 · 环境解构</span>
+      </article>
+
+      <article class="idea" style="--c:#2E2E38">
+        <span class="idea-no">003</span>
+        <h3>一笔斩</h3>
+        <span class="idea-en">One Stroke</span>
+        <p class="idea-story">没有连招表，没有技能栏，没有 CD。你只有一笔——鼠标划多快，刀光就有多狠；划得够准，伤害就够暴；划成一个圈，那叫清场。</p>
+        <span class="idea-tag">轨迹判定 · 极简操作</span>
+      </article>
+
+      <button class="idea" type="button" data-game="concepts/004-masks.html" data-name="千面盗贼 Thousand Masks" data-kind="概念可视化" style="--c:#C0562F">
+        <span class="idea-no">004</span>
+        <h3>千面盗贼</h3>
+        <span class="idea-en">Thousand Masks</span>
+        <p class="idea-story">画一笔面具，你就变成那个东西——画条龙能喷火，画只蝙蝠能飞，画个鬼能穿墙。战斗中边画边变，手速就是战斗力。</p>
+        <span class="idea-tag">LLM 能力合成 · 画皮变身</span>
+        <span class="idea-open">查看概念 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+
+      <button class="idea" type="button" data-game="concepts/005-claymancer.html" data-name="捏造师 Claymancer" data-kind="概念可视化" style="--c:#C98A3C">
+        <span class="idea-no">005</span>
+        <h3>捏造师</h3>
+        <span class="idea-en">Claymancer</span>
+        <p class="idea-story">定格动画的黏土世界里，按住任何东西拖拽就能捏变形。把敌人的脑袋扯下来搓成球，再一脚踢进下一波小怪堆里——形状即功能。</p>
+        <span class="idea-tag">黏土物理 · 形状即功能</span>
+        <span class="idea-open">查看概念 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+
+      <button class="idea" type="button" data-game="concepts/006-reverb.html" data-name="残响 Reverb" data-kind="概念可视化" style="--c:#6B5CA5">
+        <span class="idea-no">006</span>
+        <h3>残响</h3>
+        <span class="idea-en">Reverb</span>
+        <p class="idea-story">你做的每一个动作，都会在 3 秒后化成分身重演一遍。所以你既是猎人，也是自己的援军——最后还得打败你自己。</p>
+        <span class="idea-tag">玩家行为建模 · 时间回声</span>
+        <span class="idea-open">查看概念 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+
+      <button class="idea" type="button" data-game="concepts/007-devour.html" data-name="噬 Devour" data-kind="概念可视化" style="--c:#4FA05A">
+        <span class="idea-no">007</span>
+        <h3>噬</h3>
+        <span class="idea-en">Devour</span>
+        <p class="idea-story">你是一个像素黑洞。吃掉敌人不难，难的是——你必须用一句话给吞来的能力命名，AI 才会把它变成你真能用的技能。命名即创造。</p>
+        <span class="idea-tag">LLM 意图解析 · 吞噬进化</span>
+        <span class="idea-open">查看概念 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+
+      <button class="idea" type="button" data-game="games/gearball.html" data-name="齿轮弹珠 GEARBALL" data-kind="可玩原型" style="--c:#B8860B">
+        <span class="idea-no">008</span>
+        <h3>齿轮弹珠</h3>
+        <span class="idea-en">Gearball</span>
+        <p class="idea-story">你是一颗蒸汽弹珠。发射之后用鼠标实时画挡板改写弹道，一弹穿走廊、五杀清场。百年弹珠台被翻了个面——你不在台子外面按拨片，你就是那颗球。</p>
+        <span class="idea-tag">蒸汽朋克 · 已做成可玩原型</span>
+        <span class="idea-open">点开就玩 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+
+      <button class="idea" type="button" data-game="games/defrag.html" data-name="碎片整理 DEFRAG" data-kind="可玩原型" style="--c:#00C9B1">
+        <span class="idea-no">009</span>
+        <h3>碎片整理</h3>
+        <span class="idea-en">Defrag</span>
+        <p class="idea-story">你在拖鼠标框选文件——但框住的是一只只 Glitch 怪物，松手就是「删除」。这台电脑属于一个已经长大的孩子，他很久没打开过它了。</p>
+        <span class="idea-tag">故障艺术 · 已做成可玩原型</span>
+        <span class="idea-open">点开就玩 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+
+      <button class="idea" type="button" data-game="concepts/010-kiai.html" data-name="断喝 KIAI" data-kind="概念可视化" style="--c:#8C2F39">
+        <span class="idea-no">010</span>
+        <h3>断喝</h3>
+        <span class="idea-en">Kiai</span>
+        <p class="idea-story">你对着屏幕吼一声"哈！"——面前的铁甲武士应声裂甲，护甲碎片溅了满地。你的嗓音就是剑气，气合即杀招。喊得越真，劈得越狠。</p>
+        <span class="idea-tag">语音情感识别 · 声控格斗</span>
+        <span class="idea-open">查看概念 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+
+      <button class="idea" type="button" data-game="concepts/011-glasscodex.html" data-name="琉璃鉴 Glass Codex" data-kind="概念可视化" style="--c:#3E6FB0">
+        <span class="idea-no">011</span>
+        <h3>琉璃鉴</h3>
+        <span class="idea-en">Glass Codex</span>
+        <p class="idea-story">举起手机对着桌上的蜡烛拍一张，AI 读出"火焰·温暖·燃烧"，一道金光从镜头射出，屏幕裂成彩绘玻璃。你炼出的这枚碎片，够点燃大教堂里第一扇熄灭的窗。</p>
+        <span class="idea-tag">视觉语言模型 · 拍照炼物</span>
+        <span class="idea-open">查看概念 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+
+      <button class="idea" type="button" data-game="concepts/012-shadowweave.html" data-name="影绘 Shadow Weave" data-kind="概念可视化" style="--c:#C8791A">
+        <span class="idea-no">012</span>
+        <h3>影绘</h3>
+        <span class="idea-en">Shadow Weave</span>
+        <p class="idea-story">你张开双臂，屏幕上的影子应声化作一只鹤，振翅飞越纸崖深谷；你蹲下，它落地变成一头兽。你的身体就是皮影戏大师的双手，你的影子是活的。</p>
+        <span class="idea-tag">姿态估计 · 影武探索</span>
+        <span class="idea-open">查看概念 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+
+      <button class="idea" type="button" data-game="concepts/013-wordferry.html" data-name="言渡 Word Ferry" data-kind="概念可视化" style="--c:#5C6B7A">
+        <span class="idea-no">013</span>
+        <h3>言渡</h3>
+        <span class="idea-en">Word Ferry</span>
+        <p class="idea-story">忘川上最后一位渡灵人。亡魂坐上你的船时，已经忘了自己是谁。你必须开口说话——这条河上，你的声音是唯一的桨，你的话语是唯一的灯。</p>
+        <span class="idea-tag">语音语义与情感 · 叙事驱动</span>
+        <span class="idea-open">查看概念 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+
+      <article class="idea" style="--c:#7A9BB5">
+        <span class="idea-no">014</span>
+        <h3>蜃楼</h3>
+        <span class="idea-en">Mirage</span>
+        <p class="idea-story">一座只在蜃气里浮现的城，只存在七天，住着二十四个各有记忆、欲望和秘密的 AI 居民。你对面包师说一句"昨晚码头有船来了"——黄昏前它传到治安官耳中，深夜就出了一桩命案。而最后你会发现，这二十四个人全都是你自己。</p>
+        <span class="idea-tag">多智能体社会模拟</span>
+      </article>
+
+      <article class="idea" style="--c:#9A6B2F">
+        <span class="idea-no">015</span>
+        <h3>万象</h3>
+        <span class="idea-en">Myriad</span>
+        <p class="idea-story">你站在一片正被虚白吞噬的画布中央，手里有一支笔——画的不是画，是存在本身。草草勾一个轮廓，写下"结晶蛇龙，吐息寒霜"，三秒后它真的站在你面前。</p>
+        <span class="idea-tag">实时扩散模型 · 即兴造物</span>
+      </article>
+    </div>
+
+    <p class="ideas-outro reveal">这条规矩我坚持到了第 15 天。第 16 天没写——不是因为懒，是因为我想停下来，先把其中几个真的做出来。</p>
+  </div>
+</section>
+
 <!-- ============ 轨迹 ============ -->
 <section class="block" id="journey">
   <div class="wrap">
-    <div class="label reveal"><span class="en">My Journey</span><span class="rule"></span><span class="idx">04</span></div>
+    <div class="label reveal"><span class="en">My Journey</span><span class="rule"></span><span class="idx">05</span></div>
     <h2 class="reveal">我的探索轨迹</h2>
     <p class="lede reveal">从写代码到看画面，路线还在往外延伸。</p>
 
     <div class="timeline reveal">
       <div class="tl-item">
-        <div class="tl-when">起点</div>
+        <div class="tl-when">更早</div>
+        <div class="tl-what">
+          <h3>先试了很多别的事</h3>
+          <p>拍照、剪片、摸相机和剪辑软件。当时以为这些是绕路，后来才明白——这是我看东西的那双眼睛长出来的过程。</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">入学</div>
         <div class="tl-what">
           <h3>进入大学 · 数字媒体技术</h3>
           <p>第一次同时面对代码和画面这两件事，也第一次意识到自己两个都放不下。</p>
@@ -840,28 +1085,28 @@
         <div class="tl-when">2026 春</div>
         <div class="tl-what">
           <h3>开始学 3D 建模</h3>
-          <p>从基础几何体开始搭：第一座低多边形小岛，灯塔、房子、栈桥，还有一条会随浪起伏的船。</p>
+          <p>从立方体和圆柱体开始，一个一个地搭：灯塔、房子、栈桥，还有一条会随浪起伏的船。第一次觉得，"立体的"这个词是有分量的。</p>
         </div>
       </div>
       <div class="tl-item">
         <div class="tl-when">2026</div>
         <div class="tl-what">
           <h3>接触算法与数学建模</h3>
-          <p>跟着国赛集训啃模型，学会了用公式把一堆乱数据说清楚。</p>
+          <p>跟着国赛集训啃模型。第一次知道，一堆乱七八糟的数据是可以用公式说清楚的——那种"把混沌按下去"的感觉，和搭模型完全不同。</p>
         </div>
       </div>
       <div class="tl-item">
         <div class="tl-when">2026 夏</div>
         <div class="tl-what">
           <h3>用 Vibe Coding 做出第一个作品</h3>
-          <p>想法第一次真的能被别人打开、能被别人用上——这个感受很难忘记。</p>
+          <p>想法第一次真的能被别人打开、能被别人用上。这个感受很难忘记，也很难戒掉。</p>
         </div>
       </div>
       <div class="tl-item">
         <div class="tl-when">2026.07</div>
         <div class="tl-what">
-          <h3>「每日灵感」：15 天，15 个游戏概念</h3>
-          <p>每天逼自己交一个完整的想法，从声音、皮影、武侠一路写到浮世绘和扩散模型。</p>
+          <h3>「每日灵感」：15 天，15 个世界</h3>
+          <p>每天逼自己交一个完整的想法，从声音、皮影、武侠一路写到浮世绘和扩散模型。写到第十几天才发现，脑子里原来装着这么多东西——只是以前没让它们出来过。</p>
         </div>
       </div>
       <div class="tl-item now-item">
@@ -954,7 +1199,7 @@ document.documentElement.classList.add('js');
   var links = document.querySelectorAll('nav a[href^="#"]');
   var map = {};
   links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
-  var secs = ['about','exploring','work','journey']
+  var secs = ['about','exploring','work','ideas','journey']
     .map(function(id){ return document.getElementById(id); })
     .filter(Boolean);
   if(!secs.length || !('IntersectionObserver' in window)) return;
@@ -980,9 +1225,9 @@ document.documentElement.classList.add('js');
   if(!player || !frame) return;
   var lastFocus = null;
 
-  function openGame(src, name){
+  function openGame(src, name, kind){
     lastFocus = document.activeElement;
-    nameEl.innerHTML = name + '<em>可玩原型</em>';
+    nameEl.innerHTML = name + '<em>' + (kind || '可玩原型') + '</em>';
     openEl.href = src;
     frame.src = src;
     player.hidden = false;
@@ -1005,7 +1250,11 @@ document.documentElement.classList.add('js');
   document.querySelectorAll('[data-game]').forEach(function(el){
     el.addEventListener('click', function(e){
       e.preventDefault();
-      openGame(el.getAttribute('data-game'), el.getAttribute('data-name') || '试玩');
+      openGame(
+        el.getAttribute('data-game'),
+        el.getAttribute('data-name') || '试玩',
+        el.getAttribute('data-kind')
+      );
     });
   });
 
@@ -1013,6 +1262,34 @@ document.documentElement.classList.add('js');
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && !player.hidden) closeGame();
   });
+})();
+
+/* ---- 数字滚动（与时间戳无关；HTML 里已写终值，JS 失效也不会显示 0） ---- */
+(function(){
+  var nums = document.querySelectorAll('[data-count]');
+  if(!nums.length) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce || !('IntersectionObserver' in window) || !window.requestAnimationFrame) return;
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var el = e.target;
+      io.unobserve(el);
+      var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+      var steps = 26, i = 0;
+      el.textContent = '0';
+      (function tick(){
+        i++;
+        var p = i / steps;
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        if(i < steps) window.requestAnimationFrame(tick);
+        else el.textContent = target;
+      })();
+    });
+  }, {threshold: 0.4});
+
+  nums.forEach(function(n){ io.observe(n); });
 })();
 </script>
 

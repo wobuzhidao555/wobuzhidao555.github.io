@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《言渡》WORD FERRY · 概念可视化</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --ink-black: #1a1a2e;
+  --ink-deep: #16213e;
+  --ink-mid: #0f3460;
+  --ink-water: #1a1a3e;
+  --paper: #f5f0e6;
+  --paper-dim: #d4cfc3;
+  --gold: #e8b86d;
+  --gold-bright: #ffd700;
+  --jade: #5fb8a8;
+  --crimson: #c75b5b;
+  --silver: #a8b2c1;
+  --ghost: rgba(245,240,230,0.15);
+  --silence: #0a0a0a;
+}
+body {
+  background: var(--ink-black);
+  color: var(--paper);
+  font-family: 'Georgia', 'Songti SC', 'STSong', serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+.scene { width: 100%; max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+.title-block { text-align: center; margin-bottom: 50px; position: relative; }
+.title-block h1 {
+  font-size: 3.5em; font-weight: 300; letter-spacing: 0.3em;
+  color: var(--paper); margin-bottom: 8px;
+  text-shadow: 0 0 30px rgba(232,184,109,0.3);
+}
+.title-block .en {
+  font-size: 1.1em; letter-spacing: 0.5em; color: var(--gold);
+  opacity: 0.7; text-transform: uppercase;
+}
+.title-block .meta {
+  font-size: 0.85em; color: var(--silver); margin-top: 15px;
+  letter-spacing: 0.1em; opacity: 0.6;
+}
+.title-block .quote {
+  margin-top: 25px; font-style: italic; color: var(--paper-dim);
+  font-size: 1em; max-width: 600px; margin-left: auto; margin-right: auto;
+  line-height: 1.8; opacity: 0.8;
+}
+.divider {
+  width: 60%; height: 1px; margin: 0 auto;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.4;
+}
+/* River Scene */
+.river-container {
+  position: relative; width: 100%; height: 320px;
+  background: linear-gradient(180deg, #0a0a1a 0%, #0f1a35 30%, #0a1525 60%, #050510 100%);
+  border-radius: 12px; overflow: hidden; margin: 30px 0;
+  border: 1px solid rgba(232,184,109,0.15);
+  box-shadow: 0 0 40px rgba(0,0,0,0.5), inset 0 0 60px rgba(0,0,0,0.5);
+}
+.river-water {
+  position: absolute; bottom: 0; width: 100%; height: 60%;
+  background: linear-gradient(180deg, rgba(15,52,96,0.3) 0%, rgba(10,10,30,0.8) 100%);
+}
+.mountain {
+  position: absolute; bottom: 40%; opacity: 0.3;
+  filter: blur(1px);
+}
+.mountain.left { left: 0; }
+.mountain.right { right: 0; transform: scaleX(-1); }
+.boat {
+  position: absolute; bottom: 35%; left: 50%; transform: translateX(-50%);
+  font-size: 2em; opacity: 0.8; z-index: 5;
+  animation: boat-sway 4s ease-in-out infinite;
+}
+@keyframes boat-sway {
+  0%,100% { transform: translateX(-50%) rotate(-1deg) translateY(0); }
+  50% { transform: translateX(-50%) rotate(1deg) translateY(-3px); }
+}
+.lantern {
+  position: absolute; bottom: 38%; left: 50%; transform: translateX(-50%) translateX(30px);
+  width: 12px; height: 16px; border-radius: 50%;
+  background: radial-gradient(circle, var(--gold-bright) 0%, var(--gold) 40%, transparent 70%);
+  box-shadow: 0 0 20px var(--gold), 0 0 40px rgba(232,184,109,0.4);
+  animation: lantern-flicker 2s ease-in-out infinite;
+  z-index: 6;
+}
+@keyframes lantern-flicker {
+  0%,100% { opacity: 0.9; transform: translateX(-50%) translateX(30px) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) translateX(30px) scale(1.1); }
+}
+.soul {
+  position: absolute; bottom: 42%; left: 50%; transform: translateX(-50%) translateX(-25px);
+  width: 30px; height: 50px; z-index: 4;
+  opacity: 0.4;
+}
+.soul-body {
+  width: 100%; height: 100%;
+  background: radial-gradient(ellipse at center, rgba(245,240,230,0.3) 0%, transparent 70%);
+  border-radius: 50% 50% 30% 30%;
+  animation: soul-float 3s ease-in-out infinite;
+}
+@keyframes soul-float {
+  0%,100% { transform: translateY(0); opacity: 0.4; }
+  50% { transform: translateY(-5px); opacity: 0.5; }
+}
+.memory-fragment {
+  position: absolute; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold); opacity: 0.6;
+  box-shadow: 0 0 10px var(--gold);
+  animation: fragment-orbit 6s linear infinite;
+}
+@keyframes fragment-orbit {
+  0% { transform: rotate(0deg) translateX(20px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(20px) rotate(-360deg); }
+}
+.ripple {
+  position: absolute; border: 2px solid; border-radius: 50%;
+  opacity: 0; pointer-events: none;
+}
+@keyframes ripple-expand {
+  0% { width: 0; height: 0; opacity: 0.8; }
+  100% { width: 300px; height: 60px; opacity: 0; }
+}
+.silence-fog {
+  position: absolute; bottom: 0; right: 0; width: 150px; height: 100%;
+  background: linear-gradient(270deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+  pointer-events: none; z-index: 3;
+}
+.river-label {
+  position: absolute; top: 15px; left: 20px;
+  font-size: 0.8em; color: var(--silver); opacity: 0.5;
+  letter-spacing: 0.2em;
+}
+.river-label-r {
+  position: absolute; top: 15px; right: 20px;
+  font-size: 0.8em; color: var(--crimson); opacity: 0.6;
+  letter-spacing: 0.2em;
+}
+/* AI Pipeline */
+.pipeline {
+  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 15px; margin: 30px 0;
+}
+.pipe-card {
+  background: rgba(15,52,96,0.3); border: 1px solid rgba(232,184,109,0.2);
+  border-radius: 10px; padding: 20px; text-align: center;
+  position: relative; transition: all 0.3s;
+}
+.pipe-card:hover {
+  border-color: var(--gold); background: rgba(15,52,96,0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(232,184,109,0.15);
+}
+.pipe-icon { font-size: 2em; margin-bottom: 10px; }
+.pipe-name { font-size: 1.1em; color: var(--gold); margin-bottom: 5px; letter-spacing: 0.1em; }
+.pipe-role { font-size: 0.75em; color: var(--silver); opacity: 0.7; margin-bottom: 8px; }
+.pipe-desc { font-size: 0.8em; color: var(--paper-dim); line-height: 1.6; }
+.pipe-tech {
+  font-size: 0.7em; color: var(--jade); margin-top: 8px;
+  font-family: 'Courier New', monospace; opacity: 0.8;
+}
+/* Section headers */
+.section-header {
+  text-align: center; margin: 40px 0 25px; position: relative;
+}
+.section-header h2 {
+  font-size: 1.6em; font-weight: 300; letter-spacing: 0.3em;
+  color: var(--paper); opacity: 0.9;
+}
+.section-header .sub {
+  font-size: 0.75em; color: var(--gold); letter-spacing: 0.4em;
+  opacity: 0.6; margin-top: 5px; text-transform: uppercase;
+}
+/* Voice layers */
+.voice-layers {
+  display: flex; flex-direction: column; gap: 12px; margin: 25px 0;
+}
+.vlayer {
+  display: flex; align-items: center; gap: 15px;
+  background: rgba(10,10,30,0.6); border-left: 3px solid;
+  border-radius: 0 8px 8px 0; padding: 15px 20px;
+  transition: all 0.3s;
+}
+.vlayer:hover { transform: translateX(5px); }
+.vlayer.semantic { border-color: var(--jade); }
+.vlayer.emotion { border-color: var(--crimson); }
+.vlayer.physical { border-color: var(--gold); }
+.vlayer-icon { font-size: 1.8em; opacity: 0.8; }
+.vlayer-content { flex: 1; }
+.vlayer-title { font-size: 1em; color: var(--paper); margin-bottom: 4px; }
+.vlayer-detail { font-size: 0.8em; color: var(--paper-dim); line-height: 1.5; opacity: 0.8; }
+.vlayer-tag {
+  font-size: 0.7em; padding: 3px 10px; border-radius: 12px;
+  font-family: 'Courier New', monospace; white-space: nowrap;
+}
+.vlayer.semantic .vlayer-tag { background: rgba(95,184,168,0.15); color: var(--jade); }
+.vlayer.emotion .vlayer-tag { background: rgba(199,91,91,0.15); color: var(--crimson); }
+.vlayer.physical .vlayer-tag { background: rgba(232,184,109,0.15); color: var(--gold); }
+/* Story Arc */
+.story-arc {
+  background: rgba(10,10,30,0.5); border-radius: 12px; padding: 30px;
+  border: 1px solid rgba(232,184,109,0.1); margin: 25px 0;
+}
+.arc-stage {
+  display: flex; gap: 15px; margin-bottom: 20px; position: relative;
+}
+.arc-stage:last-child { margin-bottom: 0; }
+.arc-num {
+  flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9em; font-weight: bold; border: 2px solid;
+}
+.arc-stage:nth-child(1) .arc-num { border-color: var(--jade); color: var(--jade); }
+.arc-stage:nth-child(2) .arc-num { border-color: var(--gold); color: var(--gold); }
+.arc-stage:nth-child(3) .arc-num { border-color: var(--crimson); color: var(--crimson); }
+.arc-stage:nth-child(4) .arc-num { border-color: #8e6fc7; color: #8e6fc7; }
+.arc-stage:nth-child(5) .arc-num { border-color: var(--silver); color: var(--silver); }
+.arc-stage:nth-child(6) .arc-num { border-color: var(--gold-bright); color: var(--gold-bright); }
+.arc-content { flex: 1; }
+.arc-title { font-size: 1em; color: var(--paper); margin-bottom: 4px; letter-spacing: 0.05em; }
+.arc-desc { font-size: 0.8em; color: var(--paper-dim); line-height: 1.6; opacity: 0.8; }
+.arc-arrow {
+  position: absolute; left: 19px; top: 40px; width: 2px; height: 20px;
+  background: linear-gradient(180deg, rgba(232,184,109,0.3), transparent);
+}
+/* Breath system */
+.breath-system {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 25px 0;
+}
+.breath-card {
+  background: rgba(10,10,30,0.6); border-radius: 10px; padding: 20px;
+  border: 1px solid rgba(232,184,109,0.15);
+}
+.breath-card h4 {
+  font-size: 0.9em; color: var(--gold); letter-spacing: 0.15em;
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 1px solid rgba(232,184,109,0.15);
+}
+.breath-bar {
+  width: 100%; height: 24px; background: rgba(0,0,0,0.4);
+  border-radius: 12px; overflow: hidden; margin: 10px 0;
+  border: 1px solid rgba(232,184,109,0.2); position: relative;
+}
+.breath-fill {
+  height: 100%; border-radius: 12px;
+  background: linear-gradient(90deg, var(--crimson) 0%, var(--gold) 50%, var(--gold-bright) 100%);
+  transition: width 0.5s; position: relative;
+}
+.breath-fill::after {
+  content: ''; position: absolute; top: 0; right: 0; width: 20px; height: 100%;
+  background: radial-gradient(circle at right, rgba(255,255,255,0.3), transparent);
+}
+.breath-label {
+  display: flex; justify-content: space-between;
+  font-size: 0.75em; color: var(--paper-dim); opacity: 0.7;
+}
+.breath-list { list-style: none; padding: 0; }
+.breath-list li {
+  font-size: 0.8em; color: var(--paper-dim); padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.breath-list li:last-child { border: none; }
+.breath-list .cost { font-family: 'Courier New', monospace; font-size: 0.85em; }
+.breath-list .cost.high { color: var(--crimson); }
+.breath-list .cost.mid { color: var(--gold); }
+.breath-list .cost.low { color: var(--jade); }
+/* Quality matrix */
+.quality-matrix {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 25px 0;
+}
+.q-cell {
+  background: rgba(10,10,30,0.5); border-radius: 8px; padding: 15px;
+  border: 1px solid rgba(255,255,255,0.08); text-align: center;
+  transition: all 0.3s;
+}
+.q-cell:hover { border-color: rgba(232,184,109,0.3); }
+.q-grade { font-size: 1.8em; font-weight: bold; margin-bottom: 5px; }
+.q-cell.s .q-grade { color: var(--gold-bright); text-shadow: 0 0 15px rgba(255,215,0,0.4); }
+.q-cell.a .q-grade { color: var(--gold); }
+.q-cell.b .q-grade { color: var(--jade); }
+.q-cell.c .q-grade { color: var(--silver); }
+.q-cell.f .q-grade { color: var(--crimson); }
+.q-cond { font-size: 0.75em; color: var(--paper-dim); line-height: 1.5; opacity: 0.8; }
+/* Endings */
+.endings {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin: 25px 0;
+}
+.ending {
+  background: rgba(10,10,30,0.5); border-radius: 10px; padding: 20px;
+  border: 1px solid rgba(232,184,109,0.1); text-align: center;
+}
+.ending-letter {
+  font-size: 2em; font-weight: bold; margin-bottom: 10px;
+  width: 50px; height: 50px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 10px; border: 2px solid;
+}
+.ending.a .ending-letter { border-color: var(--gold); color: var(--gold); }
+.ending.b .ending-letter { border-color: var(--jade); color: var(--jade); }
+.ending.c .ending-letter { border-color: var(--silver); color: var(--silver); }
+.ending h4 { font-size: 0.95em; color: var(--paper); margin-bottom: 8px; letter-spacing: 0.1em; }
+.ending p { font-size: 0.78em; color: var(--paper-dim); line-height: 1.6; opacity: 0.8; }
+/* Footer */
+.footer {
+  text-align: center; margin-top: 50px; padding: 30px;
+  border-top: 1px solid rgba(232,184,109,0.1);
+}
+.footer-quote {
+  font-style: italic; color: var(--paper-dim); font-size: 0.95em;
+  line-height: 2; opacity: 0.7; max-width: 500px; margin: 0 auto;
+}
+.footer-meta {
+  font-size: 0.75em; color: var(--silver); opacity: 0.4;
+  margin-top: 20px; letter-spacing: 0.2em;
+}
+/* Emotion wheel */
+.emotion-wheel {
+  display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+  margin: 20px 0;
+}
+.emo-chip {
+  padding: 8px 16px; border-radius: 20px; font-size: 0.8em;
+  border: 1px solid; transition: all 0.3s; cursor: default;
+}
+.emo-chip:hover { transform: scale(1.1); }
+.emo-chip.joy { border-color: var(--gold-bright); color: var(--gold-bright); background: rgba(255,215,0,0.05); }
+.emo-chip.anger { border-color: var(--crimson); color: var(--crimson); background: rgba(199,91,91,0.05); }
+.emo-chip.sad { border-color: var(--silver); color: var(--silver); background: rgba(168,178,193,0.05); }
+.emo-chip.fear { border-color: #8e6fc7; color: #8e6fc7; background: rgba(142,111,199,0.05); }
+.emo-chip.surprise { border-color: var(--jade); color: var(--jade); background: rgba(95,184,168,0.05); }
+.emo-chip.disgust { border-color: #6b8e5e; color: #6b8e5e; background: rgba(107,142,94,0.05); }
+.emo-chip.trust { border-color: var(--gold); color: var(--gold); background: rgba(232,184,109,0.05); }
+/* Sincerity demo */
+.sincerity-demo {
+  background: rgba(10,10,30,0.5); border-radius: 12px; padding: 25px;
+  margin: 25px 0; border: 1px solid rgba(232,184,109,0.1);
+}
+.sinc-row {
+  display: flex; align-items: center; gap: 15px; padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.sinc-row:last-child { border: none; }
+.sinc-text { flex: 1; font-size: 0.85em; color: var(--paper); }
+.sinc-emotion { font-size: 0.75em; padding: 3px 10px; border-radius: 10px; white-space: nowrap; }
+.sinc-result { font-size: 0.8em; font-weight: bold; width: 100px; text-align: right; }
+.sinc-result.high { color: var(--jade); }
+.sinc-result.mid { color: var(--gold); }
+.sinc-result.low { color: var(--crimson); }
+/* Responsive */
+@media (max-width: 768px) {
+  .pipeline { grid-template-columns: 1fr 1fr; }
+  .breath-system, .quality-matrix { grid-template-columns: 1fr; }
+  .endings { grid-template-columns: 1fr; }
+  .title-block h1 { font-size: 2.2em; }
+}
+</style>
+</head>
+<body>
+
+<div class="scene">
+
+<!-- Title -->
+<div class="title-block">
+  <h1>言 渡</h1>
+  <div class="en">WORD FERRY</div>
+  <div class="meta">第013期 · 2026-07-29 · 水墨冥河 / 活体卷轴</div>
+  <div class="divider" style="margin: 20px auto;"></div>
+  <div class="quote">
+    你对着麦克风说话——AI听懂了意思，也听懂了情绪。<br>
+    河上的亡魂颤了一下，涌出暖金色，她哭了。<br>
+    你的声音是唯一的桨，你的话语是唯一的灯。<br>
+    而你不知道的是：你自己也是船上的亡魂。
+  </div>
+</div>
+
+<!-- River Scene -->
+<div class="section-header">
+  <h2>忘 川</h2>
+  <div class="sub">THE RIVER OF FORGETFULNESS</div>
+</div>
+
+<div class="river-container" id="riverScene">
+  <div class="river-label">⟵ 彼 岸</div>
+  <div class="river-label-r">静 默 侵 蚀 ⟶</div>
+
+  <!-- Mountains (SVG ink style) -->
+  <svg class="mountain left" width="300" height="200" viewBox="0 0 300 200">
+    <path d="M0,200 L0,120 Q50,80 80,100 Q120,50 160,90 Q200,40 250,80 Q280,100 300,90 L300,200 Z"
+          fill="rgba(20,30,60,0.6)" />
+    <path d="M0,200 L0,150 Q60,110 100,130 Q140,90 180,120 Q220,80 260,110 Q290,120 300,115 L300,200 Z"
+          fill="rgba(15,25,50,0.5)" />
+  </svg>
+  <svg class="mountain right" width="300" height="200" viewBox="0 0 300 200">
+    <path d="M0,200 L0,120 Q50,80 80,100 Q120,50 160,90 Q200,40 250,80 Q280,100 300,90 L300,200 Z"
+          fill="rgba(20,30,60,0.6)" />
+    <path d="M0,200 L0,150 Q60,110 100,130 Q140,90 180,120 Q220,80 260,110 Q290,120 300,115 L300,200 Z"
+          fill="rgba(15,25,50,0.5)" />
+  </svg>
+
+  <div class="river-water"></div>
+  <div class="silence-fog"></div>
+
+  <!-- Soul with memory fragments -->
+  <div class="soul">
+    <div class="soul-body"></div>
+  </div>
+  <div class="memory-fragment" style="top: 35%; left: 48%; animation-duration: 5s;"></div>
+  <div class="memory-fragment" style="top: 40%; left: 52%; animation-duration: 7s; animation-delay: -2s;"></div>
+  <div class="memory-fragment" style="top: 38%; left: 50%; animation-duration: 6s; animation-delay: -4s;"></div>
+
+  <!-- Boat and lantern -->
+  <div class="boat">⛵</div>
+  <div class="lantern"></div>
+</div>
+
+<div style="text-align: center; font-size: 0.8em; color: var(--paper-dim); opacity: 0.6; margin: -15px 0 10px;">
+  墨色河面 · 你的声音激起涟漪 · 涟漪推船前进 · 静默从后方逼近
+</div>
+
+<!-- AI Pipeline -->
+<div class="section-header">
+  <h2>四 模 型 流 水 线</h2>
+  <div class="sub">FOUR-MODEL AI PIPELINE</div>
+</div>
+
+<div class="pipeline">
+  <div class="pipe-card">
+    <div class="pipe-icon">👂</div>
+    <div class="pipe-name">ASR</div>
+    <div class="pipe-role">耳朵 · 你说了什么</div>
+    <div class="pipe-desc">实时语音转文字。不是关键词匹配——是理解你说的每一句话的完整含义。</div>
+    <div class="pipe-tech">Whisper-tiny · ONNX</div>
+  </div>
+  <div class="pipe-card">
+    <div class="pipe-icon">🧠</div>
+    <div class="pipe-name">LLM</div>
+    <div class="pipe-role">大脑 · 理解与回应</div>
+    <div class="pipe-desc">语义匹配 + 真诚度判断 + 亡魂回应生成。每个玩家的渡灵体验独一无二。</div>
+    <div class="pipe-tech">Qwen2.5-7B · Q4量化</div>
+  </div>
+  <div class="pipe-card">
+    <div class="pipe-icon">💔</div>
+    <div class="pipe-name">SER</div>
+    <div class="pipe-role">心 · 你怎么说的</div>
+    <div class="pipe-desc">七维情感向量提取。温柔还是愤怒？真诚还是撒谎？你的声音出卖你。</div>
+    <div class="pipe-tech">Emotion2Vec · ONNX</div>
+  </div>
+  <div class="pipe-card">
+    <div class="pipe-icon">🌊</div>
+    <div class="pipe-name">DSP</div>
+    <div class="pipe-role">手 · 声音即物理</div>
+    <div class="pipe-desc">基频→墨色，振幅→涟漪。你的声音在物理性地操控这条河。</div>
+    <div class="pipe-tech">CREPE + RMS</div>
+  </div>
+</div>
+
+<!-- Voice Layers -->
+<div class="section-header">
+  <h2>三 层 语 音 信 号</h2>
+  <div class="sub">THREE LAYERS OF VOICE</div>
+</div>
+
+<div class="voice-layers">
+  <div class="vlayer semantic">
+    <div class="vlayer-icon">📝</div>
+    <div class="vlayer-content">
+      <div class="vlayer-title">第一层 · 语义</div>
+      <div class="vlayer-detail">ASR转写 → LLM理解 → 与记忆碎片做语义匹配。"你小时候怕打雷"匹配上碎片【雷·童·惧】。语义相关度决定亡魂"想起来"的程度。</div>
+    </div>
+    <div class="vlayer-tag">ASR + LLM</div>
+  </div>
+  <div class="vlayer emotion">
+    <div class="vlayer-icon">🎭</div>
+    <div class="vlayer-content">
+      <div class="vlayer-title">第二层 · 情感</div>
+      <div class="vlayer-detail">SER提取七维情感向量。亡魂需要温柔，你温柔了吗？你说的话和你的语气一致吗？——AI听得出你在撒谎。</div>
+    </div>
+    <div class="vlayer-tag">SER + 真诚度</div>
+  </div>
+  <div class="vlayer physical">
+    <div class="vlayer-icon">🌊</div>
+    <div class="vlayer-content">
+      <div class="vlayer-title">第三层 · 声学物理</div>
+      <div class="vlayer-detail">基频→墨色（低沉=墨黑，高音=暖金）。振幅→涟漪（大声=大浪推船，低语=微波精准）。语速→时间流速。你的声音在画这幅画。</div>
+    </div>
+    <div class="vlayer-tag">Pitch + Amp</div>
+  </div>
+</div>
+
+<!-- Emotion Wheel -->
+<div style="text-align: center; margin: 20px 0;">
+  <div style="font-size: 0.8em; color: var(--silver); opacity: 0.6; margin-bottom: 12px; letter-spacing: 0.2em;">七 维 情 感 向 量</div>
+  <div class="emotion-wheel">
+    <div class="emo-chip joy">喜 Joy</div>
+    <div class="emo-chip anger">怒 Anger</div>
+    <div class="emo-chip sad">哀 Sadness</div>
+    <div class="emo-chip fear">惧 Fear</div>
+    <div class="emo-chip surprise">惊 Surprise</div>
+    <div class="emo-chip disgust">厌 Disgust</div>
+    <div class="emo-chip trust">信 Trust</div>
+  </div>
+</div>
+
+<!-- Sincerity Demo -->
+<div class="section-header">
+  <h2>真 诚 度 检 测</h2>
+  <div class="sub">SINCERITY DETECTION</div>
+</div>
+
+<div class="sincerity-demo">
+  <div style="font-size: 0.8em; color: var(--paper-dim); margin-bottom: 15px; opacity: 0.7; text-align: center;">
+    AI同时分析你说的话（语义）和你的语气（情感），判断你是否真诚——你不能假装温柔。
+  </div>
+  <div class="sinc-row">
+    <div class="sinc-text">"你女儿很安全"</div>
+    <div class="sinc-emotion" style="background:rgba(95,184,168,0.15); color:var(--jade);">平静 · 信任</div>
+    <div class="sinc-result high">真诚度 85 ✓</div>
+  </div>
+  <div class="sinc-row">
+    <div class="sinc-text">"你女儿很安全"</div>
+    <div class="sinc-emotion" style="background:rgba(142,111,199,0.15); color:#8e6fc7;">恐惧 · 紧张</div>
+    <div class="sinc-result low">真诚度 25 ✗</div>
+  </div>
+  <div class="sinc-row">
+    <div class="sinc-text">"你做了什么！"</div>
+    <div class="sinc-emotion" style="background:rgba(199,91,91,0.15); color:var(--crimson);">愤怒 · 质问</div>
+    <div class="sinc-result high">真诚度 90 ✓</div>
+  </div>
+  <div class="sinc-row">
+    <div class="sinc-text">"我理解你的痛苦"</div>
+    <div class="sinc-emotion" style="background:rgba(168,178,193,0.15); color:var(--silver);">冷漠 · 机械</div>
+    <div class="sinc-result mid">真诚度 40 △</div>
+  </div>
+</div>
+
+<!-- Breath System -->
+<div class="section-header">
+  <h2>声 息 系 统</h2>
+  <div class="sub">BREATH — YOUR VOICE IS FINITE</div>
+</div>
+
+<div class="breath-system">
+  <div class="breath-card">
+    <h4>声息条 · 0–100</h4>
+    <div class="breath-bar">
+      <div class="breath-fill" style="width: 72%;"></div>
+    </div>
+    <div class="breath-label">
+      <span>当前: 72</span>
+      <span>归零 = 失声 = Game Over</span>
+    </div>
+    <div style="font-size: 0.78em; color: var(--paper-dim); margin-top: 12px; line-height: 1.6; opacity: 0.8;">
+      你的声音是资源。每说一句话都消耗声息。大声喊叫消耗极快，低语几乎免费——但低语的力量很弱。渡灵成功回复声息，渡灵失败损失更多。静默区域持续流失。
+    </div>
+  </div>
+  <div class="breath-card">
+    <h4>消耗与回复</h4>
+    <ul class="breath-list">
+      <li><span>大声喊叫（5秒）</span><span class="cost high">-15</span></li>
+      <li><span>正常说话（10秒）</span><span class="cost mid">-8</span></li>
+      <li><span>低语（10秒）</span><span class="cost low">-2</span></li>
+      <li><span>沉默</span><span class="cost low">±0</span></li>
+      <li><span>渡灵成功</span><span class="cost low">+20</span></li>
+      <li><span>渡灵失败</span><span class="cost high">-10</span></li>
+      <li><span>静默区域（每秒）</span><span class="cost high">-1/s</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Quality Matrix -->
+<div class="section-header">
+  <h2>渡 灵 品 质</h2>
+  <div class="sub">FERRYING QUALITY MATRIX</div>
+</div>
+
+<div class="quality-matrix">
+  <div class="q-cell s">
+    <div class="q-grade">S</div>
+    <div class="q-cond">语义&gt;90 + 情感&gt;90<br>真诚&gt;85<br>→ 完全想起 · 安宁上岸</div>
+  </div>
+  <div class="q-cell a">
+    <div class="q-grade">A</div>
+    <div class="q-cond">语义&gt;70 + 情感&gt;70<br>→ 大部分想起 · 有憾可渡</div>
+  </div>
+  <div class="q-cell b">
+    <div class="q-grade">B</div>
+    <div class="q-cond">语义&gt;50 或 情感&gt;50<br>→ 部分想起 · 勉强上岸</div>
+  </div>
+  <div class="q-cell c">
+    <div class="q-grade">C</div>
+    <div class="q-cond">两条均&lt;50<br>→ 更迷茫 · 沉入一分</div>
+  </div>
+  <div class="q-cell f" style="grid-column: span 2;">
+    <div class="q-grade">F</div>
+    <div class="q-cond">语义&lt;20 + 情感&lt;20 + 真诚&lt;30<br>→ 亡魂崩溃 · 直接化浮沫 · 永困忘川</div>
+  </div>
+</div>
+
+<!-- Story Arc -->
+<div class="section-header">
+  <h2>故 事 弧</h2>
+  <div class="sub">STORY ARC — SIX REACHES OF THE RIVER</div>
+</div>
+
+<div class="story-arc">
+  <div class="arc-stage">
+    <div class="arc-num">1</div>
+    <div class="arc-content">
+      <div class="arc-title">浅滩 · 三魂</div>
+      <div class="arc-desc">教程关。三个简单亡魂：老妇人忘孙、少年忘死因、士兵忘名。学会观察碎片、组织语言、控制情绪。士兵说："你像上一个渡灵人。"</div>
+    </div>
+    <div class="arc-arrow"></div>
+  </div>
+  <div class="arc-stage">
+    <div class="arc-num">2</div>
+    <div class="arc-content">
+      <div class="arc-title">急流 · 创伤</div>
+      <div class="arc-desc">一个母亲忘了孩子怎么没的——她拒绝想起。你说"你的孩子很安全"——AI识别出你在撒谎，她更封闭了。你必须说真话。但真话会伤她。</div>
+    </div>
+    <div class="arc-arrow"></div>
+  </div>
+  <div class="arc-stage">
+    <div class="arc-num">3</div>
+    <div class="arc-content">
+      <div class="arc-title">岔口 · 抉择</div>
+      <div class="arc-desc">一个亡魂同时拥有善与恶两段记忆。他不记得自己是好人还是坏人。你说什么就会唤醒什么。你不是在发现真相——你在决定真相。渡灵人的权力是可怕的。</div>
+    </div>
+    <div class="arc-arrow"></div>
+  </div>
+  <div class="arc-stage">
+    <div class="arc-num">4</div>
+    <div class="arc-content">
+      <div class="arc-title">风暴 · 静默来袭</div>
+      <div class="arc-desc">静默大举入侵。声音被压制，灯变暗。战斗模式：大声喊叫撕开静默，但声息锐减。低语潜行避敌，但力量太弱。Boss：无声者——你替他说出死前没来得及说的最后一句话。</div>
+    </div>
+    <div class="arc-arrow"></div>
+  </div>
+  <div class="arc-stage">
+    <div class="arc-num">5</div>
+    <div class="arc-content">
+      <div class="arc-title">源头 · 真相</div>
+      <div class="arc-desc">河的尽头。浮沫中有个人影浮出水面——长着你的脸。你想起来了：你不是渡灵人。你是冬天掉进河里的人。渡灵人言叔跳下河救你，也淹死了。他的嗓子变成了灯。你说话的腔调是借来的。</div>
+    </div>
+    <div class="arc-arrow"></div>
+  </div>
+  <div class="arc-stage">
+    <div class="arc-num">6</div>
+    <div class="arc-content">
+      <div class="arc-title">终章 · 渡己</div>
+      <div class="arc-desc">你是最后一个亡魂。你必须渡自己。但你的记忆全碎了——AI回放你这一路渡过的每个亡魂的最后一句话，拼在一起，就是你的记忆。"你叫什么？"——你问自己。你渡过的人，替你回答了。</div>
+    </div>
+  </div>
+</div>
+
+<!-- Endings -->
+<div class="section-header">
+  <h2>三 种 结 局</h2>
+  <div class="sub">THREE ENDINGS</div>
+</div>
+
+<div class="endings">
+  <div class="ending a">
+    <div class="ending-letter">A</div>
+    <h4>渡 己</h4>
+    <p>你想起了自己的名字。灯灭了，嗓子还给言叔。你上岸，走进归墟。河上空了——但岸边总有新的亡魂在等。除非有人再捡到一盏灯。</p>
+  </div>
+  <div class="ending b">
+    <div class="ending-letter">B</div>
+    <h4>留 渡</h4>
+    <p>你想起了名字，但选择不走。你成了新的渡灵人。二周目：AI用你的声纹重新生成渡灵人音色。同样的话，不同的人说，效果不同。</p>
+  </div>
+  <div class="ending c">
+    <div class="ending-letter">C</div>
+    <h4>沉 默</h4>
+    <p>隐藏结局。你把灯扔进河里。灯沉下去，河底所有浮沫都亮了——没被渡走的亡魂拿到了灯。他们互相渡。你沉入河底成了浮沫。但河面上，灯一个接一个亮了。</p>
+  </div>
+</div>
+
+<!-- Innovation Summary -->
+<div class="section-header">
+  <h2>创 新 之 处</h2>
+  <div class="sub">CORE INNOVATIONS</div>
+</div>
+
+<div style="background: rgba(10,10,30,0.5); border-radius: 12px; padding: 25px; border: 1px solid rgba(232,184,109,0.1); margin: 25px 0;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div>
+      <div style="font-size: 1em; color: var(--gold); margin-bottom: 8px; letter-spacing: 0.1em;">① 语音即玩法</div>
+      <div style="font-size: 0.8em; color: var(--paper-dim); line-height: 1.6; opacity: 0.8;">声音同时是信息输入、情感表达、物理力量和资源管理。四条线交织，没有一条是装饰。</div>
+    </div>
+    <div>
+      <div style="font-size: 1em; color: var(--gold); margin-bottom: 8px; letter-spacing: 0.1em;">② 真诚度检测</div>
+      <div style="font-size: 0.8em; color: var(--paper-dim); line-height: 1.6; opacity: 0.8;">AI不只听你说了什么，还听你是不是真心的。把"角色扮演"从"选择"变成"表演"。</div>
+    </div>
+    <div>
+      <div style="font-size: 1em; color: var(--gold); margin-bottom: 8px; letter-spacing: 0.1em;">③ LLM 动态对话</div>
+      <div style="font-size: 0.8em; color: var(--paper-dim); line-height: 1.6; opacity: 0.8;">亡魂回应不是对话树。你说任何话AI都听得懂。每个玩家的渡灵体验独一无二。</div>
+    </div>
+    <div>
+      <div style="font-size: 1em; color: var(--gold); margin-bottom: 8px; letter-spacing: 0.1em;">④ 声音即物理</div>
+      <div style="font-size: 0.8em; color: var(--paper-dim); line-height: 1.6; opacity: 0.8;">音量→涟漪→推船。音高→墨色→画面。说话=画这幅画=推动这艘船。</div>
+    </div>
+    <div style="grid-column: span 2;">
+      <div style="font-size: 1em; color: var(--gold); margin-bottom: 8px; letter-spacing: 0.1em;">⑤ 叙事与机制的统一</div>
+      <div style="font-size: 0.8em; color: var(--paper-dim); line-height: 1.6; opacity: 0.8;">故事主题是"语言塑造身份"——你说过的话塑造了别人，别人说过的话组成了你。机制不是故事的载体，机制就是故事本身。终章你渡自己时，记忆不在你身上——在你这一路渡过的每个亡魂的最后一句话里。</div>
+    </div>
+  </div>
+</div>
+
+<!-- Tech Stack -->
+<div style="background: rgba(10,10,30,0.4); border-radius: 10px; padding: 20px; margin: 25px 0; border: 1px solid rgba(95,184,168,0.15);">
+  <div style="font-size: 0.85em; color: var(--jade); letter-spacing: 0.2em; margin-bottom: 12px; text-align: center;">技 术 栈</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+    <span style="font-size: 0.75em; padding: 5px 12px; border-radius: 15px; background: rgba(95,184,168,0.1); color: var(--jade); font-family: monospace;">Unity / Godot 4</span>
+    <span style="font-size: 0.75em; padding: 5px 12px; border-radius: 15px; background: rgba(95,184,168,0.1); color: var(--jade); font-family: monospace;">Whisper-tiny (ASR)</span>
+    <span style="font-size: 0.75em; padding: 5px 12px; border-radius: 15px; background: rgba(95,184,168,0.1); color: var(--jade); font-family: monospace;">Qwen2.5-7B (LLM)</span>
+    <span style="font-size: 0.75em; padding: 5px 12px; border-radius: 15px; background: rgba(95,184,168,0.1); color: var(--jade); font-family: monospace;">Emotion2Vec (SER)</span>
+    <span style="font-size: 0.75em; padding: 5px 12px; border-radius: 15px; background: rgba(95,184,168,0.1); color: var(--jade); font-family: monospace;">CREPE (Pitch)</span>
+    <span style="font-size: 0.75em; padding: 5px 12px; border-radius: 15px; background: rgba(95,184,168,0.1); color: var(--jade); font-family: monospace;">VITS / ChatTTS</span>
+    <span style="font-size: 0.75em; padding: 5px 12px; border-radius: 15px; background: rgba(95,184,168,0.1); color: var(--jade); font-family: monospace;">WebRTC VAD</span>
+    <span style="font-size: 0.75em; padding: 5px 12px; border-radius: 15px; background: rgba(95,184,168,0.1); color: var(--jade); font-family: monospace;">延迟 &lt;800ms</span>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="footer-quote">
+    渡人者，人渡之。<br>
+    你说过的话，塑造了别人。<br>
+    别人说过的话，组成了你。<br>
+    在这条河上，你的声音是唯一的桨。<br>
+    划到对岸的时候，别忘了——<br>
+    你自己也需要被渡。
+  </div>
+  <div class="footer-meta">第013期 · 言渡 WORD FERRY · 2026-07-29</div>
+</div>
+
+</div>
+
+<script>
+// Ripple animation on river scene
+const river = document.getElementById('riverScene');
+let rippleInterval;
+
+function createRipple() {
+  const ripple = document.createElement('div');
+  ripple.className = 'ripple';
+  const colors = ['rgba(232,184,109,0.6)', 'rgba(95,184,168,0.4)', 'rgba(245,240,230,0.3)'];
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  ripple.style.borderColor = color;
+  ripple.style.left = '50%';
+  ripple.style.bottom = '30%';
+  ripple.style.transform = 'translateX(-50%)';
+  ripple.style.animation = 'ripple-expand 3s ease-out forwards';
+  river.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 3000);
+}
+
+rippleInterval = setInterval(createRipple, 2000);
+createRipple();
+
+// Interactive: click river to create ripple
+river.addEventListener('click', function(e) {
+  const rect = this.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const ripple = document.createElement('div');
+  ripple.className = 'ripple';
+  ripple.style.borderColor = 'rgba(232,184,109,0.7)';
+  ripple.style.left = x + 'px';
+  ripple.style.top = y + 'px';
+  ripple.style.transform = 'translate(-50%, -50%)';
+  ripple.style.animation = 'ripple-expand 2.5s ease-out forwards';
+  this.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 2500);
+});
+
+// Breath bar animation
+const breathFill = document.querySelector('.breath-fill');
+let breathValue = 72;
+let breathDir = -1;
+setInterval(() => {
+  breathValue += breathDir * 0.3;
+  if (breathValue <= 30) breathDir = 1;
+  if (breathValue >= 85) breathDir = -1;
+  breathFill.style.width = breathValue + '%';
+}, 100);
+</script>
+
+</body>
+</html>

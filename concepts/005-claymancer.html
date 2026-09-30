@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>捏造师 Claymancer — 概念可视化</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: #2a2118;
+    color: #f5e6d3;
+    overflow-x: hidden;
+  }
+  
+  .clay-texture {
+    background: 
+      radial-gradient(circle at 20% 30%, rgba(244,196,48,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(229,57,53,0.08) 0%, transparent 50%),
+      linear-gradient(135deg, #2a2118 0%, #3d2f1f 50%, #2a2118 100%);
+  }
+  
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+  
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 60px 20px 50px;
+    position: relative;
+  }
+  
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(244,196,48,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+  }
+  
+  .hero h1 {
+    font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-size: 72px;
+    color: #F4C430;
+    text-shadow: 
+      3px 3px 0px #E53935,
+      6px 6px 0px rgba(0,0,0,0.3);
+    letter-spacing: 8px;
+    position: relative;
+    z-index: 1;
+    animation: clayWobble 3s ease-in-out infinite;
+  }
+  
+  .hero .subtitle {
+    font-size: 24px;
+    color: #7CB342;
+    margin-top: 16px;
+    font-weight: 700;
+    letter-spacing: 4px;
+  }
+  
+  .hero .tagline {
+    font-size: 16px;
+    color: #b8a080;
+    margin-top: 20px;
+    line-height: 1.8;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1;
+  }
+  
+  @keyframes clayWobble {
+    0%, 100% { transform: rotate(-1deg) scale(1); }
+    50% { transform: rotate(1deg) scale(1.02); }
+  }
+  
+  /* Clay Shapes Demo */
+  .clay-demo {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 50px 0;
+    flex-wrap: wrap;
+  }
+  
+  .clay-shape {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  
+  .clay-shape:hover {
+    transform: scale(1.15) rotate(5deg);
+  }
+  
+  .clay-shape .shape-svg {
+    width: 80px;
+    height: 80px;
+    filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
+  }
+  
+  .clay-shape .label {
+    position: absolute;
+    bottom: -28px;
+    font-size: 13px;
+    color: #b8a080;
+    white-space: nowrap;
+  }
+  
+  .arrow {
+    display: flex;
+    align-items: center;
+    color: #F4C430;
+    font-size: 28px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(3px); }
+  }
+  
+  /* Section */
+  .section {
+    background: rgba(61, 47, 31, 0.6);
+    border-radius: 20px;
+    padding: 32px;
+    margin: 30px 0;
+    border: 2px solid rgba(244,196,48,0.15);
+    backdrop-filter: blur(10px);
+  }
+  
+  .section h2 {
+    font-size: 24px;
+    color: #F4C430;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .section h2 .icon {
+    font-size: 28px;
+  }
+  
+  /* Shape→Function Table */
+  .shape-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 1px;
+    background: rgba(244,196,48,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .shape-table .cell {
+    background: #3d2f1f;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+  }
+  
+  .shape-table .header {
+    background: rgba(244,196,48,0.15);
+    font-weight: 700;
+    color: #F4C430;
+  }
+  
+  .shape-table .shape-icon {
+    width: 32px; height: 32px;
+    flex-shrink: 0;
+  }
+  
+  /* Fun Moments */
+  .fun-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  
+  .fun-card {
+    background: rgba(42, 33, 24, 0.8);
+    border-radius: 14px;
+    padding: 20px;
+    border-left: 4px solid;
+    transition: transform 0.3s;
+  }
+  
+  .fun-card:hover {
+    transform: translateX(4px);
+  }
+  
+  .fun-card:nth-child(1) { border-color: #F4C430; }
+  .fun-card:nth-child(2) { border-color: #E53935; }
+  .fun-card:nth-child(3) { border-color: #7CB342; }
+  .fun-card:nth-child(4) { border-color: #42A5F5; }
+  .fun-card:nth-child(5) { border-color: #AB47BC; }
+  .fun-card:nth-child(6) { border-color: #FF7043; }
+  
+  .fun-card .num {
+    font-size: 28px;
+    font-weight: 900;
+    opacity: 0.3;
+    margin-bottom: 4px;
+  }
+  
+  .fun-card .title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  
+  .fun-card .desc {
+    font-size: 13px;
+    color: #b8a080;
+    line-height: 1.6;
+  }
+  
+  /* Tech Stack */
+  .tech-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .tech-step {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(42, 33, 24, 0.8);
+    padding: 14px 20px;
+    border-radius: 12px;
+    position: relative;
+  }
+  
+  .tech-step .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #F4C430;
+    color: #2a2118;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  
+  .tech-step .step-content {
+    flex: 1;
+  }
+  
+  .tech-step .step-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #F4C430;
+  }
+  
+  .tech-step .step-desc {
+    font-size: 12px;
+    color: #b8a080;
+    margin-top: 2px;
+  }
+  
+  .tech-step .step-meta {
+    font-size: 11px;
+    color: #7CB342;
+    background: rgba(124,179,66,0.1);
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  
+  /* Color Palette */
+  .palette {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .color-chip {
+    flex: 1;
+    min-width: 100px;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .color-chip .hex {
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 8px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+  
+  .color-chip .name {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  
+  /* Controls */
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  
+  .control-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(42,33,24,0.8);
+    border-radius: 10px;
+  }
+  
+  .control-item .key {
+    background: #F4C430;
+    color: #2a2118;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 12px;
+    white-space: nowrap;
+    min-width: 50px;
+    text-align: center;
+  }
+  
+  .control-item .desc {
+    font-size: 13px;
+    color: #d4c4a8;
+  }
+  
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b5a45;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  
+  .footer .quote {
+    color: #F4C430;
+    font-size: 16px;
+    font-style: italic;
+    margin-bottom: 16px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* MVP Badge */
+  .mvp-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #F4C430, #FF7043);
+    color: #2a2118;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 900;
+    margin-bottom: 16px;
+  }
+  
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 48px; }
+    .fun-grid { grid-template-columns: 1fr; }
+    .shape-table { grid-template-columns: 1fr; }
+    .controls { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body class="clay-texture">
+
+<div class="container">
+  
+  <!-- Hero -->
+  <div class="hero">
+    <h1>捏造师</h1>
+    <div class="subtitle">CLAYMANCER</div>
+    <div class="tagline">
+      在定格动画的黏土世界里，按住任何东西拖拽就能捏变形。<br>
+      把敌人搓成球踢飞，把地形捏成桥搭路，把Boss的剑捏成面条。<br>
+      <strong style="color:#F4C430;">形状即功能，捏啥啥好使。</strong>
+    </div>
+  </div>
+  
+  <!-- Clay Demo: Shape Transform -->
+  <div class="clay-demo">
+    <div class="clay-shape">
+      <svg class="shape-svg" viewBox="0 0 80 80">
+        <defs>
+          <radialGradient id="clayGrad1" cx="35%" cy="35%">
+            <stop offset="0%" stop-color="#E53935"/>
+            <stop offset="100%" stop-color="#B71C1C"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="40" cy="42" rx="28" ry="32" fill="url(#clayGrad1)"/>
+        <ellipse cx="30" cy="30" rx="8" ry="6" fill="rgba(255,255,255,0.2)"/>
+      </svg>
+      <div class="label">敌人</div>
+    </div>
+    <div class="arrow">→ 捏 →</div>
+    <div class="clay-shape">
+      <svg class="shape-svg" viewBox="0 0 80 80">
+        <defs>
+          <radialGradient id="clayGrad2" cx="35%" cy="35%">
+            <stop offset="0%" stop-color="#F4C430"/>
+            <stop offset="100%" stop-color="#E65100"/>
+          </radialGradient>
+        </defs>
+        <circle cx="40" cy="40" r="30" fill="url(#clayGrad2)"/>
+        <ellipse cx="28" cy="28" rx="10" ry="7" fill="rgba(255,255,255,0.25)"/>
+      </svg>
+      <div class="label">球·滚动弹射</div>
+    </div>
+    <div class="arrow">→ 踢 →</div>
+    <div class="clay-shape">
+      <svg class="shape-svg" viewBox="0 0 80 80">
+        <defs>
+          <radialGradient id="clayGrad3" cx="35%" cy="35%">
+            <stop offset="0%" stop-color="#7CB342"/>
+            <stop offset="100%" stop-color="#33691E"/>
+          </radialGradient>
+        </defs>
+        <rect x="10" y="30" width="60" height="20" rx="6" fill="url(#clayGrad3)"/>
+        <ellipse cx="25" cy="35" rx="8" ry="3" fill="rgba(255,255,255,0.2)"/>
+      </svg>
+      <div class="label">板·搭桥平台</div>
+    </div>
+  </div>
+  
+  <!-- Shape → Function Table -->
+  <div class="section">
+    <h2><span class="icon">🤲</span> 形状即功能</h2>
+    <div class="shape-table">
+      <div class="cell header">捏出的形状</div>
+      <div class="cell header">物理行为</div>
+      <div class="cell header">战斗/解谜用途</div>
+      
+      <div class="cell">
+        <svg class="shape-icon" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="#F4C430"/></svg>
+        球
+      </div>
+      <div class="cell">滚动 · 弹射</div>
+      <div class="cell">踢出去当保龄球清走廊，越大弹射越猛</div>
+      
+      <div class="cell">
+        <svg class="shape-icon" viewBox="0 0 32 32"><rect x="4" y="12" width="24" height="8" rx="3" fill="#7CB342"/></svg>
+        板
+      </div>
+      <div class="cell">平台 · 桥梁</div>
+      <div class="cell">搭在悬崖上当桥，踩上去会弯</div>
+      
+      <div class="cell">
+        <svg class="shape-icon" viewBox="0 0 32 32"><polygon points="16,4 26,28 6,28" fill="#E53935"/></svg>
+        刺
+      </div>
+      <div class="cell">穿刺 · 陷阱</div>
+      <div class="cell">插地上当陷阱，敌人冲过来被扎飞</div>
+      
+      <div class="cell">
+        <svg class="shape-icon" viewBox="0 0 32 32"><path d="M6 22 Q6 8 16 8 Q26 8 26 22 Z" fill="#42A5F5"/></svg>
+        碗
+      </div>
+      <div class="cell">容器 · 浮力</div>
+      <div class="cell">跳进去当船划过岩浆河</div>
+      
+      <div class="cell">
+        <svg class="shape-icon" viewBox="0 0 32 32"><path d="M6 6 Q16 16 26 26" stroke="#AB47BC" stroke-width="6" fill="none" stroke-linecap="round"/></svg>
+        绳
+      </div>
+      <div class="cell">柔体 · 缠绕</div>
+      <div class="cell">甩出去缠住Boss腿，限制移动</div>
+    </div>
+  </div>
+  
+  <!-- Fun Moments -->
+  <div class="section">
+    <h2><span class="icon">⚡</span> 爽点清单</h2>
+    <div class="fun-grid">
+      <div class="fun-card">
+        <div class="num">01</div>
+        <div class="title">三怪合球</div>
+        <div class="desc">连续揉搓三个小怪合体成一个大球，球越大弹射越猛。踢进走廊一路清场。</div>
+      </div>
+      <div class="fun-card">
+        <div class="num">02</div>
+        <div class="title">捏Boss武器</div>
+        <div class="desc">按住Boss的巨剑拖拽，把剑捏成面条。Boss挥"面条剑"打不出伤害。</div>
+      </div>
+      <div class="fun-card">
+        <div class="num">03</div>
+        <div class="title">半捏逃脱</div>
+        <div class="desc">正捏Boss腿时它跑了，留下半条畸形腿在地上蹦。滑稽又意外。</div>
+      </div>
+      <div class="fun-card">
+        <div class="num">04</div>
+        <div class="title">悬崖捏桥</div>
+        <div class="desc">把胖敌人捏成长板搭悬崖，跑过去时板子在脚下晃。现造现用。</div>
+      </div>
+      <div class="fun-card">
+        <div class="num">05</div>
+        <div class="title">语音暴走</div>
+        <div class="desc">嘴喊"球球球"同时手疯狂搓，三秒搓出三个球连环踢出。手嘴并用。</div>
+      </div>
+      <div class="fun-card">
+        <div class="num">06</div>
+        <div class="title">火球成型</div>
+        <div class="desc">把火黏土捏成尖刺插地上，敌人冲来被扎飞。元素+形状的化学反应。</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- AI Tech Flow -->
+  <div class="section">
+    <h2><span class="icon">🧠</span> AI 技术流水线</h2>
+    <div class="tech-flow">
+      <div class="tech-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">玩家拖拽变形 Soft Body Mesh</div>
+          <div class="step-desc">Obi Softbody 实时软体物理，鼠标轨迹决定变形方向</div>
+        </div>
+        <div class="step-meta">Unity 插件</div>
+      </div>
+      <div class="tech-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">采样 Mesh 顶点为 1024 点云</div>
+          <div class="step-desc">从变形后的 mesh 表面均匀采样点云数据</div>
+        </div>
+        <div class="step-meta">~2ms</div>
+      </div>
+      <div class="tech-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">PointNet++ 形状分类推理</div>
+          <div class="step-desc">输出 Top-5 类别 + 置信度（球/板/刺/碗/绳…）</div>
+        </div>
+        <div class="step-meta">~15ms · 8MB · ONNX</div>
+      </div>
+      <div class="tech-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Whisper 语音指令覆盖</div>
+          <div class="step-desc">玩家喊"球！"强制按球处理，降低手残挫败感</div>
+        </div>
+        <div class="step-meta">~50ms · 39MB · whisper.cpp</div>
+      </div>
+      <div class="tech-step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">物理行为映射 + 材质叠加</div>
+          <div class="step-desc">形状→物理属性，材质（火/水/电）叠加效果</div>
+        </div>
+        <div class="step-meta">查表 O(1)</div>
+      </div>
+      <div class="tech-step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <div class="step-title">"啵" 定型音效 + 黏土碎屑粒子</div>
+          <div class="step-desc">松手瞬间弹跳定型，视觉听觉双重确认</div>
+        </div>
+        <div class="step-meta">Spring Damper</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Controls -->
+  <div class="section">
+    <h2><span class="icon">🕹️</span> 操作设计</h2>
+    <div class="controls">
+      <div class="control-item">
+        <div class="key">左键按住</div>
+        <div class="desc">抓住物体开始捏（进入慢动作 0.3x）</div>
+      </div>
+      <div class="control-item">
+        <div class="key">拖拽</div>
+        <div class="desc">拉伸 / 压扁 / 揉搓</div>
+      </div>
+      <div class="control-item">
+        <div class="key">松开</div>
+        <div class="desc">定型，AI 识别完成，物理属性生效</div>
+      </div>
+      <div class="control-item">
+        <div class="key">右键</div>
+        <div class="desc">踢 / 推（把捏好的物体踢出去）</div>
+      </div>
+      <div class="control-item">
+        <div class="key">空格</div>
+        <div class="desc">跳跃（可踩在捏出的平台上）</div>
+      </div>
+      <div class="control-item">
+        <div class="key">麦克风</div>
+        <div class="desc">"球！板！刺！"语音强制覆盖形状</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Color Palette -->
+  <div class="section">
+    <h2><span class="icon">🎨</span> 黏土色彩体系</h2>
+    <div class="palette">
+      <div class="color-chip" style="background:#F4C430;">
+        <div class="name">暖黄主调</div>
+        <div class="hex">#F4C430</div>
+      </div>
+      <div class="color-chip" style="background:#7CB342;">
+        <div class="name">草绿</div>
+        <div class="hex">#7CB342</div>
+      </div>
+      <div class="color-chip" style="background:#E53935;">
+        <div class="name">砖红</div>
+        <div class="hex">#E53935</div>
+      </div>
+      <div class="color-chip" style="background:#42A5F5;">
+        <div class="name">天蓝</div>
+        <div class="hex">#42A5F5</div>
+      </div>
+      <div class="color-chip" style="background:#AB47BC;">
+        <div class="name">黏土紫</div>
+        <div class="hex">#AB47BC</div>
+      </div>
+      <div class="color-chip" style="background:#FF7043;">
+        <div class="name">陶土橙</div>
+        <div class="hex">#FF7043</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- MVP -->
+  <div class="section">
+    <h2><span class="icon">📦</span> MVP 验证标准</h2>
+    <div class="mvp-badge">48小时可验证</div>
+    <div style="font-size:14px; line-height:2; color:#d4c4a8;">
+      ① 一块黏土（可捏成球/板/刺）<br>
+      ② 一个敌人（黏土小兵，可被捏变形）<br>
+      ③ AI识别三类形状（PointNet++，准确率 >85%）<br>
+      ④ 语音识别"球""板""刺"（Whisper-tiny）<br>
+      ⑤ 物理行为：球=滚动撞击，板=可站立平台，刺=接触伤害<br>
+      ⑥ 一个场景：走廊 + 悬崖<br>
+      ⑦ 黏土Shader（SSS + 指纹纹理）<br>
+    </div>
+    <div style="margin-top:16px; padding:14px; background:rgba(244,196,48,0.1); border-radius:10px; font-size:14px; color:#F4C430;">
+      ✅ 成功标准：朋友试玩后捏出第一个球踢出去，说"再来一次"<br>
+      ❌ 失败标准：朋友说"然后呢？"
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <div class="footer">
+    <div class="quote">
+      "所有人都捏过橡皮泥。核心永远是那个最原始的快乐：捏一下，变了，爽。"
+    </div>
+    <div>每日游戏制作灵感 · 第005期 · 2026.07.11</div>
+    <div>风格：黏土定格动画 · 玩法：物理变形动作 · AI：PointNet++形状识别 + Whisper语音融合</div>
+  </div>
+  
+</div>
+
+</body>
+</html>

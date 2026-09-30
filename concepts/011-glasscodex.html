@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《琉璃鉴》GLASS CODEX · 第011期概念可视化</title>
+<style>
+  :root{
+    --bg:#0A0E1A; --panel:#13131F; --panel2:#1A1A2E;
+    --lead:#0A0A0A; --lead-light:#1A1A2A;
+    --glass-red:#E94560; --glass-red-dim:#8a2838;
+    --glass-teal:#00B8A9; --glass-teal-dim:#006b64;
+    --glass-gold:#FFDE7D; --glass-gold-dim:#8a7540;
+    --glass-purple:#845EC2; --glass-purple-dim:#47316c;
+    --glass-blue:#4CC9F0; --glass-blue-dim:#2a6d87;
+    --glass-green:#80ED99; --glass-green-dim:#448052;
+    --glass-orange:#FF6B35; --glass-orange-dim:#8a3a1d;
+    --glass-pink:#F72585; --glass-pink-dim:#8a154a;
+    --glass-silver:#C0C0C0; --glass-silver-dim:#686868;
+    --glass-brown:#8D7B68; --glass-brown-dim:#4d4238;
+    --glass-void:#240046; --glass-void-dim:#150028;
+    --text:#E8E6E1; --text-dim:#9a978f; --text-bright:#FFF8DC;
+    --line:#2A2F3A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6;overflow-x:hidden}
+
+  /* === STAINED GLASS UTILITY === */
+  .glass-panel{
+    background:var(--panel);
+    border:2px solid var(--lead);
+    border-radius:3px;
+    position:relative;
+    overflow:hidden;
+  }
+  .glass-panel::before{
+    content:'';position:absolute;inset:0;
+    background:
+      linear-gradient(135deg,transparent 48%,rgba(0,0,0,0.15) 50%,transparent 52%),
+      linear-gradient(45deg,transparent 48%,rgba(255,255,255,0.03) 50%,transparent 52%);
+    pointer-events:none;
+  }
+  .lead-line{border-color:var(--lead)!important}
+
+  /* === HERO === */
+  .hero{
+    text-align:center;padding:90px 20px 50px;position:relative;
+    background:
+      radial-gradient(ellipse at 50% 20%, rgba(255,222,125,0.06), transparent 50%),
+      radial-gradient(ellipse at 30% 60%, rgba(132,94,194,0.05), transparent 40%),
+      radial-gradient(ellipse at 70% 50%, rgba(0,184,169,0.04), transparent 40%);
+  }
+  .hero .tag{display:inline-block;font-size:12px;letter-spacing:4px;color:var(--glass-gold);border:1px solid var(--glass-gold-dim);padding:4px 14px;border-radius:2px;margin-bottom:20px}
+  .hero h1{
+    font-size:78px;font-weight:900;letter-spacing:12px;color:var(--text-bright);
+    text-shadow:
+      0 0 30px rgba(255,222,125,0.3),
+      0 0 60px rgba(132,94,194,0.2),
+      0 2px 0 var(--lead);
+    margin-bottom:4px;
+  }
+  .hero .en{font-size:16px;letter-spacing:10px;color:var(--glass-gold-dim);font-weight:300;margin-bottom:28px}
+  .hero .pitch{max-width:680px;margin:0 auto;font-size:15px;color:var(--text-dim);line-height:1.9;border-left:2px solid var(--glass-gold);padding:4px 0 4px 18px;text-align:left;font-style:italic}
+  .hero .pitch b{color:var(--glass-gold);font-style:normal}
+  .hero .meta{margin-top:28px;font-size:13px;color:var(--text-dim);letter-spacing:1px}
+  .hero .meta span{margin:0 10px;color:var(--glass-gold-dim)}
+
+  /* Rose window decoration */
+  .rose-window{
+    width:180px;height:180px;margin:0 auto 30px;position:relative;
+  }
+  .rose-window svg{width:100%;height:100%;filter:drop-shadow(0 0 20px rgba(255,222,125,0.2))}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+
+  /* === SECTION === */
+  section{margin-top:60px}
+  .sec-title{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+  .sec-title .num{font-size:13px;color:var(--bg);background:var(--glass-gold);padding:2px 10px;font-weight:700;letter-spacing:1px;border-radius:1px}
+  .sec-title h2{font-size:24px;font-weight:700;color:var(--text-bright);letter-spacing:2px}
+  .sec-title .sub{font-size:13px;color:var(--text-dim);margin-left:auto}
+
+  /* === DUAL MODE === */
+  .dual-mode{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch}
+  .mode-box{padding:24px 20px;position:relative}
+  .mode-box.cathedral{
+    background:linear-gradient(135deg,var(--panel) 0%,#0c0e16 100%);
+    border:2px solid var(--lead);border-radius:4px 0 0 4px;
+  }
+  .mode-box.mirror{
+    background:linear-gradient(135deg,#1a1a2e 0%,#0e0e1a 100%);
+    border:2px solid var(--lead);border-radius:0 4px 4px 0;
+  }
+  .mode-box h3{font-size:16px;letter-spacing:3px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .mode-box.cathedral h3{color:var(--glass-gold)}
+  .mode-box.mirror h3{color:var(--glass-teal)}
+  .mode-box .icon{font-size:28px;margin-bottom:8px}
+  .mode-box ul{list-style:none;font-size:13px;color:var(--text-dim)}
+  .mode-box li{padding:5px 0;border-bottom:1px dashed var(--line)}
+  .mode-box li:last-child{border:0}
+  .mode-box li b{color:var(--text)}
+  .mode-arrow{display:flex;align-items:center;justify-content:center;padding:0 8px;color:var(--glass-gold-dim);font-size:24px;letter-spacing:2px;flex-direction:column;gap:4px}
+  .mode-arrow small{font-size:10px;color:var(--text-dim);letter-spacing:1px}
+
+  /* === ESSENCE GRID === */
+  .essence-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .essence-card{
+    padding:18px 14px;position:relative;overflow:hidden;cursor:pointer;
+    border:2px solid var(--lead);border-radius:3px;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .essence-card:hover{transform:translateY(-3px)}
+  .essence-card::before{
+    content:'';position:absolute;inset:0;opacity:0.12;
+    background:var(--ec);transition:opacity .25s;
+  }
+  .essence-card:hover::before{opacity:0.2}
+  .essence-card:hover{box-shadow:0 0 20px var(--ec-dim)}
+  .essence-card .idx{position:absolute;top:8px;right:10px;font-size:11px;color:var(--text-dim)}
+  .essence-card .glyph{font-size:32px;font-weight:900;color:var(--ec);text-shadow:0 0 15px var(--ec-dim);margin-bottom:4px;letter-spacing:2px}
+  .essence-card .name{font-size:17px;font-weight:700;color:var(--text-bright);margin-bottom:4px;letter-spacing:1px}
+  .essence-card .sem{font-size:11px;color:var(--ec);margin-bottom:6px;letter-spacing:0.5px;opacity:0.9}
+  .essence-card .ex{font-size:11px;color:var(--text-dim);line-height:1.5;min-height:34px}
+  .essence-card .eff{font-size:11px;color:var(--ec);margin-top:6px;border-top:1px solid var(--lead-light);padding-top:6px}
+
+  /* === FLOW === */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;justify-content:center;margin:10px 0}
+  .flow .step{flex:1;min-width:130px;padding:16px 12px;text-align:center;position:relative;border:2px solid var(--lead);border-radius:3px;margin:0 3px}
+  .flow .step .ico{font-size:24px;margin-bottom:6px}
+  .flow .step .t{font-size:13px;font-weight:700;margin-bottom:4px;letter-spacing:1px}
+  .flow .step .d{font-size:11px;color:var(--text-dim);line-height:1.5}
+  .flow .arrow{display:flex;align-items:center;justify-content:center;color:var(--glass-gold-dim);font-size:16px;padding:0 2px}
+
+  /* === FUSION === */
+  .fusion-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+  .fshard{
+    padding:12px 16px;border:2px solid var(--lead);border-radius:4px;
+    text-align:center;min-width:90px;position:relative;
+  }
+  .fshard .fn{font-size:13px;font-weight:700;margin-bottom:2px}
+  .fshard .ft{font-size:10px;color:var(--text-dim)}
+  .fshard.s-burn{background:linear-gradient(135deg,rgba(233,69,96,0.15),rgba(255,107,53,0.08));border-color:var(--glass-red-dim)}
+  .fshard.s-burn .fn{color:var(--glass-red)}
+  .fshard.s-edge{background:linear-gradient(135deg,rgba(192,192,192,0.1),rgba(232,232,232,0.05));border-color:var(--glass-silver-dim)}
+  .fshard.s-edge .fn{color:var(--glass-silver)}
+  .fshard.s-flow{background:linear-gradient(135deg,rgba(0,184,169,0.12),rgba(76,201,240,0.06));border-color:var(--glass-teal-dim)}
+  .fshard.s-flow .fn{color:var(--glass-teal)}
+  .fshard.s-void{background:linear-gradient(135deg,rgba(36,0,70,0.4),rgba(16,0,43,0.2));border-color:var(--glass-void-dim)}
+  .fshard.s-void .fn{color:#9d6cff}
+  .fshard.s-solid{background:linear-gradient(135deg,rgba(141,123,104,0.12),rgba(92,85,71,0.06));border-color:var(--glass-brown-dim)}
+  .fshard.s-solid .fn{color:var(--glass-brown)}
+  .fshard.s-reflect{background:linear-gradient(135deg,rgba(176,176,255,0.1),rgba(132,94,194,0.06));border-color:var(--glass-purple-dim)}
+  .fshard.s-reflect .fn{color:#b0b0ff}
+  .fshard.s-life{background:linear-gradient(135deg,rgba(128,237,153,0.1),rgba(56,176,0,0.05));border-color:var(--glass-green-dim)}
+  .fshard.s-life .fn{color:var(--glass-green)}
+  .fshard.s-reson{background:linear-gradient(135deg,rgba(255,222,125,0.1),rgba(255,165,0,0.05));border-color:var(--glass-gold-dim)}
+  .fshard.s-reson .fn{color:var(--glass-gold)}
+  .fshard.s-fused{
+    border-width:3px;
+    box-shadow:0 0 25px rgba(255,222,125,0.15);
+    animation:fuse-glow 3s ease-in-out infinite;
+  }
+  @keyframes fuse-glow{0%,100%{box-shadow:0 0 20px rgba(255,222,125,0.1)}50%{box-shadow:0 0 30px rgba(255,222,125,0.25)}}
+  .fop{font-size:20px;color:var(--glass-gold-dim);font-weight:300}
+  .feq{font-size:16px;color:var(--glass-gold-dim)}
+
+  .fusion-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px}
+  .fusion-table th{background:var(--panel2);color:var(--glass-gold);padding:10px 12px;text-align:left;font-weight:700;letter-spacing:1px;border-bottom:2px solid var(--lead)}
+  .fusion-table td{padding:8px 12px;border-bottom:1px solid var(--line);color:var(--text-dim)}
+  .fusion-table td b{color:var(--text-bright)}
+  .fusion-table tr:hover td{background:rgba(255,222,125,0.03)}
+
+  /* === BOSS === */
+  .boss-arena{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  .boss-window{
+    padding:20px;border:2px solid var(--lead);border-radius:4px;
+    background:linear-gradient(180deg,var(--panel) 0%,#080a12 100%);
+  }
+  .boss-window h3{font-size:14px;color:var(--glass-gold);letter-spacing:2px;margin-bottom:14px}
+  .boss-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-bottom:14px}
+  .boss-cell{
+    aspect-ratio:1;border:2px solid var(--lead);border-radius:2px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;position:relative;
+    transition:all .3s;
+  }
+  .boss-cell.dark{background:#0a0a14;color:#333}
+  .boss-cell.lit{background:var(--bc);color:var(--bg);box-shadow:0 0 10px var(--bc-dim);border-color:var(--bc-dim)}
+  .boss-cell .lbl{font-size:9px;position:absolute;bottom:2px;right:3px;opacity:0.6}
+  .boss-info{font-size:12px;color:var(--text-dim);line-height:1.7}
+  .boss-info b{color:var(--text-bright)}
+  .boss-info .warn{color:var(--glass-red);font-weight:700}
+  .boss-strategy{padding:20px;border:2px solid var(--lead);border-radius:4px;background:var(--panel)}
+  .boss-strategy h3{font-size:14px;color:var(--glass-teal);letter-spacing:2px;margin-bottom:14px}
+  .boss-strategy .strat{margin-bottom:12px;padding-left:16px;position:relative;font-size:13px;color:var(--text-dim)}
+  .boss-strategy .strat::before{content:'◆';position:absolute;left:0;color:var(--glass-gold);font-size:10px;top:4px}
+  .boss-strategy .strat b{color:var(--text-bright)}
+
+  /* === STORY ARC === */
+  .arc{background:linear-gradient(180deg,var(--panel) 0%,#080a12 100%);border:2px solid var(--lead);border-radius:4px;padding:0;overflow:hidden}
+  .arc .row{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--line);min-height:68px}
+  .arc .row:last-child{border:0}
+  .arc .ch{flex:0 0 100px;display:flex;align-items:center;justify-content:center;font-size:12px;border-right:2px solid var(--lead);padding:8px;text-align:center;font-weight:700;letter-spacing:1px;flex-direction:column;background:var(--panel2)}
+  .arc .ch .n{font-size:22px;margin-bottom:2px}
+  .arc .bd{flex:1;padding:12px 18px;font-size:13px;color:var(--text-dim)}
+  .arc .bd .nm{font-weight:700}
+  .arc .bd .how{color:var(--glass-gold)}
+  .arc .row.r1 .ch{color:var(--glass-gold)} .arc .row.r1 .nm{color:var(--glass-gold)}
+  .arc .row.r2 .ch{color:var(--glass-green)} .arc .row.r2 .nm{color:var(--glass-green)}
+  .arc .row.r3 .ch{color:var(--glass-silver)} .arc .row.r3 .nm{color:var(--glass-silver)}
+  .arc .row.r4 .ch{color:var(--glass-teal)} .arc .row.r4 .nm{color:var(--glass-teal)}
+  .arc .row.r5 .ch{color:var(--glass-purple)} .arc .row.r5 .nm{color:#b0b0ff}
+  .arc .row.r6 .ch{color:var(--glass-red)} .arc .row.r6 .nm{color:var(--glass-red)}
+  .arc .row.r7 .ch{color:var(--glass-gold)} .arc .row.r7 .nm{color:var(--glass-gold)}
+  .arc .row .n{font-size:20px;color:var(--text-bright)}
+
+  /* === AI PIPELINE === */
+  .pipeline{padding:24px;border:2px solid var(--lead);border-radius:4px;background:var(--panel)}
+  .pipe-stage{display:flex;gap:14px;margin-bottom:12px;align-items:flex-start}
+  .pipe-stage:last-child{margin-bottom:0}
+  .pipe-num{
+    flex:0 0 36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;color:var(--bg);
+    background:var(--glass-gold);
+  }
+  .pipe-content{flex:1}
+  .pipe-content .pt{font-size:14px;font-weight:700;color:var(--text-bright);margin-bottom:4px;letter-spacing:1px}
+  .pipe-content .pt span{font-size:11px;color:var(--text-dim);font-weight:400;margin-left:8px}
+  .pipe-content .pd{font-size:12px;color:var(--text-dim);line-height:1.6}
+  .pipe-content .pd code{color:var(--glass-gold);background:rgba(255,222,125,0.08);padding:1px 5px;border-radius:2px;font-size:11px}
+  .pipe-bar{height:6px;background:var(--panel2);border-radius:3px;margin-top:6px;overflow:hidden}
+  .pipe-bar .fill{height:100%;background:var(--glass-gold);border-radius:3px;animation:pipe-fill 2s ease-out}
+  @keyframes pipe-fill{from{width:0}}
+
+  /* === PALETTE === */
+  .palette{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .swatch{
+    flex:1;min-width:110px;padding:14px 12px;border:2px solid var(--lead);border-radius:3px;
+    text-align:center;position:relative;
+  }
+  .swatch .hex{font-size:11px;color:var(--text-dim);font-family:monospace}
+  .swatch .lbl{font-size:12px;font-weight:700;margin-bottom:4px;letter-spacing:1px}
+  .swatch .bar{height:30px;border-radius:2px;margin-bottom:8px;border:1px solid var(--lead)}
+
+  /* === COMPARISON === */
+  .compare-wrap{overflow-x:auto;margin-top:8px}
+  .compare-table{width:100%;border-collapse:collapse;font-size:11px;min-width:900px}
+  .compare-table th{background:var(--panel2);color:var(--glass-gold);padding:8px 6px;text-align:center;font-weight:700;border-bottom:2px solid var(--lead);letter-spacing:1px}
+  .compare-table th.cur{color:var(--text-bright);background:rgba(255,222,125,0.08)}
+  .compare-table td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:center;color:var(--text-dim)}
+  .compare-table td.cur{color:var(--text-bright);background:rgba(255,222,125,0.04);font-weight:600}
+  .compare-table td:first-child{text-align:left;color:var(--glass-gold);font-weight:600;padding-left:12px}
+  .compare-table tr:hover td{background:rgba(255,222,125,0.02)}
+
+  /* === ENDINGS === */
+  .endings{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  .ending{padding:20px 16px;border:2px solid var(--lead);border-radius:4px;position:relative}
+  .ending .badge{position:absolute;top:-10px;left:14px;font-size:11px;padding:2px 10px;font-weight:700;border-radius:2px}
+  .ending h4{font-size:15px;font-weight:700;margin:8px 0 10px;letter-spacing:1px}
+  .ending p{font-size:12px;color:var(--text-dim);line-height:1.7}
+  .ending.e-a{background:linear-gradient(180deg,rgba(255,222,125,0.06),transparent)}
+  .ending.e-a .badge{background:var(--glass-gold);color:var(--bg)}
+  .ending.e-a h4{color:var(--glass-gold)}
+  .ending.e-b{background:linear-gradient(180deg,rgba(233,69,96,0.06),transparent)}
+  .ending.e-b .badge{background:var(--glass-red);color:var(--bg)}
+  .ending.e-b h4{color:var(--glass-red)}
+  .ending.e-c{background:linear-gradient(180deg,rgba(132,94,194,0.06),transparent)}
+  .ending.e-c .badge{background:var(--glass-purple);color:var(--bg)}
+  .ending.e-c h4{color:#b0b0ff}
+
+  /* === QUOTE === */
+  .quote-box{
+    margin:40px 0;padding:28px 32px;border:2px solid var(--lead);border-radius:4px;
+    background:linear-gradient(135deg,rgba(255,222,125,0.04),rgba(132,94,194,0.03));
+    text-align:center;position:relative;
+  }
+  .quote-box::before,.quote-box::after{
+    content:'❝';position:absolute;font-size:40px;color:var(--glass-gold-dim);opacity:0.3;
+  }
+  .quote-box::before{top:8px;left:16px}
+  .quote-box::after{content:'❞';bottom:-8px;right:16px}
+  .quote-box p{font-size:18px;color:var(--text-bright);font-style:italic;line-height:1.8;letter-spacing:1px}
+  .quote-box .author{font-size:13px;color:var(--glass-gold-dim);margin-top:10px;letter-spacing:2px}
+
+  /* === MISC === */
+  .risk-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
+  .risk-table th{background:var(--panel2);color:var(--glass-red);padding:8px 10px;text-align:left;font-weight:700;border-bottom:2px solid var(--lead)}
+  .risk-table td{padding:7px 10px;border-bottom:1px solid var(--line);color:var(--text-dim)}
+  .risk-table td b{color:var(--text-bright)}
+  .risk-table .sev-high{color:var(--glass-red);font-weight:700}
+  .risk-table .sev-mid{color:var(--glass-gold)}
+  .risk-table .sev-low{color:var(--glass-green)}
+
+  .foot{text-align:center;padding:30px 20px;color:var(--text-dim);font-size:12px;letter-spacing:2px;border-top:1px solid var(--line);margin-top:40px}
+</style>
+</head>
+<body>
+
+<!-- ========== HERO ========== -->
+<div class="hero">
+  <div class="rose-window">
+    <svg viewBox="0 0 200 200">
+      <!-- Outer ring -->
+      <circle cx="100" cy="100" r="95" fill="none" stroke="#0A0A0A" stroke-width="4"/>
+      <circle cx="100" cy="100" r="88" fill="none" stroke="#1a1a2a" stroke-width="1"/>
+      <!-- 12 petals -->
+      <g transform="translate(100,100)">
+        <g id="petal">
+          <path d="M0,-85 L18,-45 L0,-20 L-18,-45 Z" fill="#E94560" opacity="0.7" stroke="#0A0A0A" stroke-width="1.5"/>
+          <path d="M0,-85 L18,-45 L0,-20 L-18,-45 Z" fill="none" stroke="#0A0A0A" stroke-width="1"/>
+        </g>
+        <use href="#petal" transform="rotate(30)"/>
+        <use href="#petal" transform="rotate(60)" opacity="0.6"/>
+        <use href="#petal" transform="rotate(90)"/>
+        <use href="#petal" transform="rotate(120)" opacity="0.6"/>
+        <use href="#petal" transform="rotate(150)"/>
+        <use href="#petal" transform="rotate(180)" opacity="0.7"/>
+        <use href="#petal" transform="rotate(210)"/>
+        <use href="#petal" transform="rotate(240)" opacity="0.6"/>
+        <use href="#petal" transform="rotate(270)"/>
+        <use href="#petal" transform="rotate(300)" opacity="0.6"/>
+        <use href="#petal" transform="rotate(330)"/>
+      </g>
+      <!-- Inner circle -->
+      <circle cx="100" cy="100" r="35" fill="none" stroke="#0A0A0A" stroke-width="3"/>
+      <circle cx="100" cy="100" r="30" fill="#FFDE7D" opacity="0.15" stroke="#FFDE7D" stroke-width="1"/>
+      <!-- Center -->
+      <circle cx="100" cy="100" r="15" fill="#FFDE7D" opacity="0.3" stroke="#0A0A0A" stroke-width="2"/>
+      <circle cx="100" cy="100" r="8" fill="#FFDE7D" opacity="0.5"/>
+      <!-- Spokes -->
+      <g stroke="#0A0A0A" stroke-width="1.5" opacity="0.6">
+        <line x1="100" y1="65" x2="100" y2="15"/>
+        <line x1="100" y1="135" x2="100" y2="185"/>
+        <line x1="65" y1="100" x2="15" y2="100"/>
+        <line x1="135" y1="100" x2="185" y2="100"/>
+      </g>
+    </svg>
+  </div>
+  <div class="tag">第011期 · 2026-07-27</div>
+  <h1>琉璃鉴</h1>
+  <div class="en">G L A S S &nbsp; C O D E X</div>
+  <div class="pitch">
+    你举起手机对着桌上的蜡烛拍一张——AI读出"火焰·温暖·燃烧"，一道金光从镜头射出，屏幕裂成彩绘玻璃。你获得了一枚<b>【燃·烛心焰】</b>琉璃碎片，足以点燃大教堂里第一扇熄灭的窗。
+  </div>
+  <div class="meta">
+    风格：彩绘玻璃 / 哥特光暗<span>|</span>玩法：拍照炼物·动作探索<span>|</span>AI：视觉语言模型 (BLIP-2 + CLIP)
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ========== CORE MECHANIC ========== -->
+  <section>
+    <div class="sec-title">
+      <span class="num">01</span>
+      <h2>核心机制 · 双模切换</h2>
+      <span class="sub">Tab 切换 · 数字 × 物理</span>
+    </div>
+    <div class="dual-mode">
+      <div class="mode-box cathedral">
+        <h3>⛪ 教堂模式</h3>
+        <ul>
+          <li><b>2D动作探索</b> — 暗黑哥特教堂</li>
+          <li><b>战斗</b> — 投掷琉璃碎片攻击</li>
+          <li><b>解谜</b> — 封印需要对应真髓</li>
+          <li><b>Boss</b> — 重新点亮暗窗</li>
+          <li><b>操作</b> — WASD + 鼠标</li>
+        </ul>
+      </div>
+      <div class="mode-arrow">
+        <span>⇄</span>
+        <small>Tab</small>
+      </div>
+      <div class="mode-box mirror">
+        <h3>📷 鉴光模式</h3>
+        <ul>
+          <li><b>摄像头实时画面</b> — 取景框叠加</li>
+          <li><b>AI实时识别</b> — "蜡烛 95%燃"</li>
+          <li><b>快门拍照</b> — 提取真髓</li>
+          <li><b>真髓雷达</b> — 环境真髓分布</li>
+          <li><b>操作</b> — 移动摄像头 + 快门</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-dim);line-height:1.8">
+      教堂里遇到封印 → 切换鉴光模式 → 对准现实物体拍照 → AI提取真髓 → 切回教堂 → 用琉璃碎片解封 → 继续<br>
+      <b style="color:var(--glass-gold)">核心张力</b>：Boss战中可能缺某种真髓，必须紧急切换鉴光模式在现实世界中拍照——Boss不会等你
+    </p>
+  </section>
+
+  <!-- ========== ESSENCE TYPES ========== -->
+  <section>
+    <div class="sec-title">
+      <span class="num">02</span>
+      <h2>八种真髓</h2>
+      <span class="sub">万物皆可炼 · 拍什么得什么</span>
+    </div>
+    <div class="essence-grid">
+      <div class="essence-card" style="--ec:#E94560;--ec-dim:#8a2838">
+        <span class="idx">一</span>
+        <div class="glyph">燃</div>
+        <div class="name">Burn</div>
+        <div class="sem">火焰 · 热 · 能量 · 激情</div>
+        <div class="ex">蜡烛 · 打火机 · 壁炉 · 太阳</div>
+        <div class="eff">灼烧弹道，持续伤害</div>
+      </div>
+      <div class="essence-card" style="--ec:#00B8A9;--ec-dim:#006b64">
+        <span class="idx">二</span>
+        <div class="glyph">流</div>
+        <div class="name">Flow</div>
+        <div class="sem">水 · 运动 · 适应 · 柔软</div>
+        <div class="ex">水杯 · 河流 · 布料 · 风</div>
+        <div class="eff">流动护盾，偏转攻击</div>
+      </div>
+      <div class="essence-card" style="--ec:#8D7B68;--ec-dim:#4d4238">
+        <span class="idx">三</span>
+        <div class="glyph">固</div>
+        <div class="name">Solid</div>
+        <div class="sem">石 · 稳定 · 防御 · 沉重</div>
+        <div class="ex">砖墙 · 岩石 · 金属门</div>
+        <div class="eff">琉璃壁垒，免疫一次</div>
+      </div>
+      <div class="essence-card" style="--ec:#C0C0C0;--ec-dim:#686868">
+        <span class="idx">四</span>
+        <div class="glyph">锋</div>
+        <div class="name">Edge</div>
+        <div class="sem">锐 · 切割 · 精准 · 穿透</div>
+        <div class="ex">刀 · 剪刀 · 针 · 仙人掌</div>
+        <div class="eff">穿透斩，无视护甲</div>
+      </div>
+      <div class="essence-card" style="--ec:#80ED99;--ec-dim:#448052">
+        <span class="idx">五</span>
+        <div class="glyph">生</div>
+        <div class="name">Grow</div>
+        <div class="sem">植物 · 生长 · 治愈 · 连结</div>
+        <div class="ex">盆栽 · 树叶 · 花 · 藤蔓</div>
+        <div class="eff">治愈光环，缓慢回血</div>
+      </div>
+      <div class="essence-card" style="--ec:#FFDE7D;--ec-dim:#8a7540">
+        <span class="idx">六</span>
+        <div class="glyph">鸣</div>
+        <div class="name">Reson</div>
+        <div class="sem">声 · 振动 · 共鸣 · 干扰</div>
+        <div class="ex">音箱 · 铃铛 · 琴弦 · 波纹</div>
+        <div class="eff">声波冲击，打断施法</div>
+      </div>
+      <div class="essence-card" style="--ec:#b0b0ff;--ec-dim:#47316c">
+        <span class="idx">七</span>
+        <div class="glyph">映</div>
+        <div class="name">Mirror</div>
+        <div class="sem">镜 · 反射 · 真实 · 揭示</div>
+        <div class="ex">镜子 · 水面 · 屏幕 · 眼睛</div>
+        <div class="eff">反射攻击，揭示弱点</div>
+      </div>
+      <div class="essence-card" style="--ec:#9d6cff;--ec-dim:#150028">
+        <span class="idx">八</span>
+        <div class="glyph">虚</div>
+        <div class="name">Void</div>
+        <div class="sem">暗 · 空 · 虚 · 转化</div>
+        <div class="ex">影子 · 黑洞 · 关闭屏幕 · 裂缝</div>
+        <div class="eff">虚空吞噬，概率即死</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== AI PIPELINE ========== -->
+  <section>
+    <div class="sec-title">
+      <span class="num">03</span>
+      <h2>AI管线 · 视觉语言模型</h2>
+      <span class="sub">BLIP-2 + CLIP + Phi-3 · 端侧推理</span>
+    </div>
+    <div class="pipeline">
+      <div class="pipe-stage">
+        <div class="pipe-num">A</div>
+        <div class="pipe-content">
+          <div class="pt">图像理解 <span>BLIP-2 蒸馏模型 · ~300M参数 · ONNX INT8</span></div>
+          <div class="pd">
+            ViT-B视觉编码器 → FlanT5-small语言解码 → 生成自然语言描述<br>
+            <code>输入: 拍摄图片 → 输出: "一根点燃的白色蜡烛，火焰摇曳，暖黄色光"</code><br>
+            提取语义标签集合: [蜡烛, 火焰, 暖, 黄色, 光]
+          </div>
+        </div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num">B</div>
+        <div class="pipe-content">
+          <div class="pt">语义匹配 <span>CLIP ViT-B/32 · 150M参数 · 实时200ms刷新</span></div>
+          <div class="pd">
+            图像嵌入(512维) × 8种真髓文本嵌入 → 余弦相似度 → Softmax归一化<br>
+            <code>[0.72燃, 0.08流, 0.03固, 0.05锋, 0.02生, 0.01鸣, 0.06映, 0.03虚]</code><br>
+            Top-1 = 真髓类型(燃)，概率值 = 匹配度(72%)
+          </div>
+          <div class="pipe-bar"><div class="fill" style="width:72%"></div></div>
+        </div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num">C</div>
+        <div class="pipe-content">
+          <div class="pt">视觉特征 <span>OpenCV · K-Means + LBP + Laplacian</span></div>
+          <div class="pd">
+            颜色调色板(5主色) → 碎片配色 · 纹理特征(LBP) → 碎片纹样<br>
+            图像质量(清晰度+亮度+构图+色彩丰富度) → 品质分(0-100)<br>
+            <code>品质 = 图像质量分 × 匹配度 → S(90+) / A(75+) / B(60+) / C(<60)</code>
+          </div>
+        </div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num">D</div>
+        <div class="pipe-content">
+          <div class="pt">碎片命名 <span>Phi-3-mini · 3.8B · ONNX INT4 · 离线</span></div>
+          <div class="pd">
+            <code>输入: BLIP描述("蜡烛·火焰·暖黄") + 真髓("燃") + 品质(S)</code><br>
+            <code>输出: 【燃·烛心焰】 · 持续灼烧 · 微光照明</code><br>
+            每枚碎片的名称独一无二——基于你拍的照片内容生成，两个玩家永远不会有相同收藏
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding:14px 18px;border:2px solid var(--lead);border-radius:4px;background:var(--panel2);font-size:12px;color:var(--text-dim);line-height:1.7">
+      <b style="color:var(--glass-teal)">分级推理策略</b>：实时预览仅用CLIP(15ms/帧) → 快门触发BLIP-2蒸馏(300ms) → 后台Phi-3命名(500ms) · 总延迟<1s · 全部端侧推理，原图即取即弃，隐私零风险
+    </div>
+  </section>
+
+  <!-- ========== FUSION ========== -->
+  <section>
+    <div class="sec-title">
+      <span class="num">04</span>
+      <h2>琉璃融合</h2>
+      <span class="sub">两枚碎片 → 新形态 · LLM生成名称与效果</span>
+    </div>
+    <div class="fusion-row">
+      <div class="fshard s-burn"><div class="fn">燃·烛心焰</div><div class="ft">灼烧</div></div>
+      <div class="fop">+</div>
+      <div class="fshard s-edge"><div class="fn">锋·厨刀锐</div><div class="ft">穿透斩</div></div>
+      <div class="feq">=</div>
+      <div class="fshard s-fused" style="background:linear-gradient(135deg,rgba(233,69,96,0.15),rgba(192,192,192,0.1));border-color:var(--glass-gold-dim)">
+        <div class="fn" style="color:var(--glass-gold)">焰刃</div><div class="ft" style="color:var(--glass-gold-dim)">穿透+灼烧</div>
+      </div>
+    </div>
+    <div class="fusion-row">
+      <div class="fshard s-burn"><div class="fn">燃·烛心焰</div><div class="ft">灼烧</div></div>
+      <div class="fop">+</div>
+      <div class="fshard s-flow"><div class="fn">流·杯中泉</div><div class="ft">流动护盾</div></div>
+      <div class="feq">=</div>
+      <div class="fshard s-fused" style="background:linear-gradient(135deg,rgba(233,69,96,0.12),rgba(0,184,169,0.1));border-color:var(--glass-gold-dim)">
+        <div class="fn" style="color:var(--glass-gold)">沸流</div><div class="ft" style="color:var(--glass-gold-dim)">岩浆路径</div>
+      </div>
+    </div>
+    <div class="fusion-row">
+      <div class="fshard s-reflect"><div class="fn">映·浴室镜</div><div class="ft">反射一次</div></div>
+      <div class="fop">+</div>
+      <div class="fshard s-void"><div class="fn">虚·屏中暗</div><div class="ft">虚空吞噬</div></div>
+      <div class="feq">=</div>
+      <div class="fshard s-fused" style="background:linear-gradient(135deg,rgba(132,94,194,0.15),rgba(36,0,70,0.3));border-color:var(--glass-gold-dim)">
+        <div class="fn" style="color:var(--glass-gold)">暗镜</div><div class="ft" style="color:var(--glass-gold-dim)">反射黑暗</div>
+      </div>
+    </div>
+    <table class="fusion-table">
+      <tr><th>融合</th><th>结果</th><th>效果</th></tr>
+      <tr><td><b>燃 + 锋</b></td><td>焰刃</td><td>火焰斩击，穿透+灼烧</td></tr>
+      <tr><td><b>固 + 虚</b></td><td>暗壁</td><td>虚空壁垒，被击中反而回血</td></tr>
+      <tr><td><b>映 + 燃</b></td><td>焰镜</td><td>反射时附带灼烧，反弹攻击更强</td></tr>
+      <tr><td><b>生 + 鸣</b></td><td>共鸣藤</td><td>藤蔓缠住后共鸣震动，伤害递增</td></tr>
+      <tr><td><b>锋 + 虚</b></td><td>裂空斩</td><td>斩出空间裂缝，延迟爆炸</td></tr>
+      <tr><td><b>流 + 映</b></td><td>镜湖</td><td>地面变反射水面，踩上去的敌人被反射自己攻击</td></tr>
+      <tr><td><b>虚 + 鸣</b></td><td>寂灭</td><td>绝对静音区域，一切停止1秒（含Boss）</td></tr>
+    </table>
+    <p style="margin-top:12px;font-size:12px;color:var(--glass-gold-dim);text-align:center;font-style:italic">
+      融合不是配方表——你丢两枚碎片进炼炉，LLM根据语义标签组合生成名称和效果。有些组合是没人发现过的。
+    </p>
+  </section>
+
+  <!-- ========== BOSS ========== -->
+  <section>
+    <div class="sec-title">
+      <span class="num">05</span>
+      <h2>Boss战 · 窗之守卫</h2>
+      <span class="sub">不是打败，是重新点亮</span>
+    </div>
+    <div class="boss-arena">
+      <div class="boss-window">
+        <h3>教堂巨型彩绘玻璃窗 · 5×4 = 20格</h3>
+        <div class="boss-grid">
+          <div class="boss-cell dark">?<span class="lbl">燃</span></div>
+          <div class="boss-cell dark">?<span class="lbl">流</span></div>
+          <div class="boss-cell dark">?<span class="lbl">固</span></div>
+          <div class="boss-cell dark">?<span class="lbl">锋</span></div>
+          <div class="boss-cell dark">?<span class="lbl">生</span></div>
+          <div class="boss-cell dark">?<span class="lbl">鸣</span></div>
+          <div class="boss-cell dark">?<span class="lbl">映</span></div>
+          <div class="boss-cell dark">?<span class="lbl">虚</span></div>
+          <div class="boss-cell lit" style="--bc:#E94560;--bc-dim:#8a2838">燃</div>
+          <div class="boss-cell dark">?<span class="lbl">流</span></div>
+          <div class="boss-cell dark">?<span class="lbl">固</span></div>
+          <div class="boss-cell lit" style="--bc:#C0C0C0;--bc-dim:#686868">锋</div>
+          <div class="boss-cell dark">?<span class="lbl">生</span></div>
+          <div class="boss-cell dark">?<span class="lbl">鸣</span></div>
+          <div class="boss-cell dark">?<span class="lbl">映</span></div>
+          <div class="boss-cell dark">?<span class="lbl">虚</span></div>
+          <div class="boss-cell dark">?<span class="lbl">燃</span></div>
+          <div class="boss-cell dark">?<span class="lbl">流</span></div>
+          <div class="boss-cell dark">?<span class="lbl">固</span></div>
+          <div class="boss-cell dark">?<span class="lbl">锋</span></div>
+        </div>
+        <div class="boss-info">
+          <b>机制</b>：每个格子需要对应真髓类型的碎片投掷点亮<br>
+          <b>正确</b>：格子爆开彩光，Boss掉血<br>
+          <b class="warn">错误</b>：格子喷出黑刺，你掉血<br>
+          <b>全部点亮</b>：Boss窗完全照亮 → 净化（非击杀）<br>
+          <b style="color:var(--glass-red)">核心张力</b>：4个碎片槽 vs 8种需求 → 战斗中紧急切鉴光模式拍照
+        </div>
+      </div>
+      <div class="boss-strategy">
+        <h3>战斗策略</h3>
+        <div class="strat"><b>预拍策略</b>：进Boss房前预拍8种真髓备用，但只有4个槽位，必须取舍</div>
+        <div class="strat"><b>融合策略</b>：融合碎片覆盖两种类型（焰刃=燃+锋），4槽覆盖8种需求的一半</div>
+        <div class="strat"><b>紧急拍照</b>：Boss攻击间隙切换鉴光模式，在现实中紧急拍照——时间减速0.5×，3秒安全窗口</div>
+        <div class="strat"><b>观察弱点</b>：Boss攻击模式暗示格子需求顺序，先点亮的关键格子会暴露更多弱点</div>
+        <div class="strat"><b>守卫不是敌人</b>：它们是被囚的真髓。净化不是杀死——是释放。叙事与机制合一</div>
+        <div style="margin-top:16px;padding:12px;border:1px dashed var(--glass-gold-dim);border-radius:3px;font-size:12px;color:var(--glass-gold)">
+          "我需要'鸣'，但没带——赶紧拍音箱！"<br>
+          <span style="color:var(--text-dim);font-style:italic">→ 在Boss暗影弹幕飞来的同时，你切到鉴光模式，举着手机找音箱</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== STORY ARC ========== -->
+  <section>
+    <div class="sec-title">
+      <span class="num">06</span>
+      <h2>故事弧 · 琉璃大教堂</h2>
+      <span class="sub">六层攀升 · 一个关于占有与释放的故事</span>
+    </div>
+    <div class="arc">
+      <div class="row r1">
+        <div class="ch"><div class="n">入</div>大厅</div>
+        <div class="bd"><span class="nm">最后的光</span> — 教堂入口大厅，最后一盏琉璃灯在灭与不灭之间。你举起鉴光镜，镜中映出你的脸——和脸背后无穷的黑暗。该上楼了。</div>
+      </div>
+      <div class="row r2">
+        <div class="ch"><div class="n">一</div>地宫</div>
+        <div class="bd"><span class="nm">四元</span> — 最基础的真髓：燃·流·固·锋。教程关。守卫是一尊裂开的石天使，翅膀琉璃碎了。<span class="how">你给它补上"固"，翅膀愈合。</span></div>
+      </div>
+      <div class="row r3">
+        <div class="ch"><div class="n">二</div>花园</div>
+        <div class="bd"><span class="nm">百草</span> — 琉璃花圃全枯。拍植物让琉璃花重新开放。守卫是琉璃荆棘，缠住螺旋梯。<span class="how">需要"锋"斩断，但荆棘会再生——先封"药"解毒根。</span></div>
+      </div>
+      <div class="row r4">
+        <div class="ch"><div class="n">三</div>武库</div>
+        <div class="bd"><span class="nm">百炼</span> — 琉璃兵器陈列室，每件兵器锁着战争记忆。守卫是碎裂琉璃盾，弹回一切攻击。<span class="how">拍一面现实镜子，让盾看见自己的裂痕——它崩溃了。</span></div>
+      </div>
+      <div class="row r5">
+        <div class="ch"><div class="n">四</div>万兽</div>
+        <div class="bd"><span class="nm">灵笼</span> — 琉璃动物园，灵兽醒不来。有些窗需要你已经拍不到的东西——"奔跑的灵"。你的房间没有马。<span class="how">你拍了自己的腿在跑。AI说：奔跑·运动·力量。够了。</span></div>
+      </div>
+      <div class="row r6">
+        <div class="ch"><div class="n">五</div>观星</div>
+        <div class="bd"><span class="nm">天穹</span> — 穹顶观星台，琉璃星图全灭。守卫是"熄灭使者"——纯黑暗构成的影子，碎片穿过无效。<span class="how">你拍了一面关掉的屏幕。AI说：虚·无·镜。黑暗的镜子。你把暗弹回去。</span></div>
+      </div>
+      <div class="row r7">
+        <div class="ch"><div class="n">终</div>天窗</div>
+        <div class="bd"><span class="nm">鉴明之室</span> — 师傅封印的天窗。留言："熄灭不是死亡——是越狱。你一路打败的守卫不是怪物，是囚徒。它们只是想出去。现在你选：重新封印，还是打碎天窗？"</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ENDINGS ========== -->
+  <section>
+    <div class="sec-title">
+      <span class="num">07</span>
+      <h2>三结局 · 占有与释放</h2>
+      <span class="sub">你做了一整局的力量，终章要你全部放弃——你愿意吗？</span>
+    </div>
+    <div class="endings">
+      <div class="ending e-a">
+        <span class="badge">A</span>
+        <h4>封印</h4>
+        <p>你修复天窗。教堂大亮，万窗齐鸣。你成为新任织光者大师。但夜里你听见窗户里传来哭声。你知道，千年后还会有人走到这里，面对同样的选择。</p>
+      </div>
+      <div class="ending e-b">
+        <span class="badge">B</span>
+        <h4>解放</h4>
+        <p>你举起鉴光镜，对准天窗中心，用力一砸。千扇窗同时碎裂。无数真髓化为流光飞向世界。教堂在光中坍塌。你抬头——天亮了。真正的日出。不是琉璃的光，是太阳的。</p>
+      </div>
+      <div class="ending e-c">
+        <span class="badge">C · 隐藏</span>
+        <h4>传承</h4>
+        <p>你既不封印也不打碎。你把鉴光镜嵌进天窗中心。教堂不再是监狱，变成镜子。万物来此照见自己的真髓，然后自由离开。你在师傅留言旁刻下："光不该被 owned。光该被 seen。"</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== QUOTE ========== -->
+  <div class="quote-box">
+    <p>"徒弟，如果你走到这里，说明我已经不在了。<br>熄灭的真相是：我们错了。<br>千年来我们捕捉真髓、封入琉璃、永不释放。<br>真髓不是燃料，是生命。你把生命关进玻璃千年，它会疯。<br>那些你一路打败的守卫，不是怪物，是囚徒。它们只是想出去。"</p>
+    <div class="author">—— 鉴明 · 最后的织光者</div>
+  </div>
+
+  <!-- ========== PALETTE ========== -->
+  <section>
+    <div class="sec-title">
+      <span class="num">08</span>
+      <h2>色彩体系 · 彩绘玻璃</h2>
+      <span class="sub">铅条分割 · 内发光 · 透光感</span>
+    </div>
+    <div class="palette">
+      <div class="swatch">
+        <div class="bar" style="background:linear-gradient(135deg,#E94560,#FF6B35)"></div>
+        <div class="lbl" style="color:#E94560">燃 · 焰红</div>
+        <div class="hex">#E94560</div>
+      </div>
+      <div class="swatch">
+        <div class="bar" style="background:linear-gradient(135deg,#00B8A9,#4CC9F0)"></div>
+        <div class="lbl" style="color:#00B8A9">流 · 碧蓝</div>
+        <div class="hex">#00B8A9</div>
+      </div>
+      <div class="swatch">
+        <div class="bar" style="background:linear-gradient(135deg,#8D7B68,#5C5547)"></div>
+        <div class="lbl" style="color:#8D7B68">固 · 岩褐</div>
+        <div class="hex">#8D7B68</div>
+      </div>
+      <div class="swatch">
+        <div class="bar" style="background:linear-gradient(135deg,#C0C0C0,#E8E8E8)"></div>
+        <div class="lbl" style="color:#C0C0C0">锋 · 银刃</div>
+        <div class="hex">#C0C0C0</div>
+      </div>
+      <div class="swatch">
+        <div class="bar" style="background:linear-gradient(135deg,#80ED99,#38B000)"></div>
+        <div class="lbl" style="color:#80ED99">生 · 翡翠</div>
+        <div class="hex">#80ED99</div>
+      </div>
+      <div class="swatch">
+        <div class="bar" style="background:linear-gradient(135deg,#FFDE7D,#FFA500)"></div>
+        <div class="lbl" style="color:#FFDE7D">鸣 · 琥珀</div>
+        <div class="hex">#FFDE7D</div>
+      </div>
+      <div class="swatch">
+        <div class="bar" style="background:linear-gradient(135deg,#B0B0FF,#845EC2)"></div>
+        <div class="lbl" style="color:#b0b0ff">映 · 幻紫</div>
+        <div class="hex">#845EC2</div>
+      </div>
+      <div class="swatch">
+        <div class="bar" style="background:linear-gradient(135deg,#240046,#10002B)"></div>
+        <div class="lbl" style="color:#9d6cff">虚 · 墨紫</div>
+        <div class="hex">#240046</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:12px;color:var(--text-dim);line-height:1.7;padding:14px;border:1px solid var(--lead);border-radius:3px;background:var(--panel)">
+      <b style="color:var(--glass-gold)">铅条(Lead Came)</b>：所有色块用 <code style="color:var(--glass-gold)">#0A0A0A</code> 粗黑线分割（2-4px），转角处有焊点。这是彩绘玻璃最核心的视觉特征——没有铅条就不是彩绘玻璃。<br>
+      <b style="color:var(--glass-gold)">光效</b>：琉璃碎片自带内发光(colored glow)；点亮的窗户从背面透光(radial-gradient)；黑暗区域绝对的黑——对比极致。你拍的照片通过AdaIN风格迁移+Voronoi铅条分割→变成独一无二的琉璃碎片。
+    </div>
+  </section>
+
+  <!-- ========== COMPARISON ========== -->
+  <section>
+    <div class="sec-title">
+      <span class="num">09</span>
+      <h2>与前10期对比</h2>
+      <span class="sub">011 琉璃鉴</span>
+    </div>
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <tr>
+          <th>维度</th><th>001</th><th>002</th><th>003</th><th>004</th><th>005</th><th>006</th><th>007</th><th>008</th><th>009</th><th>010</th><th class="cur">011</th>
+        </tr>
+        <tr>
+          <td>风格</td><td>水墨</td><td>赛博</td><td>哥特</td><td>浮世绘</td><td>黏土</td><td>梦境</td><td>像素</td><td>蒸汽</td><td>Glitch</td><td>武侠</td><td class="cur">彩绘玻璃</td>
+        </tr>
+        <tr>
+          <td>玩法</td><td>声音创作</td><td>RL潜行</td><td>画线斩</td><td>变身</td><td>物理变形</td><td>时间回声</td><td>吞噬进化</td><td>弹珠操控</td><td>框选战斗</td><td>声控格斗</td><td class="cur">拍照炼物</td>
+        </tr>
+        <tr>
+          <td>AI</td><td>音乐生成</td><td>目标检测</td><td>笔迹CNN</td><td>涂鸦识别</td><td>形状+语音</td><td>行为LSTM</td><td>LLM意图</td><td>弹道+WFC</td><td>RL敌人</td><td>语音情感</td><td class="cur">视觉语言模型</td>
+        </tr>
+        <tr>
+          <td>输入</td><td>麦克风</td><td>摄像头</td><td>鼠标</td><td>鼠标</td><td>鼠标+语音</td><td>鼠标</td><td>键盘</td><td>鼠标</td><td>鼠标</td><td>麦克风</td><td class="cur">摄像头+麦克风</td>
+        </tr>
+        <tr>
+          <td>积累</td><td>—</td><td>单局</td><td>—</td><td>单局</td><td>消耗</td><td>双轨</td><td>双轨</td><td>双轨</td><td>双轨</td><td>双轨</td><td class="cur">双轨</td>
+        </tr>
+        <tr>
+          <td>叙事</td><td>中</td><td>中</td><td>低</td><td>中</td><td>低</td><td>中</td><td>高</td><td>低</td><td>极高</td><td>高</td><td class="cur">高</td>
+        </tr>
+        <tr>
+          <td>爽感</td><td>声画共生</td><td>环境驱动</td><td>一刀清屏</td><td>画一笔变</td><td>捏橡皮泥</td><td>一人成军</td><td>吃敌命名</td><td>弹珠弹射</td><td>一框全删</td><td>一吼碎甲</td><td class="cur">一照万物</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========== RISKS ========== -->
+  <section>
+    <div class="sec-title">
+      <span class="num">10</span>
+      <h2>风险与对策</h2>
+      <span class="sub">拥抱不确定性 = 游戏特色</span>
+    </div>
+    <table class="risk-table">
+      <tr><th>风险</th><th>严重度</th><th>对策</th></tr>
+      <tr><td><b>摄像头不可用</b></td><td class="sev-high">高</td><td>图库模式(选本地图片) + 预设模式(50张内置图)；核心体验降级但不崩溃</td></tr>
+      <tr><td><b>AI识别不准</b></td><td class="sev-high">高</td><td>拥抱不确定性=游戏特色；拍灯被识别成"映"而不是"燃"？你得到了意外碎片！创造惊喜不是bug</td></tr>
+      <tr><td><b>隐私担忧</b></td><td class="sev-high">高</td><td>全本地推理；原图即取即弃；人脸检测提示；云端增强可选且只发特征向量</td></tr>
+      <tr><td><b>玩家不知道拍什么</b></td><td class="sev-mid">中</td><td>真髓雷达(显示环境真髓分布)；提示系统("这扇窗需要燃烧…你的周围有火吗？")</td></tr>
+      <tr><td><b>Boss战紧急拍照太仓促</b></td><td class="sev-mid">中</td><td>切换时时间减速0.5×；拍照有3秒安全窗口；预拍碎片备用</td></tr>
+      <tr><td><b>玩家环境太单调</b></td><td class="sev-low">低</td><td>任何照片都能得到碎片(纯黑=虚空, 纯白=映射)；品质低但有；鼓励外出拍照</td></tr>
+      <tr><td><b>与002霓虹"摄像头"撞</b></td><td class="sev-low">低</td><td>002是目标检测(预设类别)，011是开放世界理解(VLM)；002实时检测，011拍照提取；完全不同</td></tr>
+    </table>
+  </section>
+
+  <div class="foot">
+    第011期 · 每日游戏灵感 · 2026-07-27<br>
+    <span style="opacity:0.5">光不该被 owned。光该被 seen。</span>
+  </div>
+
+</div>
+</body>
+</html>

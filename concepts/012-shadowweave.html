@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《影绘》SHADOW WEAVE · 第012期概念可视化</title>
+<style>
+  :root{
+    --bg:#1A0F00; --panel:#2A1A0F; --panel2:#3B2A1F;
+    --paper:#F5E6C8; --paper-dim:#E8D5A8; --paper-bright:#FAF0E0;
+    --shadow-core:#0A0500; --shadow-edge:#1A0F00;
+    --lamp:#FFD700; --lamp-warm:#FFB347; --lamp-deep:#FF8C42;
+    --amber:#FFB347; --amber-dim:#8a5e2a;
+    --crane-silver:#E8E8F0; --crane-dim:#7a7a85;
+    --beast-red:#C73E1D; --beast-dim:#6a1f0e;
+    --tree-green:#80ED99; --tree-dim:#3a6a45;
+    --fish-blue:#4CC9F0; --fish-dim:#25687a;
+    --serpent-jade:#4A8B6F; --serpent-dim:#234535;
+    --sword-steel:#C0C0C0; --sword-dim:#606060;
+    --shield-gold:#D4A537; --shield-dim:#6a521c;
+    --giant-earth:#8D7B68; --giant-dim:#463d34;
+    --void:#1A0A2E; --void-dim:#0D0518;
+    --text:#F5E6C8; --text-dim:#9a8a6a; --text-bright:#FFF8DC;
+    --line:#3B2A1F;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6;overflow-x:hidden}
+
+  /* === SHADOW PUPPET UTILITY === */
+  .puppet-panel{
+    background:var(--panel);
+    border:2px solid var(--shadow-edge);
+    border-radius:2px;
+    position:relative;
+    overflow:hidden;
+  }
+  .puppet-panel::before{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse at 50% 30%, rgba(255,179,71,0.08), transparent 60%),
+      radial-gradient(ellipse at 30% 70%, rgba(255,140,66,0.04), transparent 50%);
+    pointer-events:none;
+  }
+  .paper-texture{
+    position:relative;
+  }
+  .paper-texture::after{
+    content:'';position:absolute;inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px),
+      repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(0,0,0,0.02) 3px, rgba(0,0,0,0.02) 6px);
+    pointer-events:none;
+  }
+
+  /* === HERO === */
+  .hero{
+    text-align:center;padding:90px 20px 50px;position:relative;
+    background:
+      radial-gradient(ellipse at 50% 20%, rgba(255,215,0,0.10), transparent 50%),
+      radial-gradient(ellipse at 30% 60%, rgba(255,179,71,0.06), transparent 40%),
+      radial-gradient(ellipse at 70% 50%, rgba(255,140,66,0.04), transparent 40%);
+  }
+  .hero .tag{display:inline-block;font-size:12px;letter-spacing:4px;color:var(--lamp);border:1px solid var(--amber-dim);padding:4px 14px;border-radius:2px;margin-bottom:20px;background:rgba(255,215,0,0.05)}
+  .hero h1{
+    font-size:82px;font-weight:900;letter-spacing:14px;color:var(--text-bright);
+    text-shadow:
+      0 0 30px rgba(255,215,0,0.25),
+      0 0 60px rgba(255,179,71,0.15),
+      0 2px 0 var(--shadow-edge);
+    margin-bottom:4px;
+  }
+  .hero .en{font-size:16px;letter-spacing:10px;color:var(--amber-dim);font-weight:300;margin-bottom:28px}
+  .hero .pitch{max-width:680px;margin:0 auto;font-size:15px;color:var(--text-dim);line-height:1.9;border-left:2px solid var(--lamp-warm);padding:4px 0 4px 18px;text-align:left;font-style:italic}
+  .hero .pitch b{color:var(--lamp-warm);font-style:normal}
+  .hero .meta{margin-top:28px;font-size:13px;color:var(--text-dim);letter-spacing:1px}
+  .hero .meta span{margin:0 10px;color:var(--amber-dim)}
+
+  /* Shadow lantern decoration */
+  .lantern{
+    width:100px;height:120px;margin:0 auto 30px;position:relative;
+  }
+  .lantern-glow{
+    position:absolute;inset:-40px;
+    background:radial-gradient(circle, rgba(255,215,0,0.15), transparent 60%);
+    animation:glow-pulse 3s ease-in-out infinite;
+  }
+  @keyframes glow-pulse{
+    0%,100%{opacity:0.6}50%{opacity:1}
+  }
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+
+  /* === SECTION === */
+  section{margin-top:60px}
+  .sec-title{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+  .sec-title .num{font-size:13px;color:var(--bg);background:var(--lamp);padding:2px 10px;font-weight:700;letter-spacing:1px;border-radius:1px}
+  .sec-title h2{font-size:24px;font-weight:700;color:var(--text-bright);letter-spacing:2px}
+  .sec-title .sub{font-size:12px;color:var(--text-dim);letter-spacing:2px;margin-left:8px}
+
+  /* === FORM CARDS === */
+  .form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}
+  .form-card{
+    background:var(--panel2);border:1px solid var(--shadow-edge);border-radius:3px;
+    padding:18px 14px;position:relative;overflow:hidden;transition:transform 0.2s;
+  }
+  .form-card:hover{transform:translateY(-3px)}
+  .form-card .puppet-vis{
+    width:70px;height:70px;margin:0 auto 12px;position:relative;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .form-card .puppet-vis svg{width:100%;height:100%;filter:drop-shadow(0 0 8px var(--card-glow,rgba(255,179,71,0.3)))}
+  .form-card .fname{text-align:center;font-size:18px;font-weight:700;color:var(--card-color,var(--text-bright));letter-spacing:2px;margin-bottom:4px}
+  .form-card .fpose{text-align:center;font-size:11px;color:var(--text-dim);margin-bottom:8px;letter-spacing:0.5px}
+  .form-card .fability{text-align:center;font-size:12px;color:var(--text);line-height:1.5;padding:6px 0;border-top:1px solid var(--shadow-edge)}
+  .form-card .fspark{font-size:11px;color:var(--card-color);font-style:italic;text-align:center;margin-top:6px;opacity:0.8}
+
+  /* === COMPARISON TABLE === */
+  .cmp-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:12px}
+  .cmp-table th{background:var(--panel2);color:var(--lamp-warm);padding:8px 6px;border:1px solid var(--shadow-edge);font-weight:600;text-align:center;letter-spacing:1px}
+  .cmp-table td{padding:7px 6px;border:1px solid var(--shadow-edge);text-align:center;color:var(--text-dim)}
+  .cmp-table td.highlight{color:var(--lamp);font-weight:600;background:rgba(255,215,0,0.05)}
+  .cmp-table tr:hover td{background:rgba(255,179,71,0.03)}
+
+  /* === POSE QUALITY === */
+  .quality-bars{display:flex;gap:16px;margin-top:20px;flex-wrap:wrap}
+  .qbar{flex:1;min-width:200px;background:var(--panel2);border:1px solid var(--shadow-edge);border-radius:3px;padding:16px}
+  .qbar .qhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .qbar .qname{font-size:13px;font-weight:600;color:var(--lamp-warm)}
+  .qbar .qweight{font-size:11px;color:var(--text-dim)}
+  .qbar .qtrack{height:6px;background:var(--shadow-edge);border-radius:3px;overflow:hidden}
+  .qbar .qfill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--lamp-deep),var(--lamp));transition:width 1s}
+
+  /* === STORY ARC === */
+  .arc-box{
+    background:var(--panel);border:1px solid var(--shadow-edge);border-radius:3px;
+    padding:24px;position:relative;margin-top:20px;
+  }
+  .arc-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--lamp-warm),transparent)}
+  .arc-step{display:flex;gap:16px;margin-bottom:16px;align-items:flex-start}
+  .arc-step:last-child{margin-bottom:0}
+  .arc-step .arc-num{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:var(--shadow-edge);border:2px solid var(--amber-dim);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--lamp-warm)}
+  .arc-step .arc-content{flex:1}
+  .arc-step .arc-title{font-size:14px;font-weight:600;color:var(--text-bright);margin-bottom:4px}
+  .arc-step .arc-desc{font-size:12px;color:var(--text-dim);line-height:1.6}
+  .arc-arrow{text-align:center;color:var(--amber-dim);font-size:16px;margin:-8px 0 -4px 18px}
+
+  /* === TECH STACK === */
+  .tech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}
+  .tech-item{background:var(--panel2);border:1px solid var(--shadow-edge);border-radius:3px;padding:14px 16px}
+  .tech-item .tname{font-size:13px;font-weight:600;color:var(--lamp-warm);margin-bottom:4px}
+  .tech-item .tdesc{font-size:11px;color:var(--text-dim);line-height:1.5}
+
+  /* === ENDING CARDS === */
+  .endings{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+  .ending{background:var(--panel2);border:1px solid var(--shadow-edge);border-radius:3px;padding:18px;position:relative;overflow:hidden}
+  .ending::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--end-color,var(--lamp))}
+  .ending .etag{font-size:10px;letter-spacing:2px;color:var(--end-color,var(--lamp));margin-bottom:8px}
+  .ending .ename{font-size:16px;font-weight:700;color:var(--text-bright);margin-bottom:8px;letter-spacing:1px}
+  .ending .edesc{font-size:11px;color:var(--text-dim);line-height:1.6}
+
+  /* === AI PIPELINE === */
+  .pipeline{background:var(--panel);border:1px solid var(--shadow-edge);border-radius:3px;padding:24px;margin-top:20px}
+  .pipeline .stage{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+  .pipeline .stage:last-child{margin-bottom:0}
+  .pipeline .stage-num{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--shadow-edge);border:1px solid var(--amber-dim);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--lamp-warm)}
+  .pipeline .stage-body{flex:1}
+  .pipeline .stage-name{font-size:13px;font-weight:600;color:var(--text-bright);margin-bottom:3px}
+  .pipeline .stage-detail{font-size:11px;color:var(--text-dim);line-height:1.6}
+
+  /* === FOOTER === */
+  .footer{text-align:center;padding:40px 20px;border-top:1px solid var(--shadow-edge);margin-top:60px}
+  .footer .soul{max-width:680px;margin:0 auto;font-size:14px;color:var(--text-dim);line-height:1.8;font-style:italic;border-left:2px solid var(--lamp-warm);padding:8px 0 8px 18px;text-align:left}
+  .footer .soul b{color:var(--lamp-warm);font-style:normal}
+  .footer .tag-line{margin-top:20px;font-size:12px;color:var(--amber-dim);letter-spacing:2px}
+
+  @media(max-width:768px){
+    .form-grid{grid-template-columns:repeat(2,1fr)}
+    .endings{grid-template-columns:1fr}
+    .tech-grid{grid-template-columns:1fr}
+    .hero h1{font-size:48px;letter-spacing:6px}
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="lantern">
+    <div class="lantern-glow"></div>
+    <svg viewBox="0 0 100 120" style="width:100%;height:100%;filter:drop-shadow(0 0 15px rgba(255,215,0,0.4))">
+      <!-- lantern body -->
+      <ellipse cx="50" cy="60" rx="32" ry="40" fill="#FFB347" opacity="0.15"/>
+      <ellipse cx="50" cy="60" rx="28" ry="36" fill="#FF8C42" opacity="0.2"/>
+      <ellipse cx="50" cy="60" rx="22" ry="30" fill="#FFD700" opacity="0.3"/>
+      <ellipse cx="50" cy="60" rx="14" ry="20" fill="#FFF8DC" opacity="0.5"/>
+      <!-- frame -->
+      <rect x="42" y="18" width="16" height="4" rx="1" fill="#3B2A1F"/>
+      <rect x="38" y="22" width="24" height="3" rx="1" fill="#5C4030"/>
+      <path d="M38,22 Q50,18 62,22" fill="none" stroke="#5C4030" stroke-width="2"/>
+      <path d="M28,60 Q28,30 50,25 Q72,30 72,60 Q72,90 50,95 Q28,90 28,60" fill="none" stroke="#5C4030" stroke-width="2"/>
+      <line x1="28" y1="40" x2="72" y2="40" stroke="#5C4030" stroke-width="1.5"/>
+      <line x1="28" y1="60" x2="72" y2="60" stroke="#5C4030" stroke-width="1.5"/>
+      <line x1="28" y1="80" x2="72" y2="80" stroke="#5C4030" stroke-width="1.5"/>
+      <rect x="38" y="95" width="24" height="3" rx="1" fill="#5C4030"/>
+      <rect x="42" y="98" width="16" height="4" rx="1" fill="#3B2A1F"/>
+      <!-- tassel -->
+      <line x1="50" y1="102" x2="50" y2="115" stroke="#8B3A2A" stroke-width="1.5"/>
+      <circle cx="50" cy="116" r="3" fill="#8B3A2A"/>
+    </svg>
+  </div>
+  <div class="tag">第012期 · 每日游戏灵感</div>
+  <h1>影 绘</h1>
+  <div class="en">S H A D O W &nbsp; W E A V E</div>
+  <div class="pitch">
+    你站在屏幕前张开双臂——摄像头读出你的身体轮廓，屏幕上的影子应声化作一只鹤，振翅飞越纸崖深谷。你蹲下，鹤落回地面变成一头兽，低身冲过纸墙裂缝。<b>你的身体就是皮影戏大师的双手，你的影子是活的。</b>
+  </div>
+  <div class="meta">
+    风格：皮影戏 / 纸境光暗<span>|</span>玩法：身体变形·影武探索<span>|</span>AI：实时姿态估计 MediaPipe BlazePose + Selfie Segmentation
+  </div>
+</div>
+
+<div class="wrap paper-texture">
+
+<!-- SECTION: EIGHT FORMS -->
+<section>
+  <div class="sec-title">
+    <span class="num">01</span>
+    <h2>八种影形</h2>
+    <span class="sub">BODY → SHADOW</span>
+  </div>
+  <p style="font-size:13px;color:var(--text-dim);line-height:1.7;max-width:800px">
+    AI 实时提取你全身 33 个关键点（MediaPipe BlazePose），计算开放度、高度比、对称性、重心偏移、关节角度——映射到八种影形。<b style="color:var(--lamp-warm)">你不需要摆标准姿势，AI 接受一切身体形状。</b>身体本能=游戏逻辑：想飞自然张手，想冲自然蹲下。
+  </p>
+  <div class="form-grid">
+
+    <!-- 鹤 -->
+    <div class="form-card" style="--card-color:var(--crane-silver);--card-glow:rgba(232,232,240,0.3)">
+      <div class="puppet-vis">
+        <svg viewBox="0 0 70 70">
+          <!-- crane silhouette: arms spread -->
+          <g fill="#0A0500" stroke="#E8E8F0" stroke-width="0.5">
+            <circle cx="35" cy="18" r="6"/>
+            <path d="M35,24 L33,45 L37,45 Z"/>
+            <path d="M35,30 L8,20 L12,24 L35,34 Z"/>
+            <path d="M35,30 L62,20 L58,24 L35,34 Z"/>
+            <path d="M33,45 L30,60 L34,60 Z"/>
+            <path d="M37,45 L40,60 L36,60 Z"/>
+          </g>
+          <circle cx="35" cy="18" r="1.5" fill="#FFB347"/>
+        </svg>
+      </div>
+      <div class="fname" style="color:var(--crane-silver)">鹤</div>
+      <div class="fpose">双臂展开 · 单腿抬起</div>
+      <div class="fability">滑翔 / 空中冲刺</div>
+      <div class="fspark">"张开双臂，影子化鹤掠过深渊"</div>
+    </div>
+
+    <!-- 兽 -->
+    <div class="form-card" style="--card-color:var(--beast-red);--card-glow:rgba(199,62,29,0.3)">
+      <div class="puppet-vis">
+        <svg viewBox="0 0 70 70">
+          <g fill="#0A0500" stroke="#C73E1D" stroke-width="0.5">
+            <ellipse cx="35" cy="42" rx="14" ry="10"/>
+            <circle cx="22" cy="35" r="6"/>
+            <path d="M22,30 L18,22 L24,28 Z"/>
+            <path d="M28,32 L26,24 L30,30 Z"/>
+            <path d="M30,50 L28,60 L32,58 Z"/>
+            <path d="M42,50 L40,58 L44,60 Z"/>
+            <path d="M48,38 L58,32 L56,40 Z"/>
+          </g>
+          <circle cx="20" cy="34" r="1.5" fill="#FFB347"/>
+        </svg>
+      </div>
+      <div class="fname" style="color:var(--beast-red)">兽</div>
+      <div class="fpose">蹲低 · 双臂前伸</div>
+      <div class="fability">冲撞 / 钻缝</div>
+      <div class="fspark">"一蹲一冲，影子化兽撞碎纸墙"</div>
+    </div>
+
+    <!-- 树 -->
+    <div class="form-card" style="--card-color:var(--tree-green);--card-glow:rgba(128,237,153,0.3)">
+      <div class="puppet-vis">
+        <svg viewBox="0 0 70 70">
+          <g fill="#0A0500" stroke="#80ED99" stroke-width="0.5">
+            <rect x="33" y="30" width="4" height="30" rx="1"/>
+            <path d="M35,30 L20,12 L24,16 L35,24 Z"/>
+            <path d="M35,30 L50,12 L46,16 L35,24 Z"/>
+            <path d="M35,24 L28,8 L32,12 L35,18 Z"/>
+            <path d="M35,24 L42,8 L38,12 L35,18 Z"/>
+            <circle cx="22" cy="14" r="2" fill="#4A8B6F" opacity="0.6"/>
+            <circle cx="48" cy="14" r="2" fill="#4A8B6F" opacity="0.6"/>
+            <circle cx="35" cy="8" r="2" fill="#4A8B6F" opacity="0.6"/>
+          </g>
+          <circle cx="35" cy="20" r="1.5" fill="#FFB347"/>
+        </svg>
+      </div>
+      <div class="fname" style="color:var(--tree-green)">树</div>
+      <div class="fpose">站直 · 双臂高举</div>
+      <div class="fability">生长桥梁 / 屏障</div>
+      <div class="fspark">"高举双手，影化巨树长出藤桥"</div>
+    </div>
+
+    <!-- 鱼 -->
+    <div class="form-card" style="--card-color:var(--fish-blue);--card-glow:rgba(76,201,240,0.3)">
+      <div class="puppet-vis">
+        <svg viewBox="0 0 70 70">
+          <g fill="#0A0500" stroke="#4CC9F0" stroke-width="0.5">
+            <ellipse cx="35" cy="35" rx="18" ry="7"/>
+            <path d="M53,35 L62,28 L60,35 L62,42 Z"/>
+            <path d="M28,30 L24,22 L30,28 Z"/>
+            <path d="M28,40 L24,48 L30,42 Z"/>
+            <circle cx="20" cy="33" r="2" fill="#4CC9F0" opacity="0.7"/>
+          </g>
+          <circle cx="20" cy="33" r="1.5" fill="#FFB347"/>
+        </svg>
+      </div>
+      <div class="fname" style="color:var(--fish-blue)">鱼</div>
+      <div class="fpose">双臂前并 · 身体前倾</div>
+      <div class="fability">水中冲刺 / 穿透</div>
+      <div class="fspark">"前倾如鱼，影子穿透纸幕游走"</div>
+    </div>
+
+    <!-- 蛇 -->
+    <div class="form-card" style="--card-color:var(--serpent-jade);--card-glow:rgba(74,139,111,0.3)">
+      <div class="puppet-vis">
+        <svg viewBox="0 0 70 70">
+          <g fill="#0A0500" stroke="#4A8B6F" stroke-width="0.5">
+            <path d="M10,50 Q20,30 35,40 Q50,50 60,30 Q62,25 58,22" fill="none" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="58" cy="22" r="4"/>
+            <path d="M56,20 L53,16 M60,20 L63,16" stroke-width="1"/>
+          </g>
+          <circle cx="58" cy="22" r="1.5" fill="#FFB347"/>
+        </svg>
+      </div>
+      <div class="fname" style="color:var(--serpent-jade)">蛇</div>
+      <div class="fpose">双臂贴身 · 身体侧弯</div>
+      <div class="fability">穿隙 / 缠绕</div>
+      <div class="fspark">"蜿蜒身体，影子如蛇钻过裂隙"</div>
+    </div>
+
+    <!-- 剑 -->
+    <div class="form-card" style="--card-color:var(--sword-steel);--card-glow:rgba(192,192,192,0.3)">
+      <div class="puppet-vis">
+        <svg viewBox="0 0 70 70">
+          <g fill="#0A0500" stroke="#C0C0C0" stroke-width="0.5">
+            <circle cx="20" cy="50" r="5"/>
+            <path d="M20,45 L22,30 L48,15 L46,18 L24,32 Z"/>
+            <path d="M18,48 L30,44 L28,46 L18,50 Z"/>
+            <path d="M22,35 L40,25" stroke="#C0C0C0" stroke-width="1" opacity="0.5"/>
+          </g>
+          <circle cx="20" cy="50" r="1.5" fill="#FFB347"/>
+        </svg>
+      </div>
+      <div class="fname" style="color:var(--sword-steel)">剑</div>
+      <div class="fpose">一臂前伸 · 另一臂后展</div>
+      <div class="fability">斩击 / 弹反</div>
+      <div class="fspark">"侧身出臂，影子化剑一闪斩开Boss"</div>
+    </div>
+
+    <!-- 盾 -->
+    <div class="form-card" style="--card-color:var(--shield-gold);--card-glow:rgba(212,165,55,0.3)">
+      <div class="puppet-vis">
+        <svg viewBox="0 0 70 70">
+          <g fill="#0A0500" stroke="#D4A537" stroke-width="0.5">
+            <path d="M35,15 L50,25 L48,45 L35,55 L22,45 L20,25 Z"/>
+            <path d="M35,15 L35,55" stroke="#D4A537" stroke-width="0.8" opacity="0.4"/>
+            <path d="M20,25 L50,25" stroke="#D4A537" stroke-width="0.8" opacity="0.4"/>
+            <circle cx="35" cy="35" r="6" fill="none" stroke="#D4A537" stroke-width="1" opacity="0.5"/>
+          </g>
+          <circle cx="35" cy="35" r="1.5" fill="#FFB347"/>
+        </svg>
+      </div>
+      <div class="fname" style="color:var(--shield-gold)">盾</div>
+      <div class="fpose">双臂交叉于胸前</div>
+      <div class="fability">格挡 / 无敌</div>
+      <div class="fspark">"抱臂蹲稳，影子化盾挡住必杀"</div>
+    </div>
+
+    <!-- 巨 -->
+    <div class="form-card" style="--card-color:var(--giant-earth);--card-glow:rgba(141,123,104,0.3)">
+      <div class="puppet-vis">
+        <svg viewBox="0 0 70 70">
+          <g fill="#0A0500" stroke="#8D7B68" stroke-width="0.5">
+            <circle cx="35" cy="15" r="7"/>
+            <path d="M35,22 L30,50 L40,50 Z"/>
+            <path d="M30,28 L8,5 L14,10 L32,32 Z"/>
+            <path d="M40,28 L62,5 L56,10 L38,32 Z"/>
+            <path d="M30,50 L26,64 L32,62 Z"/>
+            <path d="M40,50 L44,62 L38,64 Z"/>
+          </g>
+          <circle cx="35" cy="15" r="1.5" fill="#FFB347"/>
+        </svg>
+      </div>
+      <div class="fname" style="color:var(--giant-earth)">巨</div>
+      <div class="fpose">双臂上举外扩 · 踮脚</div>
+      <div class="fability">跺地 / 范围震击</div>
+      <div class="fspark">"踮脚举臂，影子化巨踏地震全场"</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION: POSE QUALITY -->
+<section>
+  <div class="sec-title">
+    <span class="num">02</span>
+    <h2>姿态品质系统</h2>
+    <span class="sub">CLARITY · STABILITY · EXPRESSION · HOLD</span>
+  </div>
+  <p style="font-size:13px;color:var(--text-dim);line-height:1.7;max-width:800px">
+    不是"摆对了就满分"，而是"摆好了才满分"。同样的鹤形，双臂完全展开、身体稳定——S级；手臂半弯、身体晃动——B级。<b style="color:var(--lamp-warm)">你的身体控制力，就是你的游戏技术。</b>但C级也能通关——门槛低，天花板高。
+  </p>
+  <div class="quality-bars">
+    <div class="qbar">
+      <div class="qhead"><span class="qname">清晰度</span><span class="qweight">30%</span></div>
+      <div class="qtrack"><div class="qfill" style="width:92%"></div></div>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:6px">姿态与形态模板的相似度。你的鹤形和"标准鹤"差多远？</p>
+    </div>
+    <div class="qbar">
+      <div class="qhead"><span class="qname">稳定性</span><span class="qweight">30%</span></div>
+      <div class="qtrack"><div class="qfill" style="width:85%"></div></div>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:6px">1.5秒内关键点抖动量。你站得稳不稳？</p>
+    </div>
+    <div class="qbar">
+      <div class="qhead"><span class="qname">表达度</span><span class="qweight">25%</span></div>
+      <div class="qtrack"><div class="qfill" style="width:78%"></div></div>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:6px">关节运动幅度。手臂完全展开 vs 半展开。</p>
+    </div>
+    <div class="qbar">
+      <div class="qhead"><span class="qname">时长</span><span class="qweight">15%</span></div>
+      <div class="qtrack"><div class="qfill" style="width:70%"></div></div>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:6px">保持姿态的时间。0.5秒起步，3秒满分。</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap">
+    <div style="flex:1;min-width:120px;background:var(--panel2);border:1px solid #FFD700;border-radius:3px;padding:10px;text-align:center">
+      <div style="font-size:24px;font-weight:900;color:#FFD700">S</div>
+      <div style="font-size:10px;color:var(--text-dim)">90+ · 完整纹样+金光描边</div>
+    </div>
+    <div style="flex:1;min-width:120px;background:var(--panel2);border:1px solid var(--lamp-warm);border-radius:3px;padding:10px;text-align:center">
+      <div style="font-size:24px;font-weight:900;color:var(--lamp-warm)">A</div>
+      <div style="font-size:10px;color:var(--text-dim)">75+ · 完整纹样</div>
+    </div>
+    <div style="flex:1;min-width:120px;background:var(--panel2);border:1px solid var(--amber-dim);border-radius:3px;padding:10px;text-align:center">
+      <div style="font-size:24px;font-weight:900;color:var(--amber-dim)">B</div>
+      <div style="font-size:10px;color:var(--text-dim)">60+ · 简化纹样+抖动</div>
+    </div>
+    <div style="flex:1;min-width:120px;background:var(--panel2);border:1px solid #555;border-radius:3px;padding:10px;text-align:center">
+      <div style="font-size:24px;font-weight:900;color:#888">C</div>
+      <div style="font-size:10px;color:var(--text-dim)">&lt;60 · 碎裂轮廓</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: STORY ARC -->
+<section>
+  <div class="sec-title">
+    <span class="num">03</span>
+    <h2>故事弧</h2>
+    <span class="sub">PAPER REALM · 6 LAYERS</span>
+  </div>
+  <div class="arc-box">
+    <div class="arc-step">
+      <div class="arc-num">入</div>
+      <div class="arc-content">
+        <div class="arc-title">祖父戏台</div>
+        <div class="arc-desc">影灯孤亮。你站在幕布前，影子从脚底裂开，掉了进去。你拿起灯，跟了进去。</div>
+      </div>
+    </div>
+    <div class="arc-arrow">↓</div>
+    <div class="arc-step">
+      <div class="arc-num">一</div>
+      <div class="arc-content">
+        <div class="arc-title">墨山 · 失形</div>
+        <div class="arc-desc">教程关。你学会用身体给影子形状。第一只无相扑来——你比划出"剑"，一斩。它散了。散的时候说了一声"谢谢"。</div>
+      </div>
+    </div>
+    <div class="arc-arrow">↓</div>
+    <div class="arc-step">
+      <div class="arc-num">二</div>
+      <div class="arc-content">
+        <div class="arc-title">彩林 · 百影</div>
+        <div class="arc-desc">影子们还没完全失形。你追上半翅鹤，用你的完整轮廓"补"上它缺的部分。它落地变成纸人——第一个你"救"的影子。</div>
+      </div>
+    </div>
+    <div class="arc-arrow">↓</div>
+    <div class="arc-step">
+      <div class="arc-num">三</div>
+      <div class="arc-content">
+        <div class="arc-title">纸城 · 千窗</div>
+        <div class="arc-desc">每扇窗关着一个失形影子。锁的形状是形态轮廓。你摆出对应姿态开锁。城中"噬影者"专吃有形的影子——潜行+姿态解谜。</div>
+      </div>
+    </div>
+    <div class="arc-arrow">↓</div>
+    <div class="arc-step">
+      <div class="arc-num">四</div>
+      <div class="arc-content">
+        <div class="arc-title">墨海 · 倒影</div>
+        <div class="arc-desc">水面是你的镜面——水里的影子延迟5秒模仿你。Boss：回声旧影，用你的姿态历史攻击你。你必须不断变换形态。</div>
+      </div>
+    </div>
+    <div class="arc-arrow">↓</div>
+    <div class="arc-step">
+      <div class="arc-num">五</div>
+      <div class="arc-content">
+        <div class="arc-title">旧戏台 · 千手织娘</div>
+        <div class="arc-desc">Boss有太多手，能比划出所有形态。你无法在数量上胜过它——你必须找到它那太多手的身体永远摆不出的形状。</div>
+      </div>
+    </div>
+    <div class="arc-arrow">↓</div>
+    <div class="arc-step">
+      <div class="arc-num">终</div>
+      <div class="arc-content">
+        <div class="arc-title" style="color:var(--lamp)">灯芯 · 祖父之影</div>
+        <div class="arc-desc">你的影子学尽了你这一路的全部八种形态。你摆什么它就摆什么，比你更标准。你不可能用任何"学会的"形态击败它——你需要一个只属于你的、笨拙的、四岁时瞎比划出来的形状。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: ENDINGS -->
+<section>
+  <div class="sec-title">
+    <span class="num">04</span>
+    <h2>三结局</h2>
+    <span class="sub">FORM · FREEDOM · FORGETTING</span>
+  </div>
+  <div class="endings">
+    <div class="ending" style="--end-color:var(--lamp)">
+      <div class="etag">ENDING A · 传承</div>
+      <div class="ename">稚鹤</div>
+      <div class="edesc">你摆出一个祖父从没教过你的形状——四岁时看祖父演鹤，笨拙地踮脚、双手交叉举过头顶、微微歪向一边。AI说：不匹配任何已知形态。品质：S。名称：【灯·稚鹤】。影子愣住了——它没见过这个形状。因为它不是"学会的"，是"活出来的"。</div>
+    </div>
+    <div class="ending" style="--end-color:var(--void)">
+      <div class="etag">ENDING B · 同化</div>
+      <div class="ename">无相</div>
+      <div class="edesc">你打不过它。你的影子把你拉进去，你变成了纸境里又一个无相。灯灭了。但偶尔，路过戏台的人会看见幕布上有个模糊的影子在动——那是你在试图比划出鹤的形状。</div>
+    </div>
+    <div class="ending" style="--end-color:var(--tree-green)">
+      <div class="etag">ENDING C · 断灯（隐藏）</div>
+      <div class="ename">归影</div>
+      <div class="edesc">你没有打它。你把影灯递给它。"你是我的影子，我也是你的影子。"灯灭了。纸境消失了。你站在戏台前，影子在你脚下，第一次安静地、完整地跟随着你。它不再需要被"赋予"形状——它只是你的影子。</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: AI PIPELINE -->
+<section>
+  <div class="sec-title">
+    <span class="num">05</span>
+    <h2>AI 推理管线</h2>
+    <span class="sub">REAL-TIME POSE ESTIMATION</span>
+  </div>
+  <div class="pipeline">
+    <div class="stage">
+      <div class="stage-num">A</div>
+      <div class="stage-body">
+        <div class="stage-name">人体姿态估计 · BlazePose Lite (2.7M params)</div>
+        <div class="stage-detail">摄像头画面 → 33个全身关键点 (x,y,z,visibility) → ONNX INT8, CPU &lt;10ms/帧, 30fps。包括鼻、眼、耳、肩、肘、腕、髋、膝、踝、脚趾等。用于影子骨骼绑定 + 实时形态预判。</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-num">B</div>
+      <div class="stage-body">
+        <div class="stage-name">人体分割 · Selfie Segmentation (~1M params)</div>
+        <div class="stage-detail">像素级人体mask → OpenCV轮廓提取 → 凸包/Hu矩/长宽比/凸缺陷 → 影子轮廓渲染。CPU &lt;8ms/帧，与BlazePose并行。</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-num">C</div>
+      <div class="stage-body">
+        <div class="stage-name">形态分类 · k-NN (400模板) + MLP (12→64→32→9)</div>
+        <div class="stage-detail">从33关键点提取12维姿态特征（开放度/高度比/对称性/重心/关节角度）→ k-NN余弦相似度 → Top-1&gt;0.85确定形态，&lt;0.85进入开放发现。每200ms一次，&lt;5ms。</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-num">D</div>
+      <div class="stage-body">
+        <div class="stage-name">品质评估 · 实时多维评分</div>
+        <div class="stage-detail">清晰度(Top-1相似度) + 稳定性(1.5秒关键点方差) + 表达度(关节角度幅度) + 时长(持续匹配时间) → 加权100分 → S/A/B/C。每500ms更新。</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-num">E</div>
+      <div class="stage-body">
+        <div class="stage-name">开放发现命名 · Phi-3-mini (3.8B, ONNX INT4)</div>
+        <div class="stage-detail">未匹配模板时 → 姿态特征转文字描述 → LLM生成形态名称+效果 → 离线推理~500ms。每个玩家发现的隐藏形态不同。</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-num">F</div>
+      <div class="stage-body">
+        <div class="stage-name">影子渲染 · ShaderLab + 2D骨骼 + Mesh变形</div>
+        <div class="stage-detail">人体mask→描边→形态纹样叠加(镂空Voronoi)→关节铆钉(关键点可视化)→品质分级渲染→morphing过渡(300ms)。皮影质感：半透明深褐+暖光渗漏+操纵杆抖动。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: TECH STACK -->
+<section>
+  <div class="sec-title">
+    <span class="num">06</span>
+    <h2>技术栈</h2>
+    <span class="sub">4-WEEK MVP</span>
+  </div>
+  <div class="tech-grid">
+    <div class="tech-item"><div class="tname">Unity 2023 LTS</div><div class="tdesc">2D+骨骼动画, 摄像头API, 跨平台</div></div>
+    <div class="tech-item"><div class="tname">MediaPipe BlazePose ONNX</div><div class="tdesc">33关键点全身姿态, CPU&lt;10ms, INT8量化</div></div>
+    <div class="tech-item"><div class="tname">Selfie Segmentation ONNX</div><div class="tdesc">像素级人体分割, 轮廓提取, CPU&lt;8ms</div></div>
+    <div class="tech-item"><div class="tname">k-NN + MLP ONNX</div><div class="tdesc">形态分类双管线, 400模板+神经网络备用</div></div>
+    <div class="tech-item"><div class="tname">Phi-3-mini ONNX INT4</div><div class="tdesc">开放发现形态命名, 离线LLM</div></div>
+    <div class="tech-item"><div class="tname">OpenCV</div><div class="tdesc">轮廓/凸包/Hu矩/形态学处理</div></div>
+    <div class="tech-item"><div class="tname">ShaderLab + Compute</div><div class="tdesc">皮影渲染: 镂空纹样/光晕/morphing</div></div>
+    <div class="tech-item"><div class="tname">FMOD + librosa</div><div class="tdesc">纸声效合成/呼吸检测(麦克风RMS)</div></div>
+  </div>
+</section>
+
+<!-- SECTION: COMPARISON -->
+<section>
+  <div class="sec-title">
+    <span class="num">07</span>
+    <h2>十二期总览</h2>
+    <span class="sub">001 → 012</span>
+  </div>
+  <table class="cmp-table">
+    <tr>
+      <th>期</th><th>名称</th><th>风格</th><th>玩法</th><th>AI核心技术</th><th>输入</th><th>核心爽感</th>
+    </tr>
+    <tr><td>001</td><td>回声</td><td>水墨</td><td>声音创作</td><td>MusicGen</td><td>麦克风</td><td>声画共生</td></tr>
+    <tr><td>002</td><td>霓虹突触</td><td>赛博</td><td>RL潜行</td><td>YOLOv8+CLIP</td><td>摄像头</td><td>环境驱动</td></tr>
+    <tr><td>003</td><td>一笔斩</td><td>哥特</td><td>画线斩</td><td>CNN笔迹</td><td>鼠标</td><td>一刀清屏</td></tr>
+    <tr><td>004</td><td>千面盗贼</td><td>浮世绘</td><td>变身</td><td>MobileNetV3</td><td>鼠标</td><td>画一笔变</td></tr>
+    <tr><td>005</td><td>捏造师</td><td>黏土</td><td>物理变形</td><td>PointNet+Whisper</td><td>鼠标+语音</td><td>捏橡皮泥</td></tr>
+    <tr><td>006</td><td>残响</td><td>梦境</td><td>时间回声</td><td>LSTM行为</td><td>鼠标</td><td>一人成军</td></tr>
+    <tr><td>007</td><td>噬</td><td>像素</td><td>吞噬进化</td><td>Phi-3 LLM</td><td>键盘</td><td>吃敌命名</td></tr>
+    <tr><td>008</td><td>齿轮弹珠</td><td>蒸汽</td><td>弹珠操控</td><td>MLP+WFC</td><td>鼠标</td><td>弹珠弹射</td></tr>
+    <tr><td>009</td><td>碎片整理</td><td>Glitch</td><td>框选战斗</td><td>PPO RL</td><td>鼠标</td><td>一框全删</td></tr>
+    <tr><td>010</td><td>断喝</td><td>武侠江湖</td><td>声控格斗</td><td>SER CNN</td><td>麦克风</td><td>一吼碎甲</td></tr>
+    <tr><td>011</td><td>琉璃鉴</td><td>彩绘玻璃</td><td>拍照炼物</td><td>VLM BLIP-2+CLIP</td><td>摄像头+麦克风</td><td>一照万物</td></tr>
+    <tr><td class="highlight">012</td><td class="highlight">影绘</td><td class="highlight">皮影戏</td><td class="highlight">身体变形</td><td class="highlight">MediaPipe BlazePose</td><td class="highlight">摄像头+鼠标+麦克风</td><td class="highlight">以身赋形</td></tr>
+  </table>
+</section>
+
+<!-- SECTION: MULTIMODAL -->
+<section>
+  <div class="sec-title">
+    <span class="num">08</span>
+    <h2>多模态融合</h2>
+    <span class="sub">CAMERA × MOUSE × MIC</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px">
+    <div class="puppet-panel" style="padding:20px;text-align:center">
+      <div style="font-size:28px;margin-bottom:8px">📸</div>
+      <div style="font-size:14px;font-weight:700;color:var(--lamp-warm);margin-bottom:6px">摄像头 · 身体姿态</div>
+      <div style="font-size:11px;color:var(--text-dim);line-height:1.6">决定"什么形态"<br>33关键点实时追踪<br>开放发现新形态<br>你的身体=你的军火库</div>
+    </div>
+    <div class="puppet-panel" style="padding:20px;text-align:center">
+      <div style="font-size:28px;margin-bottom:8px">🖱️</div>
+      <div style="font-size:14px;font-weight:700;color:var(--lamp-warm);margin-bottom:6px">鼠标 · 精准操控</div>
+      <div style="font-size:11px;color:var(--text-dim);line-height:1.6">决定"去往哪里"<br>影子移动/瞄准/闪避<br>战斗手感保障<br>双手分工: 身体定+鼠标动</div>
+    </div>
+    <div class="puppet-panel" style="padding:20px;text-align:center">
+      <div style="font-size:28px;margin-bottom:8px">🎤</div>
+      <div style="font-size:14px;font-weight:700;color:var(--lamp-warm);margin-bottom:6px">麦克风 · 影灯呼吸</div>
+      <div style="font-size:11px;color:var(--text-dim);line-height:1.6">决定"影灯强度"<br>轻吹=增亮(+10%)<br>用力吹=过载(满共鸣)<br>屏息=隐匿(潜行)</div>
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--text-dim);margin-top:14px;text-align:center;font-style:italic">
+    呼吸和姿态天然联动：你吹气时身体前倾，屏息时身体收紧——不是两个独立操作，是一体的。
+  </p>
+</section>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="soul">
+    皮影戏的美学不是为了好看——它是主题。皮影是手和光的故事：手在光前比划，影子在幕上活过来。没有手，影子是无相的黑；没有光，手是看不见的暗。<b>人也一样。你不是影子，也不是光——你是那双手。你的形状，就是你给世界的影子。</b>
+  </div>
+  <div class="tag-line">第012期 · 每日游戏灵感 · 2026-07-28 · SHADOW WEAVE</div>
+</div>
+
+</div>
+</body>
+</html>
