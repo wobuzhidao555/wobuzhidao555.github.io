@@ -339,6 +339,7 @@
     margin-bottom:26px;
   }
   .p-text p{font-size:14.5px;color:var(--ink-soft);font-weight:300;line-height:2;margin-bottom:18px;}
+  .p-text p b{font-weight:500;color:var(--ink);}
 
   .p-figure{
     border:1px solid var(--line);
@@ -354,6 +355,25 @@
     font-size:11px;letter-spacing:.14em;color:var(--muted);
     padding-top:14px;line-height:1.6;
   }
+  .p-figure video{
+    width:100%;height:auto;display:block;
+    border:1px solid var(--line);
+    background:#0D0D0D;
+  }
+
+  /* 作品区内的分组小标题 */
+  .group-head{
+    display:flex;align-items:center;gap:16px;
+    margin:0 0 48px;
+  }
+  .group-head .en{
+    font-family:var(--latin);text-transform:uppercase;
+    letter-spacing:.32em;font-size:11.5px;color:var(--accent);
+    white-space:nowrap;
+  }
+  .group-head .rule{flex:1;height:1px;background:var(--line);}
+  .group-head + .project{/* 首个子项无需额外间距 */}
+  .group-head.second{margin-top:108px;}
 
   .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
   .tags span{
@@ -662,7 +682,9 @@
   <div class="wrap">
     <div class="label reveal"><span class="en">Selected Work</span><span class="rule"></span><span class="idx">03</span></div>
     <h2 class="reveal">我正在做的东西</h2>
-    <p class="work-intro reveal">下面这两个原型，来自我做的一个叫<strong>「每日灵感」</strong>的自我训练：连续 15 天，每天交出一个完整的游戏概念——世界观、核心动作、AI 方案全部写完。其中两个我没忍住，把它做成了<strong>真能打开玩的东西</strong>。</p>
+    <p class="work-intro reveal">到目前为止我真正做出来的东西分两类：一类是<strong>游戏原型</strong>，来自一个叫「每日灵感」的自我训练——连续 15 天，每天交出一个完整的游戏概念（世界观、核心动作、AI 方案全部写完），其中两个我没忍住，做成了<strong>真能打开玩的东西</strong>；另一类是 <strong>3D</strong>，在 Blender 里从基础几何体开始搭场景，一路做到动画。</p>
+
+    <div class="group-head reveal"><span class="en">Game Prototypes</span><span class="rule"></span></div>
 
     <!-- 项目 1 -->
     <article class="project reveal">
@@ -736,6 +758,66 @@
         </figure>
       </div>
     </article>
+
+    <div class="group-head second reveal"><span class="en">3D · Blender</span><span class="rule"></span></div>
+
+    <!-- 3D 项目 1 -->
+    <article class="project reveal">
+      <div class="p-head">
+        <h3>ISLAND</h3>
+        <span class="cn">无题小岛</span>
+      </div>
+      <div class="p-meta">
+        <span>Blender</span>
+        <span>EEVEE</span>
+        <span class="pill">建模 + 动画</span>
+        <span class="pill">低多边形</span>
+      </div>
+
+      <div class="p-body">
+        <div class="p-text">
+          <p class="concept">一座漂在水上的低多边形小岛：岩石堆成的岛体、一座红白条纹的灯塔、两栋小房子、一段木栈桥，还有一条系在岸边的船。</p>
+          <p>场景里没有一个是现成模型——岩石、房子、灯塔、栈桥全是从立方体和圆柱体开始，一点点挤出、切角、上色搭出来的。水面交给 Blender 的海洋修改器，灯塔的窗亮着灯，船跟着浪轻轻起伏。</p>
+          <p>下面是这个场景在动画第 125 帧的渲染成图——水面、灯塔的灯和船的起伏，都是在同一个场景里算出来的。</p>
+          <div class="tags">
+            <span>低多边形</span><span>基础几何体建模</span><span>海洋修改器</span><span>EEVEE</span><span>250 帧动画</span>
+          </div>
+        </div>
+        <figure class="p-figure">
+          <img src="assets/island.jpg" alt="低多边形小岛场景渲染成图：岩石岛、灯塔、两栋房子、木栈桥和一条小船" loading="lazy">
+          <figcaption><span>ISLAND · 渲染成图</span><span>Blender / EEVEE</span></figcaption>
+        </figure>
+      </div>
+    </article>
+
+    <!-- 3D 项目 2 -->
+    <article class="project flip reveal">
+      <div class="p-head">
+        <h3>JUMP</h3>
+        <span class="cn">动画跳跃</span>
+      </div>
+      <div class="p-meta">
+        <span>Blender</span>
+        <span>129 帧</span>
+        <span class="pill">挤压拉伸</span>
+        <span class="pill">动画练习</span>
+      </div>
+
+      <div class="p-body">
+        <div class="p-text">
+          <p class="concept">一个完整的起跳循环：蓄力下蹲 → 弹射 → 滞空 → 落地缓冲，落地之后还有一小段回弹的余震。</p>
+          <p>这是我练动画曲线时做的最基础的一个练习——只有一块地和一个圆柱体。也因为简单，重量的感觉藏不住：起跳要快要干脆，滞空要慢，落地要被压扁一下。</p>
+          <p>具体数字：起跳前先压到最低点 <b>0.36</b>，40 帧冲到最高 <b>5.82</b>，然后落回 <b>0.98</b>——一上一下用掉 100 多帧，中间的速度变化全是手调的贝塞尔曲线。</p>
+          <div class="tags">
+            <span>挤压拉伸</span><span>动画曲线</span><span>129 帧</span><span>EEVEE</span>
+          </div>
+        </div>
+        <figure class="p-figure">
+          <video src="assets/jump.mp4" autoplay loop muted playsinline preload="metadata" aria-label="圆柱体起跳动画"></video>
+          <figcaption><span>JUMP · 129 帧循环渲染</span><span>Blender / EEVEE</span></figcaption>
+        </figure>
+      </div>
+    </article>
   </div>
 </section>
 
@@ -758,7 +840,7 @@
         <div class="tl-when">2026 春</div>
         <div class="tl-what">
           <h3>开始学 3D 建模</h3>
-          <p>把脑子里的东西第一次变成立体的——一个能转、能看、有厚度的东西。</p>
+          <p>从基础几何体开始搭：第一座低多边形小岛，灯塔、房子、栈桥，还有一条会随浪起伏的船。</p>
         </div>
       </div>
       <div class="tl-item">
@@ -785,8 +867,8 @@
       <div class="tl-item now-item">
         <div class="tl-when">现在</div>
         <div class="tl-what">
-          <h3>把概念做成能玩的东西</h3>
-          <p>齿轮弹珠和碎片整理已经从文档变成了原型，接下来想认真做一个 3D 的。</p>
+          <h3>两条线都落地了</h3>
+          <p>游戏原型做出来了，3D 场景也渲出来了。接下来想把这两条线合到一起——用 3D 的东西做游戏。</p>
         </div>
       </div>
       <div class="tl-item todo">
