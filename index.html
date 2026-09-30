@@ -363,6 +363,94 @@
   }
   .tags span:hover{border-color:var(--accent);color:var(--accent);}
 
+  /* ---------- 试玩入口 ---------- */
+  .p-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:26px;}
+  .btn-play{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:var(--sans);font-size:13px;letter-spacing:.18em;
+    color:var(--paper);background:var(--ink);
+    border:1px solid var(--ink);padding:13px 26px;
+    cursor:pointer;transition:background .3s ease,border-color .3s ease;
+  }
+  .btn-play .tri{font-size:10px;line-height:1;transform:translateY(-1px);}
+  .btn-play:hover{background:var(--accent);border-color:var(--accent);}
+  .btn-plain{
+    font-size:12.5px;letter-spacing:.14em;color:var(--muted);
+    border-bottom:1px solid var(--line-strong);padding-bottom:3px;
+    transition:color .3s ease,border-color .3s ease;
+  }
+  .btn-plain:hover{color:var(--accent);border-color:var(--accent);}
+
+  .p-figure .shot{
+    position:relative;display:block;width:100%;padding:0;
+    border:1px solid var(--line);background:none;cursor:pointer;overflow:hidden;
+    line-height:0;
+  }
+  .p-figure .shot img{width:100%;height:auto;transition:transform .7s cubic-bezier(.22,.61,.36,1);}
+  .p-figure .shot::after{
+    content:"";position:absolute;inset:0;background:rgba(15,15,18,0);
+    transition:background .4s ease;
+  }
+  .p-figure .shot:hover img{transform:scale(1.025);}
+  .p-figure .shot:hover::after{background:rgba(15,15,18,.22);}
+  .shot-badge{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--sans);font-size:12.5px;letter-spacing:.22em;line-height:1;
+    color:#F6F4EF;background:rgba(20,20,24,.78);
+    border:1px solid rgba(246,244,239,.45);
+    padding:14px 24px;border-radius:999px;
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+    transition:background .35s ease,border-color .35s ease,transform .35s ease;
+    white-space:nowrap;
+  }
+  .p-figure .shot:hover .shot-badge{
+    background:var(--accent);border-color:var(--accent);
+    transform:translate(-50%,-50%) scale(1.06);
+  }
+
+  /* ---------- 全屏试玩层 ---------- */
+  #player{
+    position:fixed;inset:0;z-index:200;
+    display:flex;flex-direction:column;
+    background:rgba(18,18,21,.95);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    opacity:0;pointer-events:none;
+    transition:opacity .34s ease;
+  }
+  #player.on{opacity:1;pointer-events:auto;}
+  #player[hidden]{display:none;}
+  .player-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:12px 18px;
+    padding-top:max(12px,env(safe-area-inset-top));
+    color:#F6F4EF;border-bottom:1px solid rgba(246,244,239,.14);
+    flex:none;
+  }
+  .player-name{font-family:var(--serif);font-size:15px;letter-spacing:.1em;}
+  .player-name em{font-style:normal;color:rgba(246,244,239,.45);font-size:12px;letter-spacing:.2em;margin-left:10px;}
+  .player-actions{display:flex;align-items:center;gap:16px;}
+  .player-open{
+    font-size:12px;letter-spacing:.14em;color:#BDB7AC;
+    border-bottom:1px solid transparent;transition:color .3s ease,border-color .3s ease;
+  }
+  .player-open:hover{color:#fff;border-color:#fff;}
+  .player-close{
+    width:36px;height:36px;border-radius:50%;
+    border:1px solid rgba(246,244,239,.32);background:none;
+    color:#F6F4EF;font-size:14px;line-height:1;cursor:pointer;
+    transition:background .3s ease;
+  }
+  .player-close:hover{background:rgba(246,244,239,.16);}
+  .player-stage{
+    flex:1;min-height:0;padding:14px;
+    padding-bottom:max(14px,env(safe-area-inset-bottom));
+  }
+  .player-stage iframe{
+    width:100%;height:100%;border:0;display:block;background:#0D0D0D;
+  }
+  body.locked{overflow:hidden;}
+
   /* ---------- 轨迹 ---------- */
   .timeline{position:relative;padding-left:0;}
   .tl-item{
@@ -597,9 +685,16 @@
           <div class="tags">
             <span>实时画挡板</span><span>弹道预测 MLP</span><span>WFC 程序化关卡</span><span>Roguelike</span><span>单文件 HTML</span>
           </div>
+          <div class="p-actions">
+            <button class="btn-play" type="button" data-game="games/gearball.html" data-name="齿轮弹珠 GEARBALL"><span class="tri">▶</span> 试玩这个原型</button>
+            <a class="btn-plain" href="games/gearball.html" target="_blank" rel="noopener">在新窗口打开 ↗</a>
+          </div>
         </div>
         <figure class="p-figure">
-          <img src="assets/gearball.png" alt="《齿轮弹珠》GEARBALL 标题封面" loading="lazy">
+          <button class="shot" type="button" data-game="games/gearball.html" data-name="齿轮弹珠 GEARBALL" aria-label="试玩《齿轮弹珠》GEARBALL">
+            <img src="assets/gearball.png" alt="《齿轮弹珠》GEARBALL 标题封面" loading="lazy">
+            <span class="shot-badge">▶ 点开就玩</span>
+          </button>
           <figcaption><span>GEARBALL · 标题封面</span><span>蒸汽朋克 / 黄铜齿轮</span></figcaption>
         </figure>
       </div>
@@ -627,9 +722,16 @@
           <div class="tags">
             <span>框选战斗</span><span>强化学习敌人</span><span>叙事驱动</span><span>Glitch 视觉</span><span>单文件 HTML</span>
           </div>
+          <div class="p-actions">
+            <button class="btn-play" type="button" data-game="games/defrag.html" data-name="碎片整理 DEFRAG"><span class="tri">▶</span> 试玩这个原型</button>
+            <a class="btn-plain" href="games/defrag.html" target="_blank" rel="noopener">在新窗口打开 ↗</a>
+          </div>
         </div>
         <figure class="p-figure">
-          <img src="assets/defrag.png" alt="《碎片整理》DEFRAG 标题封面" loading="lazy">
+          <button class="shot" type="button" data-game="games/defrag.html" data-name="碎片整理 DEFRAG" aria-label="试玩《碎片整理》DEFRAG">
+            <img src="assets/defrag.png" alt="《碎片整理》DEFRAG 标题封面" loading="lazy">
+            <span class="shot-badge">▶ 点开就玩</span>
+          </button>
           <figcaption><span>DEFRAG · 标题封面</span><span>故障艺术 / 数字废墟</span></figcaption>
         </figure>
       </div>
@@ -712,6 +814,20 @@
   </div>
 </footer>
 
+<!-- ============ 全屏试玩层 ============ -->
+<div id="player" hidden>
+  <div class="player-bar">
+    <span class="player-name" id="playerName">试玩<em>可玩原型</em></span>
+    <div class="player-actions">
+      <a class="player-open" id="playerOpen" href="#" target="_blank" rel="noopener">新窗口打开 ↗</a>
+      <button class="player-close" id="playerClose" type="button" aria-label="关闭试玩">✕</button>
+    </div>
+  </div>
+  <div class="player-stage">
+    <iframe id="playerFrame" title="游戏试玩" allowfullscreen loading="lazy"></iframe>
+  </div>
+</div>
+
 <script>
 document.documentElement.classList.add('js');
 
@@ -770,6 +886,51 @@ document.documentElement.classList.add('js');
     });
   },{rootMargin:'-45% 0px -50% 0px'});
   secs.forEach(function(s){ io.observe(s); });
+})();
+
+/* ---- 点开就玩：全屏试玩层 ---- */
+(function(){
+  var player = document.getElementById('player');
+  var frame  = document.getElementById('playerFrame');
+  var nameEl = document.getElementById('playerName');
+  var openEl = document.getElementById('playerOpen');
+  var closeEl= document.getElementById('playerClose');
+  if(!player || !frame) return;
+  var lastFocus = null;
+
+  function openGame(src, name){
+    lastFocus = document.activeElement;
+    nameEl.innerHTML = name + '<em>可玩原型</em>';
+    openEl.href = src;
+    frame.src = src;
+    player.hidden = false;
+    void player.offsetWidth;          // 强制回流，让过渡生效
+    player.classList.add('on');
+    document.body.classList.add('locked');
+    closeEl.focus();
+  }
+
+  function closeGame(){
+    player.classList.remove('on');
+    document.body.classList.remove('locked');
+    window.setTimeout(function(){
+      player.hidden = true;
+      frame.src = 'about:blank';
+    }, 340);
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  document.querySelectorAll('[data-game]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      openGame(el.getAttribute('data-game'), el.getAttribute('data-name') || '试玩');
+    });
+  });
+
+  closeEl.addEventListener('click', closeGame);
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && !player.hidden) closeGame();
+  });
 })();
 </script>
 

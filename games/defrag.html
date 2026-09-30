@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>碎片整理 DEFRAG — 框选战斗原型</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#050508;
+  color:#00FFE1;
+  font-family:'Courier New',monospace;
+  overflow:hidden;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* === Glitch Scanlines === */
+.scanlines::after {
+  content:'';
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:repeating-linear-gradient(
+    0deg,
+    rgba(0,255,225,0.03) 0px,
+    rgba(0,255,225,0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events:none;
+  z-index:9999;
+}
+
+/* === Header === */
+#header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 20px;
+  background:#0A0A14;
+  border-bottom:1px solid #00FFE133;
+  z-index:10;
+}
+#header .title {
+  font-size:18px;
+  font-weight:bold;
+  color:#00FFE1;
+  text-shadow:1px 0 #FF003C,-1px 0 #00FFE1;
+  letter-spacing:2px;
+}
+#header .subtitle {
+  font-size:11px;
+  color:#FFD600;
+  opacity:0.8;
+}
+
+/* === HUD === */
+#hud {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 20px;
+  background:#080810;
+  border-bottom:1px solid #FF003C22;
+  font-size:13px;
+  z-index:10;
+}
+#hud .stat { display:flex; align-items:center; gap:6px; }
+#hud .label { color:#666; font-size:11px; }
+#hud .value { font-weight:bold; font-size:16px; }
+#score .value { color:#00FFE1; text-shadow:0 0 8px #00FFE155; }
+#combo .value { color:#FFD600; text-shadow:0 0 8px #FFD60055; }
+#combo.flash .value { animation:flash 0.3s; }
+@keyframes flash { 0%{transform:scale(1.6);color:#FFF;} 100%{transform:scale(1);} }
+#health .value { color:#FF003C; }
+#wave .value { color:#FF8800; }
+
+/* === Canvas === */
+#gameCanvas {
+  flex:1;
+  display:block;
+  cursor:crosshair;
+  background:#06060C;
+}
+
+/* === Footer === */
+#footer {
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  padding:6px 20px;
+  background:#0A0A14;
+  border-top:1px solid #00FFE133;
+  font-size:11px;
+  color:#555;
+  z-index:10;
+}
+#footer span { display:flex; align-items:center; gap:4px; }
+#footer .key {
+  display:inline-block;
+  padding:1px 6px;
+  background:#111;
+  border:1px solid #333;
+  border-radius:3px;
+  color:#00FFE1;
+  font-size:10px;
+}
+
+/* === Overlay Messages === */
+#overlay {
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:100;
+  pointer-events:none;
+  text-align:center;
+}
+#overlay .big {
+  font-size:48px;
+  font-weight:bold;
+  letter-spacing:4px;
+  text-shadow:2px 0 #FF003C,-2px 0 #00FFE1;
+  opacity:0;
+  transition:opacity 0.3s;
+}
+#overlay .big.show { opacity:1; animation:glitchIn 0.4s; }
+@keyframes glitchIn {
+  0%{transform:translate(-50%,-50%) scale(2);opacity:0;filter:blur(10px);}
+  50%{transform:translate(-48%,-52%) scale(1.1);opacity:1;filter:blur(2px);}
+  100%{transform:translate(-50%,-50%) scale(1);opacity:1;filter:blur(0);}
+}
+#overlay .sub {
+  font-size:14px;
+  color:#FFD600;
+  margin-top:8px;
+  opacity:0;
+  transition:opacity 0.5s 0.2s;
+}
+#overlay .sub.show { opacity:0.8; }
+
+/* === Story Panel === */
+#storyPanel {
+  position:fixed;
+  bottom:40px;left:20px;
+  max-width:320px;
+  background:rgba(8,8,16,0.92);
+  border:1px solid #00FFE133;
+  padding:14px 18px;
+  font-size:12px;
+  line-height:1.8;
+  color:#aaa;
+  z-index:50;
+  display:none;
+}
+#storyPanel .title {
+  color:#00FFE1;
+  font-weight:bold;
+  font-size:13px;
+  margin-bottom:6px;
+  text-shadow:1px 0 #FF003C;
+}
+#storyPanel .text { color:#888; }
+#storyPanel .highlight { color:#FFD600; }
+
+/* === Start Screen === */
+#startScreen {
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:#050508;
+  z-index:200;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:20px;
+}
+#startScreen h1 {
+  font-size:52px;
+  font-weight:bold;
+  color:#00FFE1;
+  text-shadow:3px 0 #FF003C,-3px 0 #00BFFF;
+  letter-spacing:6px;
+  animation:titleGlitch 3s infinite;
+}
+@keyframes titleGlitch {
+  0%,90%,100%{text-shadow:3px 0 #FF003C,-3px 0 #00BFFF;}
+  92%{text-shadow:3px 0 #FF003C,-3px 0 #00BFFF,0 3px #FFD600;transform:translateX(2px);}
+  94%{text-shadow:-3px 0 #FF003C,3px 0 #00BFFF;transform:translateX(-2px);}
+  96%{text-shadow:3px 0 #FF003C,-3px 0 #00BFFF;transform:translateX(1px);}
+}
+#startScreen .tagline {
+  font-size:16px;
+  color:#888;
+  max-width:500px;
+  text-align:center;
+  line-height:1.8;
+}
+#startScreen .tagline .highlight { color:#FFD600; }
+#startScreen .instructions {
+  display:grid;
+  grid-template-columns:auto auto;
+  gap:6px 16px;
+  font-size:13px;
+  color:#666;
+  margin-top:10px;
+}
+#startScreen .instructions .key {
+  display:inline-block;
+  padding:2px 8px;
+  background:#0F0F1A;
+  border:1px solid #00FFE133;
+  border-radius:3px;
+  color:#00FFE1;
+  font-size:12px;
+  text-align:center;
+}
+#startScreen button {
+  margin-top:20px;
+  padding:12px 40px;
+  background:transparent;
+  border:2px solid #00FFE1;
+  color:#00FFE1;
+  font-family:'Courier New',monospace;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+  letter-spacing:3px;
+  transition:all 0.3s;
+}
+#startScreen button:hover {
+  background:#00FFE1;
+  color:#050508;
+  box-shadow:0 0 20px #00FFE155;
+}
+#startScreen .credit {
+  font-size:11px;
+  color:#333;
+  margin-top:30px;
+}
+
+/* === Tool Indicator === */
+#toolIndicator {
+  position:fixed;
+  top:80px;right:20px;
+  background:rgba(8,8,16,0.9);
+  border:1px solid #00FFE133;
+  padding:8px 14px;
+  font-size:12px;
+  z-index:50;
+}
+#toolIndicator .label { color:#666; font-size:10px; }
+#toolIndicator .name { color:#00FFE1; font-weight:bold; font-size:14px; }
+#toolIndicator .cooldown {
+  width:60px;height:3px;
+  background:#111;
+  margin-top:4px;
+  overflow:hidden;
+}
+#toolIndicator .cooldownBar {
+  height:100%;
+  background:#FFD600;
+  width:100%;
+  transition:width 0.05s linear;
+}
+
+/* === Damage Flash === */
+#damageFlash {
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:#FF003C;
+  opacity:0;
+  pointer-events:none;
+  z-index:90;
+  transition:opacity 0.1s;
+}
+</style>
+</head>
+<body class="scanlines">
+
+<!-- Start Screen -->
+<div id="startScreen">
+  <h1>DEFRAG</h1>
+  <div style="font-size:22px;color:#FF003C;letter-spacing:8px;">碎片整理</div>
+  <div class="tagline">
+    你是一台旧电脑里最后的杀毒程序。<br>
+    <span class="highlight">拖动鼠标框选敌人，松手即"删除"。</span><br>
+    框住越多，倍率越高——但它们会逃跑。<br>
+    它们会学习你的习惯。你会怎么应对？
+  </div>
+  <div class="instructions">
+    <span class="key">鼠标拖动</span><span>框选敌人</span>
+    <span class="key">右键</span><span>切换工具</span>
+    <span class="key">空格</span><span>闪避（瞬移）</span>
+    <span class="key">Shift</span><span>精确模式（框小+伤害高）</span>
+  </div>
+  <button onclick="startGame()">开始整理 ▶</button>
+  <div class="credit">第009期 · 每日游戏灵感 · 2026-07-15</div>
+</div>
+
+<!-- Game UI -->
+<div id="header">
+  <div class="title">DEFRAG // 碎片整理</div>
+  <div class="subtitle">SECTOR: 画图.exe ─ CORRUPTION: 73%</div>
+</div>
+
+<div id="hud">
+  <div class="stat" id="score"><span class="label">SCORE</span><span class="value">0</span></div>
+  <div class="stat" id="combo"><span class="label">COMBO</span><span class="value">×0</span></div>
+  <div class="stat" id="health"><span class="label">SYS_INTEGRITY</span><span class="value">100</span></div>
+  <div class="stat" id="wave"><span class="label">FILES_CORRUPTED</span><span class="value">0</span></div>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+
+<div id="toolIndicator">
+  <div class="label">TOOL</div>
+  <div class="name" id="toolName">RECT_SELECT</div>
+  <div class="cooldown"><div class="cooldownBar" id="cooldownBar"></div></div>
+</div>
+
+<div id="storyPanel">
+  <div class="title" id="storyTitle">第一章：画图.exe</div>
+  <div class="text" id="storyText">小宇6岁画的恐龙"大绿"活过来了...但它被Glitch感染。<span class="highlight">框选它，删除Glitch，救回大绿。</span></div>
+</div>
+
+<div id="footer">
+  <span><span class="key">DRAG</span> 框选</span>
+  <span><span class="key">R-CLICK</span> 切换工具</span>
+  <span><span class="key">SPACE</span> 闪避</span>
+  <span><span class="key">SHIFT</span> 精确模式</span>
+</div>
+
+<div id="overlay">
+  <div class="big" id="overlayBig"></div>
+  <div class="sub" id="overlaySub"></div>
+</div>
+
+<div id="damageFlash"></div>
+
+<script>
+// ==========================================
+//  DEFRAG — 框选战斗原型
+//  第009期每日游戏灵感
+// ==========================================
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let W, H;
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight - 130;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// === Game State ===
+let gameState = 'menu'; // menu, playing, paused
+let score = 0;
+let combo = 0;
+let comboTimer = 0;
+let health = 100;
+let filesDeleted = 0;
+let wave = 1;
+let enemies = [];
+let particles = [];
+let floatTexts = [];
+let glitchEffects = [];
+let player = { x: W/2, y: H/2, invuln: 0 };
+let lastTime = 0;
+
+// === Selection State ===
+let isSelecting = false;
+let selStart = { x:0, y:0 };
+let selEnd = { x:0, y:0 };
+let currentTool = 0; // 0=rect, 1=lasso(magic wand here), 2=crop
+const tools = ['RECT_SELECT', 'MAGIC_WAND', 'CROP_TOOL'];
+let toolCooldowns = [0, 0, 0];
+let shiftMode = false;
+
+// === Enemy Behavior Memory (simplified RL) ===
+let playerBehavior = {
+  avgStartX: 0, avgStartY: 0,
+  avgBoxW: 0, avgBoxH: 0,
+  totalSelects: 0,
+  directionBias: { up:0, down:0, left:0, right:0 },
+};
+let behaviorSamples = [];
+
+// === Enemy Types ===
+const enemyTypes = {
+  fragment: {
+    size: 14, speed: 1.2, hp: 1, color: '#FF003C',
+    score: 100, glitchLevel: 0.3,
+    shape: 'square',
+  },
+  cluster: {
+    size: 20, speed: 0.8, hp: 2, color: '#FFD600',
+    score: 250, glitchLevel: 0.5,
+    shape: 'cluster',
+  },
+  shielded: {
+    size: 24, speed: 0.6, hp: 3, color: '#00BFFF',
+    score: 500, glitchLevel: 0.7,
+    shape: 'diamond',
+  },
+  fast: {
+    size: 10, speed: 2.5, hp: 1, color: '#FF00FF',
+    score: 200, glitchLevel: 0.4,
+    shape: 'triangle',
+  },
+  boss: {
+    size: 60, speed: 0.5, hp: 30, color: '#00FF88',
+    score: 5000, glitchLevel: 0.9,
+    shape: 'boss',
+  },
+};
+
+// === Spawn Enemies ===
+function spawnWave() {
+  enemies = [];
+  const count = 5 + wave * 2;
+  for (let i = 0; i < count; i++) {
+    const types = ['fragment', 'fragment', 'cluster', 'fast'];
+    if (wave > 2) types.push('shielded');
+    const type = types[Math.floor(Math.random() * types.length)];
+    spawnEnemy(type);
+  }
+  // Boss every 3 waves
+  if (wave % 3 === 0) {
+    spawnEnemy('boss');
+    showOverlay('BOSS: 大绿.exe', 'GLITCH DINOSAUR — 框选核心弱点！');
+  } else {
+    showOverlay('WAVE ' + wave, 'CORRUPTION DETECTED — ' + count + ' FILES');
+  }
+  document.getElementById('storyPanel').style.display = wave === 1 ? 'block' : 'none';
+}
+
+function spawnEnemy(typeName) {
+  const t = enemyTypes[typeName];
+  const edge = Math.floor(Math.random() * 4);
+  let x, y;
+  if (edge === 0) { x = Math.random() * W; y = -30; }
+  else if (edge === 1) { x = W + 30; y = Math.random() * H; }
+  else if (edge === 2) { x = Math.random() * W; y = H + 30; }
+  else { x = -30; y = Math.random() * H; }
+
+  enemies.push({
+    x, y,
+    vx: 0, vy: 0,
+    type: typeName,
+    size: t.size,
+    speed: t.speed,
+    hp: t.hp,
+    maxHp: t.hp,
+    color: t.color,
+    score: t.score,
+    shape: t.shape,
+    glitchLevel: t.glitchLevel,
+    angle: Math.random() * Math.PI * 2,
+    rotSpeed: (Math.random() - 0.5) * 0.05,
+    fleeing: false,
+    fleeDir: { x: 0, y: 0 },
+    flashTime: 0,
+    birthTime: performance.now(),
+    targetX: W/2 + (Math.random()-0.5)*200,
+    targetY: H/2 + (Math.random()-0.5)*200,
+    retargetTimer: 0,
+  });
+}
+
+// === Update Enemies (with pseudo-RL behavior) ===
+function updateEnemies(dt) {
+  for (let e of enemies) {
+    e.angle += e.rotSpeed;
+    if (e.flashTime > 0) e.flashTime -= dt;
+
+    // Target movement
+    e.retargetTimer -= dt;
+    if (e.retargetTimer <= 0) {
+      e.retargetTimer = 1000 + Math.random() * 2000;
+      e.targetX = 100 + Math.random() * (W - 200);
+      e.targetY = 100 + Math.random() * (H - 200);
+    }
+
+    // Move toward target
+    const dx = e.targetX - e.x;
+    const dy = e.targetY - e.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist > 5) {
+      e.vx = (dx / dist) * e.speed;
+      e.vy = (dy / dist) * e.speed;
+    }
+
+    // === Pseudo-RL: Flee from selection box ===
+    if (isSelecting) {
+      const bx = Math.min(selStart.x, selEnd.x);
+      const by = Math.min(selStart.y, selEnd.y);
+      const bw = Math.abs(selEnd.x - selStart.x);
+      const bh = Math.abs(selEnd.y - selStart.y);
+
+      // Check if inside or near box
+      const margin = 80;
+      if (e.x > bx - margin && e.x < bx + bw + margin &&
+          e.y > by - margin && e.y < by + bh + margin) {
+        e.fleeing = true;
+
+        // RL-like behavior: learn player's bias and flee OPPOSITE direction
+        let fleeX = e.x - (bx + bw/2);
+        let fleeY = e.y - (by + bh/2);
+        const fleeDist = Math.sqrt(fleeX*fleeX + fleeY*fleeY) || 1;
+        fleeX /= fleeDist;
+        fleeY /= fleeDist;
+
+        // Add learned bias (after enough samples, enemies adapt)
+        if (playerBehavior.totalSelects > 3) {
+          const bias = playerBehavior.directionBias;
+          const total = bias.up + bias.down + bias.left + bias.right || 1;
+          // Flee opposite to player's preferred direction
+          fleeX -= (bias.right - bias.left) / total * 0.5;
+          fleeY -= (bias.down - bias.up) / total * 0.5;
+        }
+
+        // Add some randomness based on glitch level
+        fleeX += (Math.random() - 0.5) * e.glitchLevel;
+        fleeY += (Math.random() - 0.5) * e.glitchLevel;
+
+        const fleeMag = Math.sqrt(fleeX*fleeX + fleeY*fleeY) || 1;
+        e.vx = (fleeX / fleeMag) * e.speed * 2.5;
+        e.vy = (fleeY / fleeMag) * e.speed * 2.5;
+      } else {
+        e.fleeing = false;
+      }
+    } else {
+      e.fleeing = false;
+    }
+
+    e.x += e.vx * dt * 0.06;
+    e.y += e.vy * dt * 0.06;
+
+    // Keep in bounds (bounce)
+    if (e.x < 0) { e.x = 0; e.vx = Math.abs(e.vx); }
+    if (e.x > W) { e.x = W; e.vx = -Math.abs(e.vx); }
+    if (e.y < 0) { e.y = 0; e.vy = Math.abs(e.vy); }
+    if (e.y > H) { e.y = H; e.vy = -Math.abs(e.vy); }
+
+    // Damage player on contact
+    const pdx = e.x - player.x;
+    const pdy = e.y - player.y;
+    const pdist = Math.sqrt(pdx*pdx + pdy*pdy);
+    if (pdist < e.size + 8 && player.invuln <= 0 && e.type !== 'boss') {
+      health -= e.type === 'fast' ? 3 : 5;
+      player.invuln = 1000;
+      combo = 0;
+      comboTimer = 0;
+      flashDamage();
+      // Knockback enemy
+      e.vx = (pdx/pdist) * 5;
+      e.vy = (pdy/pdist) * 5;
+    }
+  }
+
+  if (player.invuln > 0) player.invuln -= dt;
+}
+
+// === Delete Selected Enemies ===
+function deleteSelected(selectedEnemies) {
+  if (selectedEnemies.length === 0) {
+    combo = 0;
+    return;
+  }
+
+  const count = selectedEnemies.length;
+  const multiplier = Math.pow(count, 1.2);
+  const boxArea = Math.abs((selEnd.x-selStart.x) * (selEnd.y-selStart.y));
+  const areaBonus = Math.min(boxArea / 50000, 2);
+  const precisionBonus = shiftMode ? 1.5 : 1;
+
+  let totalScore = 0;
+  for (let e of selectedEnemies) {
+    totalScore += e.score;
+    e.hp -= precisionBonus;
+
+    if (e.hp <= 0) {
+      // Create deletion particles
+      createDeleteParticles(e);
+      filesDeleted++;
+      totalScore = Math.floor(totalScore * multiplier * (1 + areaBonus * 0.1));
+    } else {
+      e.flashTime = 200;
+      e.hp = Math.ceil(e.hp);
+    }
+  }
+
+  score += Math.floor(totalScore * (1 + combo * 0.1));
+
+  // Update combo
+  combo++;
+  comboTimer = 2000;
+  document.getElementById('combo').classList.add('flash');
+  setTimeout(() => document.getElementById('combo').classList.remove('flash'), 300);
+
+  // Combo milestones
+  if (combo === 5) showOverlay('COMBO ×5', 'BATCH OPERATION — 框选范围+30%');
+  else if (combo === 8) showOverlay('COMBO ×8', 'CTRL+A — 全屏选择！');
+  else if (combo === 10) showOverlay('COMBO ×10', 'SYSTEM CLEANUP — 系统清理！');
+  else if (combo === 15) showOverlay('COMBO ×15', 'DEFRAG COMPLETE — 碎片整理完毕！');
+
+  // Show float text
+  floatTexts.push({
+    x: (selStart.x + selEnd.x) / 2,
+    y: (selStart.y + selEnd.y) / 2,
+    text: count > 1 ? `×${count} DELETE! +${Math.floor(totalScore * (1 + combo * 0.1))}` : `+${Math.floor(totalScore * (1 + combo * 0.1))}`,
+    color: count > 3 ? '#FFD600' : '#00FFE1',
+    life: 1500,
+    vy: -1,
+    size: count > 3 ? 28 : 20,
+  });
+
+  // Record player behavior for "RL"
+  recordBehavior();
+
+  // Remove dead enemies
+  enemies = enemies.filter(e => e.hp > 0);
+
+  // Check wave clear
+  if (enemies.length === 0) {
+    wave++;
+    setTimeout(spawnWave, 1500);
+  }
+}
+
+// === Record Player Behavior (pseudo-RL) ===
+function recordBehavior() {
+  const dx = selEnd.x - selStart.x;
+  const dy = selEnd.y - selStart.y;
+
+  playerBehavior.totalSelects++;
+  playerBehavior.avgStartX = (playerBehavior.avgStartX * (playerBehavior.totalSelects-1) + selStart.x) / playerBehavior.totalSelects;
+  playerBehavior.avgStartY = (playerBehavior.avgStartY * (playerBehavior.totalSelects-1) + selStart.y) / playerBehavior.totalSelects;
+  playerBehavior.avgBoxW = (playerBehavior.avgBoxW * (playerBehavior.totalSelects-1) + Math.abs(dx)) / playerBehavior.totalSelects;
+  playerBehavior.avgBoxH = (playerBehavior.avgBoxH * (playerBehavior.totalSelects-1) + Math.abs(dy)) / playerBehavior.totalSelects;
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    if (dx > 0) playerBehavior.directionBias.right++;
+    else playerBehavior.directionBias.left++;
+  } else {
+    if (dy > 0) playerBehavior.directionBias.down++;
+    else playerBehavior.directionBias.up++;
+  }
+}
+
+// === Particles ===
+function createDeleteParticles(e) {
+  const count = e.type === 'boss' ? 60 : e.size;
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 1 + Math.random() * 6;
+    particles.push({
+      x: e.x, y: e.y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 800 + Math.random() * 600,
+      maxLife: 1400,
+      size: 1 + Math.random() * 4,
+      color: Math.random() > 0.3 ? e.color : (Math.random() > 0.5 ? '#FF003C' : '#00FFE1'),
+      type: Math.random() > 0.7 ? 'text' : 'pixel',
+    });
+  }
+
+  // Glitch effect burst
+  glitchEffects.push({
+    x: e.x, y: e.y,
+    radius: e.size * 3,
+    life: 400,
+    maxLife: 400,
+  });
+}
+
+// === Rendering ===
+function render(dt) {
+  // Clear with slight trail for motion blur
+  ctx.fillStyle = 'rgba(6,6,12,0.25)';
+  ctx.fillRect(0, 0, W, H);
+
+  // Background grid (subtle)
+  ctx.strokeStyle = '#0F0F1A';
+  ctx.lineWidth = 1;
+  const gridSize = 40;
+  const offset = (performance.now() / 50) % gridSize;
+  for (let x = -offset; x < W; x += gridSize) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = -offset; y < H; y += gridSize) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // Render Glitch effects
+  for (let g of glitchEffects) {
+    const a = g.life / g.maxLife;
+    ctx.strokeStyle = `rgba(255,0,60,${a * 0.5})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(g.x, g.y, g.radius * (1 - a + 0.2), 0, Math.PI * 2);
+    ctx.stroke();
+
+    // RGB shift circles
+    ctx.strokeStyle = `rgba(0,255,225,${a * 0.3})`;
+    ctx.beginPath();
+    ctx.arc(g.x + 3, g.y, g.radius * (1 - a + 0.2), 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  glitchEffects = glitchEffects.filter(g => (g.life -= dt) > 0);
+
+  // Render enemies
+  for (let e of enemies) {
+    renderEnemy(e, dt);
+  }
+
+  // Render particles
+  for (let p of particles) {
+    const a = p.life / p.maxLife;
+    ctx.globalAlpha = a;
+    if (p.type === 'text') {
+      ctx.fillStyle = p.color;
+      ctx.font = `${p.size * 3}px monospace`;
+      const chars = ['0','1','%','#','@','§','¶','†'];
+      ctx.fillText(chars[Math.floor(Math.random()*chars.length)], p.x, p.y);
+    } else {
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+    }
+    p.x += p.vx * dt * 0.06;
+    p.y += p.vy * dt * 0.06;
+    p.vy += 0.05 * dt * 0.06; // slight gravity
+    p.vx *= 0.98;
+  }
+  ctx.globalAlpha = 1;
+  particles = particles.filter(p => (p.life -= dt) > 0);
+
+  // Render selection box
+  if (isSelecting) {
+    renderSelectionBox();
+  }
+
+  // Render player cursor
+  renderPlayer(dt);
+
+  // Render float texts
+  for (let f of floatTexts) {
+    const a = f.life / 1500;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = f.color;
+    ctx.font = `bold ${f.size}px 'Courier New',monospace`;
+    ctx.textAlign = 'center';
+    ctx.shadowColor = f.color;
+    ctx.shadowBlur = 10;
+    ctx.fillText(f.text, f.x, f.y);
+    ctx.shadowBlur = 0;
+    f.y += f.vy * dt * 0.06;
+  }
+  ctx.globalAlpha = 1;
+  ctx.textAlign = 'left';
+  floatTexts = floatTexts.filter(f => (f.life -= dt) > 0);
+
+  // Random glitch scanlines
+  if (Math.random() > 0.97) {
+    const y = Math.random() * H;
+    const h = 2 + Math.random() * 8;
+    ctx.fillStyle = `rgba(255,0,60,${0.05 + Math.random()*0.1})`;
+    ctx.fillRect(0, y, W, h);
+    ctx.fillStyle = `rgba(0,255,225,${0.03 + Math.random()*0.08})`;
+    ctx.fillRect(Math.random()*20, y, W, h);
+  }
+
+  // Vignette
+  const grad = ctx.createRadialGradient(W/2, H/2, Math.min(W,H)*0.3, W/2, H/2, Math.max(W,H)*0.7);
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.5)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Corruption overlay
+  ctx.fillStyle = `rgba(255,0,60,${0.02 + Math.sin(performance.now()/2000)*0.01})`;
+  ctx.fillRect(0, 0, W, H);
+}
+
+function renderEnemy(e, dt) {
+  const x = e.x, y = e.y;
+  const s = e.size;
+
+  // Glitch offset
+  const gx = (Math.random() - 0.5) * s * e.glitchLevel * 0.5;
+  const gy = (Math.random() - 0.5) * s * e.glitchLevel * 0.5;
+
+  ctx.save();
+  ctx.translate(x + gx, y + gy);
+  ctx.rotate(e.angle);
+
+  // Flash white when hit
+  const color = e.flashTime > 0 ? '#FFFFFF' : e.color;
+
+  // RGB shift shadow
+  ctx.shadowColor = e.color;
+  ctx.shadowBlur = 8;
+
+  if (e.shape === 'square') {
+    ctx.fillStyle = color;
+    ctx.fillRect(-s/2, -s/2, s, s);
+    // Inner glitch pixels
+    ctx.fillStyle = '#FF003C';
+    ctx.fillRect(-s/2 + Math.random()*s, -s/2, 2, s);
+    ctx.fillStyle = '#00FFE1';
+    ctx.fillRect(-s/2, -s/2 + Math.random()*s, s, 2);
+  } else if (e.shape === 'cluster') {
+    ctx.fillStyle = color;
+    for (let i = 0; i < 5; i++) {
+      const a = (i / 5) * Math.PI * 2;
+      const r = s * 0.4;
+      ctx.fillRect(Math.cos(a)*r - 4, Math.sin(a)*r - 4, 8, 8);
+    }
+    ctx.fillRect(-4, -4, 8, 8);
+  } else if (e.shape === 'diamond') {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, -s/2);
+    ctx.lineTo(s/2, 0);
+    ctx.lineTo(0, s/2);
+    ctx.lineTo(-s/2, 0);
+    ctx.closePath();
+    ctx.fill();
+    // Shield ring
+    if (e.hp > 1) {
+      ctx.strokeStyle = '#00BFFF';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(0, 0, s/2 + 4, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  } else if (e.shape === 'triangle') {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, -s/2);
+    ctx.lineTo(s/2, s/2);
+    ctx.lineTo(-s/2, s/2);
+    ctx.closePath();
+    ctx.fill();
+  } else if (e.shape === 'boss') {
+    // Boss: complex pixel dinosaur
+    ctx.fillStyle = color;
+    const px = 4;
+    const pattern = [
+      '  XXXX  ',
+      ' XXXXXX ',
+      'XXXXXXXX',
+      'XX XXXXX',
+      'XXXXXXXX',
+      ' XXXXXX ',
+      '  X  X  ',
+      '  X  X  ',
+    ];
+    for (let r = 0; r < pattern.length; r++) {
+      for (let c = 0; c < pattern[r].length; c++) {
+        if (pattern[r][c] === 'X') {
+          ctx.fillStyle = (r+c) % 3 === 0 ? '#FF003C' : (r+c) % 3 === 1 ? color : '#00FF88';
+          ctx.fillRect((c - 4) * px, (r - 4) * px, px, px);
+        }
+      }
+    }
+    // HP bar
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#333';
+    ctx.fillRect(-s, -s - 12, s * 2, 6);
+    ctx.fillStyle = '#FF003C';
+    ctx.fillRect(-s, -s - 12, s * 2 * (e.hp / e.maxHp), 6);
+  }
+
+  ctx.shadowBlur = 0;
+
+  // Fleeing indicator
+  if (e.fleeing) {
+    ctx.strokeStyle = '#FFD600';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.arc(0, 0, s/2 + 6, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  ctx.restore();
+
+  // Glitch trail
+  if (e.glitchLevel > 0.5 && Math.random() > 0.7) {
+    ctx.fillStyle = `rgba(255,0,60,0.3)`;
+    ctx.fillRect(x - s/2, y - s/2, s, s);
+  }
+}
+
+function renderSelectionBox() {
+  const x = Math.min(selStart.x, selEnd.x);
+  const y = Math.min(selStart.y, selEnd.y);
+  const w = Math.abs(selEnd.x - selStart.x);
+  const h = Math.abs(selEnd.y - selStart.y);
+
+  // Classic Windows selection rectangle
+  ctx.strokeStyle = shiftMode ? '#FFD600' : '#00BFFF';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 3]);
+  ctx.strokeRect(x, y, w, h);
+  ctx.setLineDash([]);
+
+  // Fill
+  ctx.fillStyle = shiftMode ? 'rgba(255,214,0,0.08)' : 'rgba(0,191,255,0.08)';
+  ctx.fillRect(x, y, w, h);
+
+  // Corner markers
+  const cornerSize = 6;
+  ctx.fillStyle = shiftMode ? '#FFD600' : '#00BFFF';
+  ctx.fillRect(x - 1, y - 1, cornerSize, 2);
+  ctx.fillRect(x - 1, y - 1, 2, cornerSize);
+  ctx.fillRect(x + w - cornerSize + 1, y - 1, cornerSize, 2);
+  ctx.fillRect(x + w - 1, y - 1, 2, cornerSize);
+  ctx.fillRect(x - 1, y + h - 1, cornerSize, 2);
+  ctx.fillRect(x - 1, y + h - cornerSize + 1, 2, cornerSize);
+  ctx.fillRect(x + w - cornerSize + 1, y + h - 1, cornerSize, 2);
+  ctx.fillRect(x + w - 1, y + h - cornerSize + 1, 2, cornerSize);
+
+  // Highlight enemies inside
+  let countInside = 0;
+  for (let e of enemies) {
+    if (e.x >= x && e.x <= x + w && e.y >= y && e.y <= y + h) {
+      countInside++;
+      // Highlight
+      ctx.strokeStyle = e.fleeing ? '#FF003C' : '#00FF88';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([2, 2]);
+      ctx.strokeRect(e.x - e.size/2 - 3, e.y - e.size/2 - 3, e.size + 6, e.size + 6);
+      ctx.setLineDash([]);
+    }
+  }
+
+  // Show count
+  if (countInside > 0) {
+    ctx.fillStyle = '#FFD600';
+    ctx.font = 'bold 14px monospace';
+    ctx.textAlign = 'center';
+    ctx.shadowColor = '#FFD600';
+    ctx.shadowBlur = 8;
+    ctx.fillText(`${countInside} SELECTED ×${Math.pow(countInside, 1.2).toFixed(1)} DMG`, x + w/2, y - 8);
+    ctx.shadowBlur = 0;
+    ctx.textAlign = 'left';
+  }
+
+  // Size indicator
+  ctx.fillStyle = '#666';
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText(`${Math.floor(w)}×${Math.floor(h)}px`, x + w, y + h + 14);
+  ctx.textAlign = 'left';
+}
+
+function renderPlayer(dt) {
+  const x = player.x, y = player.y;
+
+  // Cursor crosshair
+  ctx.strokeStyle = player.invuln > 0 ? '#FF003C' : '#00FFE1';
+  ctx.lineWidth = 1.5;
+
+  // Outer circle
+  ctx.beginPath();
+  ctx.arc(x, y, 12, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Crosshair lines
+  ctx.beginPath();
+  ctx.moveTo(x - 18, y); ctx.lineTo(x - 8, y);
+  ctx.moveTo(x + 8, y); ctx.lineTo(x + 18, y);
+  ctx.moveTo(x, y - 18); ctx.lineTo(x, y - 8);
+  ctx.moveTo(x, y + 8); ctx.lineTo(x, y + 18);
+  ctx.stroke();
+
+  // Center dot
+  ctx.fillStyle = player.invuln > 0 ? '#FF003C' : '#00FFE1';
+  ctx.fillRect(x - 1, y - 1, 2, 2);
+
+  // Invuln flash
+  if (player.invuln > 0) {
+    ctx.strokeStyle = `rgba(255,0,60,${player.invuln/1000})`;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(x, y, 18 + (1000-player.invuln)/20, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+}
+
+// === Input ===
+canvas.addEventListener('mousedown', (e) => {
+  if (gameState !== 'playing') return;
+  if (currentTool === 1) {
+    // Magic wand: click to select all same type
+    magicWandClick(e.offsetX, e.offsetY);
+    return;
+  }
+  isSelecting = true;
+  selStart = { x: e.offsetX, y: e.offsetY };
+  selEnd = { x: e.offsetX, y: e.offsetY };
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  player.x = e.offsetX;
+  player.y = e.offsetY;
+  if (isSelecting) {
+    selEnd = { x: e.offsetX, y: e.offsetY };
+  }
+});
+
+canvas.addEventListener('mouseup', (e) => {
+  if (!isSelecting) return;
+  isSelecting = false;
+
+  const x = Math.min(selStart.x, selEnd.x);
+  const y = Math.min(selStart.y, selEnd.y);
+  const w = Math.abs(selEnd.x - selStart.x);
+  const h = Math.abs(selEnd.y - selStart.y);
+
+  if (w < 5 && h < 5) return; // too small, ignore
+
+  // Find selected enemies
+  const selected = enemies.filter(e =>
+    e.x >= x && e.x <= x + w && e.y >= y && e.y <= y + h
+  );
+
+  deleteSelected(selected);
+
+  // Crop tool: create void
+  if (currentTool === 2 && selected.length === 0 && w > 20 && h > 20) {
+    createVoid(x, y, w, h);
+  }
+});
+
+canvas.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  if (gameState !== 'playing') return;
+  currentTool = (currentTool + 1) % tools.length;
+  document.getElementById('toolName').textContent = tools[currentTool];
+  showOverlay(tools[currentTool], '', 800);
+});
+
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'Space') {
+    e.preventDefault();
+    // Dodge: teleport to random nearby position
+    if (gameState === 'playing') {
+      const angle = Math.random() * Math.PI * 2;
+      player.x += Math.cos(angle) * 100;
+      player.y += Math.sin(angle) * 100;
+      player.x = Math.max(20, Math.min(W-20, player.x));
+      player.y = Math.max(20, Math.min(H-20, player.y));
+      player.invuln = 500;
+      // Dodge particles
+      for (let i = 0; i < 10; i++) {
+        particles.push({
+          x: player.x, y: player.y,
+          vx: (Math.random()-0.5)*4,
+          vy: (Math.random()-0.5)*4,
+          life: 400, maxLife: 400,
+          size: 2, color: '#00FFE1', type: 'pixel',
+        });
+      }
+    }
+  }
+  if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+    shiftMode = true;
+  }
+});
+
+window.addEventListener('keyup', (e) => {
+  if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+    shiftMode = false;
+  }
+});
+
+// === Magic Wand ===
+function magicWandClick(x, y) {
+  if (toolCooldowns[1] > 0) return;
+
+  // Find clicked enemy type
+  let clickedType = null;
+  for (let e of enemies) {
+    if (Math.abs(e.x - x) < e.size && Math.abs(e.y - y) < e.size) {
+      clickedType = e.type;
+      break;
+    }
+  }
+
+  if (!clickedType) return;
+
+  // Select all of same type
+  const selected = enemies.filter(e => e.type === clickedType);
+  deleteSelected(selected);
+  toolCooldowns[1] = 5000;
+  showOverlay('MAGIC WAND', `选中全部 ${selected.length} 只 ${clickedType}`);
+}
+
+// === Crop Tool Void ===
+function createVoid(x, y, w, h) {
+  if (toolCooldowns[2] > 0) return;
+  toolCooldowns[2] = 8000;
+
+  // Create void effect
+  glitchEffects.push({ x: x+w/2, y: y+h/2, radius: Math.max(w,h)/2, life: 3000, maxLife: 3000 });
+
+  // Damage enemies in void area over time
+  const voidInterval = setInterval(() => {
+    for (let e of enemies) {
+      if (e.x >= x && e.x <= x+w && e.y >= y && e.y <= y+h) {
+        e.hp -= 0.5;
+        e.flashTime = 100;
+        if (e.hp <= 0) {
+          createDeleteParticles(e);
+          score += e.score;
+          filesDeleted++;
+        }
+      }
+    }
+    enemies = enemies.filter(e => e.hp > 0);
+    if (enemies.length === 0) {
+      wave++;
+      setTimeout(spawnWave, 1500);
+    }
+  }, 500);
+
+  setTimeout(() => clearInterval(voidInterval), 3000);
+  showOverlay('CROP VOID', '虚空持续3秒 — 区域内敌人持续受伤');
+}
+
+// === UI Updates ===
+function updateUI() {
+  document.querySelector('#score .value').textContent = score.toLocaleString();
+  document.querySelector('#combo .value').textContent = '×' + combo;
+  document.querySelector('#health .value').textContent = Math.max(0, Math.floor(health));
+  document.querySelector('#wave .value').textContent = filesDeleted;
+
+  // Tool cooldowns
+  for (let i = 0; i < 3; i++) {
+    if (toolCooldowns[i] > 0) {
+      toolCooldowns[i] -= 16;
+    }
+  }
+  const cdBar = document.getElementById('cooldownBar');
+  if (currentTool === 1) {
+    cdBar.style.width = ((5000 - Math.max(0,toolCooldowns[1])) / 5000 * 100) + '%';
+    cdBar.style.background = toolCooldowns[1] > 0 ? '#FF003C' : '#FFD600';
+  } else if (currentTool === 2) {
+    cdBar.style.width = ((8000 - Math.max(0,toolCooldowns[2])) / 8000 * 100) + '%';
+    cdBar.style.background = toolCooldowns[2] > 0 ? '#FF003C' : '#FFD600';
+  } else {
+    cdBar.style.width = '100%';
+    cdBar.style.background = '#00FFE1';
+  }
+
+  // Game over
+  if (health <= 0) {
+    gameState = 'gameover';
+    showOverlay('SYSTEM FAILURE', `最终得分: ${score} | 删除文件: ${filesDeleted} | 最高连击: ${combo}`, 99999);
+    setTimeout(() => {
+      document.getElementById('startScreen').style.display = 'flex';
+      document.getElementById('startScreen').querySelector('h1').textContent = 'GAME OVER';
+      document.getElementById('startScreen').querySelector('button').textContent = '重新整理 ▶';
+    }, 3000);
+  }
+}
+
+// === Overlay ===
+function showOverlay(big, sub, duration) {
+  const bigEl = document.getElementById('overlayBig');
+  const subEl = document.getElementById('overlaySub');
+  bigEl.textContent = big;
+  subEl.textContent = sub || '';
+  bigEl.classList.add('show');
+  if (sub) subEl.classList.add('show');
+
+  clearTimeout(showOverlay.timer);
+  showOverlay.timer = setTimeout(() => {
+    bigEl.classList.remove('show');
+    subEl.classList.remove('show');
+  }, duration || 1500);
+}
+
+// === Damage Flash ===
+function flashDamage() {
+  const flash = document.getElementById('damageFlash');
+  flash.style.opacity = '0.3';
+  setTimeout(() => flash.style.opacity = '0', 100);
+}
+
+// === Game Loop ===
+function gameLoop(timestamp) {
+  const dt = Math.min(timestamp - lastTime, 50);
+  lastTime = timestamp;
+
+  if (gameState === 'playing') {
+    updateEnemies(dt);
+    if (comboTimer > 0) {
+      comboTimer -= dt;
+      if (comboTimer <= 0) combo = 0;
+    }
+    updateUI();
+  }
+
+  render(dt);
+  requestAnimationFrame(gameLoop);
+}
+
+// === Start Game ===
+function startGame() {
+  document.getElementById('startScreen').style.display = 'none';
+  gameState = 'playing';
+  score = 0;
+  combo = 0;
+  health = 100;
+  filesDeleted = 0;
+  wave = 1;
+  enemies = [];
+  particles = [];
+  glitchEffects = [];
+  floatTexts = [];
+  playerBehavior = {
+    avgStartX: 0, avgStartY: 0, avgBoxW: 0, avgBoxH: 0,
+    totalSelects: 0,
+    directionBias: { up:0, down:0, left:0, right:0 },
+  };
+  currentTool = 0;
+  toolCooldowns = [0, 0, 0];
+  document.getElementById('toolName').textContent = tools[0];
+  spawnWave();
+}
+
+// Start render loop
+requestAnimationFrame(gameLoop);
+</script>
+
+<!-- ===== 触屏控制层（移动端自动出现） ===== -->
+<div id="touchControls" aria-hidden="true">
+  <button class="tc-btn" data-act="tool">切换工具</button>
+  <button class="tc-btn" data-act="dodge">闪避</button>
+  <button class="tc-btn" data-act="precise">精确</button>
+</div>
+
+<style>
+  #gameCanvas{ touch-action:none; }
+  #touchControls{
+    position:fixed; right:12px; bottom:46px; z-index:300;
+    display:none; flex-direction:column; gap:10px;
+    -webkit-user-select:none; user-select:none;
+  }
+  #touchControls.on{ display:flex; }
+  #touchControls .tc-btn{
+    font-family:'Courier New',monospace;
+    font-size:12px; letter-spacing:1px;
+    color:#00FFE1; background:rgba(10,10,20,.82);
+    border:1px solid #00FFE166; border-radius:4px;
+    padding:12px 10px; min-width:84px;
+    cursor:pointer; touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #touchControls .tc-btn:active{ background:rgba(0,255,225,.18); }
+  #touchControls .tc-btn.active{ color:#0A0A14; background:#00FFE1; border-color:#00FFE1; }
+</style>
+
+<script>
+(function(){
+  var cv = document.getElementById('gameCanvas');
+  if(!cv) return;
+
+  var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  var pad = document.getElementById('touchControls');
+  if(isTouch && pad) pad.classList.add('on');
+
+  // 触屏设备上把开始页的键位说明换成触摸说明
+  if(isTouch){
+    var ins = document.querySelector('#startScreen .instructions');
+    if(ins){
+      ins.innerHTML = '<span class="key">手指拖动</span><span>框选敌人</span>' +
+                      '<span class="key">右侧按钮</span><span>切换工具 / 闪避 / 精确</span>';
+    }
+  }
+
+  function local(t){
+    var r = cv.getBoundingClientRect();
+    return { x: t.clientX - r.left, y: t.clientY - r.top };
+  }
+
+  // ---- 手指拖动 = 框选 ----
+  cv.addEventListener('touchstart', function(ev){
+    ev.preventDefault();
+    try{
+      if(gameState !== 'playing') return;
+      var p = local(ev.touches[0]);
+      player.x = p.x; player.y = p.y;
+      if(currentTool === 1){ magicWandClick(p.x, p.y); return; }
+      isSelecting = true;
+      selStart = { x:p.x, y:p.y };
+      selEnd   = { x:p.x, y:p.y };
+    }catch(err){}
+  }, {passive:false});
+
+  cv.addEventListener('touchmove', function(ev){
+    ev.preventDefault();
+    try{
+      var p = local(ev.touches[0]);
+      player.x = p.x; player.y = p.y;
+      if(isSelecting) selEnd = { x:p.x, y:p.y };
+    }catch(err){}
+  }, {passive:false});
+
+  cv.addEventListener('touchend', function(ev){
+    ev.preventDefault();
+    try{
+      if(!isSelecting) return;
+      isSelecting = false;
+      var x = Math.min(selStart.x, selEnd.x);
+      var y = Math.min(selStart.y, selEnd.y);
+      var w = Math.abs(selEnd.x - selStart.x);
+      var h = Math.abs(selEnd.y - selStart.y);
+      if(w < 8 && h < 8) return;
+      var sel = enemies.filter(function(e){
+        return e.x >= x && e.x <= x + w && e.y >= y && e.y <= y + h;
+      });
+      deleteSelected(sel);
+      if(currentTool === 2 && sel.length === 0 && w > 20 && h > 20) createVoid(x, y, w, h);
+    }catch(err){}
+  }, {passive:false});
+
+  // ---- 屏幕按钮：复用原有的键盘 / 右键逻辑 ----
+  function tap(el, fn){
+    el.addEventListener('touchstart', function(e){ e.preventDefault(); }, {passive:false});
+    el.addEventListener('touchend', function(e){ e.preventDefault(); fn(); }, {passive:false});
+    el.addEventListener('click', function(e){ e.preventDefault(); fn(); });
+  }
+
+  if(pad){
+    Array.prototype.forEach.call(pad.querySelectorAll('.tc-btn'), function(b){
+      tap(b, function(){
+        var act = b.getAttribute('data-act');
+        try{
+          if(act === 'tool'){
+            cv.dispatchEvent(new MouseEvent('contextmenu', {bubbles:true, cancelable:true}));
+          }else if(act === 'dodge'){
+            window.dispatchEvent(new KeyboardEvent('keydown', {code:'Space'}));
+          }else if(act === 'precise'){
+            shiftMode = !shiftMode;
+            b.classList.toggle('active', shiftMode);
+          }
+        }catch(err){}
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

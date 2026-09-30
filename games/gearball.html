@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>齿轮弹珠 GEARBALL · 可玩原型</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A0A0A'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' dominant-baseline='middle' font-size='34' fill='%23B8860B'%3E%E2%9A%99%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brass:#B8860B;
+    --brass-light:#DAA520;
+    --brass-glow:#FFD700;
+    --steam:#F5F5DC;
+    --line:#3D3D3D;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html,body{height:100%;}
+  body{
+    background:#0D0D0D;
+    color:var(--steam);
+    font-family:'Noto Serif SC',serif;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    -webkit-tap-highlight-color:transparent;
+    overscroll-behavior:none;
+  }
+
+  /* 齿纹底纹 */
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      repeating-linear-gradient(45deg,transparent,transparent 80px,rgba(184,134,11,.03) 80px,rgba(184,134,11,.03) 81px),
+      repeating-linear-gradient(-45deg,transparent,transparent 80px,rgba(184,134,11,.03) 80px,rgba(184,134,11,.03) 81px);
+  }
+
+  header{
+    position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:12px 18px;
+    background:rgba(10,10,10,.9);
+    border-bottom:1px solid rgba(184,134,11,.28);
+    padding-top:max(12px,env(safe-area-inset-top));
+  }
+  .brand{
+    display:flex;align-items:baseline;gap:10px;min-width:0;
+  }
+  .brand b{
+    font-family:'Cinzel',serif;font-weight:700;font-size:17px;
+    letter-spacing:.14em;
+    background:linear-gradient(180deg,#FFD700,#B8860B);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+    white-space:nowrap;
+  }
+  .brand span{font-size:12px;color:#8a7a4a;letter-spacing:.16em;white-space:nowrap;}
+  .back{
+    font-size:12px;letter-spacing:.12em;color:var(--brass-light);
+    text-decoration:none;border:1px solid rgba(184,134,11,.45);
+    padding:6px 12px;border-radius:2px;white-space:nowrap;
+    transition:background .25s,color .25s;
+  }
+  .back:hover{background:rgba(184,134,11,.16);color:var(--brass-glow);}
+
+  .stage{
+    position:relative;z-index:2;
+    flex:1;min-height:0;
+    padding:10px 12px 0;
+  }
+  canvas{
+    width:100%;height:100%;display:block;
+    background:#0A0A0A;
+    border:1px solid var(--line);
+    border-radius:6px;
+    cursor:crosshair;
+    touch-action:none;
+  }
+
+  footer{
+    position:relative;z-index:2;
+    padding:10px 18px;
+    padding-bottom:max(10px,env(safe-area-inset-bottom));
+    background:rgba(10,10,10,.9);
+    border-top:1px solid rgba(184,134,11,.22);
+    display:flex;align-items:center;justify-content:center;
+    gap:14px;flex-wrap:wrap;
+    font-size:11.5px;color:#8b8b7a;
+  }
+  .legend{display:flex;align-items:center;gap:5px;}
+  .dot{width:10px;height:10px;border-radius:50%;flex:none;}
+  .howto{
+    font-size:11.5px;color:var(--brass-light);
+    letter-spacing:.06em;
+  }
+  @media (max-width:560px){
+    .legend.extra{display:none;}
+    footer{gap:10px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><b>GEARBALL</b><span>齿轮弹珠 · 可玩原型</span></div>
+  <a class="back" href="../index.html" target="_top">← 返回主页</a>
+</header>
+
+<div class="stage">
+  <canvas id="gameCanvas"></canvas>
+</div>
+
+<footer>
+  <span class="howto">按住拖拽 → 画挡板改变弹道</span>
+  <span class="legend"><span class="dot" style="background:#FFD700"></span>弹珠（你）</span>
+  <span class="legend extra"><span class="dot" style="background:#B8860B"></span>齿轮（加速）</span>
+  <span class="legend extra"><span class="dot" style="background:#555"></span>敌人</span>
+  <span class="legend extra"><span class="dot" style="background:rgba(245,245,220,.5);border:1px dashed #F5F5DC"></span>AI 预测线</span>
+</footer>
+
+<script>
+// ===== GAMEPLAY CANVAS =====
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas(){
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.max(1, Math.floor(rect.width));
+  canvas.height = Math.max(1, Math.floor(rect.height));
+}
+resizeCanvas();
+
+let W, H;
+function updateSize(){ W = canvas.width; H = canvas.height; }
+updateSize();
+
+window.addEventListener('resize', function(){
+  resizeCanvas();
+  updateSize();
+  ball.x = Math.min(ball.x, W - ball.r);
+  ball.y = Math.min(ball.y, H - ball.r);
+});
+window.addEventListener('orientationchange', function(){
+  setTimeout(function(){ resizeCanvas(); updateSize(); }, 250);
+});
+
+// Game objects
+const ball = { x: 100, y: 200, vx: 4, vy: 2, r: 8, trail: [] };
+const gears = [
+  { x:0.3, y:0.3, r:30, rot:0, speed:0.02 },
+  { x:0.7, y:0.6, r:35, rot:0, speed:-0.015 },
+  { x:0.5, y:0.2, r:20, rot:0, speed:0.03 },
+];
+const enemies = [
+  { x:0.55, y:0.40, r:10, alive:true },
+  { x:0.65, y:0.35, r:10, alive:true },
+  { x:0.75, y:0.50, r:10, alive:true },
+  { x:0.40, y:0.65, r:10, alive:true },
+  { x:0.60, y:0.70, r:10, alive:true },
+];
+let barriers = [];
+let predictionLine = [];
+let mouseDrawing = false;
+let mouseStart = null;
+let mouseEnd = null;
+let respawnTimer = 0;
+let killCount = 0;
+let particles = [];
+
+// ===== 操作：鼠标 =====
+function beginDraw(x, y){ mouseStart = { x:x, y:y }; mouseEnd = null; mouseDrawing = true; }
+function moveDraw(x, y){ if(mouseDrawing) mouseEnd = { x:x, y:y }; }
+function endDraw(){
+  if(mouseDrawing && mouseStart && mouseEnd){
+    const dx = mouseEnd.x - mouseStart.x;
+    const dy = mouseEnd.y - mouseStart.y;
+    if(Math.sqrt(dx*dx + dy*dy) > 15){
+      barriers.push({ x1:mouseStart.x, y1:mouseStart.y, x2:mouseEnd.x, y2:mouseEnd.y, life:180 });
+    }
+  }
+  mouseDrawing = false; mouseStart = null; mouseEnd = null;
+}
+
+canvas.addEventListener('mousedown', function(e){
+  const rect = canvas.getBoundingClientRect();
+  beginDraw(e.clientX - rect.left, e.clientY - rect.top);
+});
+canvas.addEventListener('mousemove', function(e){
+  if(!mouseDrawing) return;
+  const rect = canvas.getBoundingClientRect();
+  moveDraw(e.clientX - rect.left, e.clientY - rect.top);
+});
+canvas.addEventListener('mouseup', function(){ endDraw(); });
+canvas.addEventListener('mouseleave', function(){ endDraw(); });
+
+// ===== 操作：触屏（手指拖拽 = 画挡板） =====
+function touched(e){ return e.touches && e.touches[0] ? e.touches[0] : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0] : null); }
+canvas.addEventListener('touchstart', function(e){
+  e.preventDefault();
+  const t = touched(e); if(!t) return;
+  const rect = canvas.getBoundingClientRect();
+  beginDraw(t.clientX - rect.left, t.clientY - rect.top);
+}, { passive:false });
+canvas.addEventListener('touchmove', function(e){
+  e.preventDefault();
+  const t = touched(e); if(!t) return;
+  const rect = canvas.getBoundingClientRect();
+  const p = { x:t.clientX - rect.left, y:t.clientY - rect.top };
+  moveDraw(p.x, p.y);
+  // 手指不容易拖很长，触屏放宽阈值
+  if(mouseDrawing && !mouseEnd) mouseEnd = p;
+}, { passive:false });
+canvas.addEventListener('touchend', function(e){
+  e.preventDefault();
+  // 手指太短的一次点按也允许生成一小段挡板
+  if(mouseDrawing && mouseStart && !mouseEnd){ mouseEnd = { x:mouseStart.x + 26, y:mouseStart.y - 26 }; }
+  endDraw();
+}, { passive:false });
+canvas.addEventListener('touchcancel', function(e){ e.preventDefault(); endDraw(); }, { passive:false });
+
+// ===== 物理 =====
+function resetBall(){
+  ball.x = 60;
+  ball.y = H * 0.5 + (Math.random() - 0.5) * 100;
+  const angle = (Math.random() - 0.3) * 0.6;
+  const speed = 5;
+  ball.vx = Math.cos(angle) * speed;
+  ball.vy = Math.sin(angle) * speed;
+  ball.trail = [];
+  enemies.forEach(function(e){ e.alive = true; });
+  killCount = 0;
+  barriers = [];
+}
+
+function predictTrajectory(){
+  predictionLine = [];
+  let px = ball.x, py = ball.y, pvx = ball.vx, pvy = ball.vy;
+  for(let i = 0; i < 40; i++){
+    px += pvx; py += pvy;
+    if(px < 0 || px > W) pvx = -pvx;
+    if(py < 0 || py > H) pvy = -pvy;
+    predictionLine.push({ x:px, y:py });
+  }
+}
+
+function drawGear(gx, gy, gr, grot, color){
+  ctx.save();
+  ctx.translate(gx, gy);
+  ctx.rotate(grot);
+  ctx.strokeStyle = color; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(0,0,gr,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(0,0,gr*0.7,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(0,0,gr*0.2,0,Math.PI*2); ctx.stroke();
+  for(let i = 0; i < 8; i++){
+    ctx.save();
+    ctx.rotate((i/8) * Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fillRect(-3, -gr - 6, 6, 8);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+function animate(){
+  ctx.fillStyle = 'rgba(10,10,10,0.25)';
+  ctx.fillRect(0, 0, W, H);
+
+  gears.forEach(function(g){
+    g.rot += g.speed;
+    drawGear(g.x*W, g.y*H, g.r, g.rot, 'rgba(184,134,11,0.4)');
+  });
+
+  enemies.forEach(function(e){
+    if(!e.alive) return;
+    ctx.fillStyle = 'rgba(80,80,80,0.8)';
+    ctx.strokeStyle = '#666'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(e.x*W, e.y*H, e.r, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#444';
+    ctx.beginPath(); ctx.arc(e.x*W, e.y*H, e.r*0.4, 0, Math.PI*2); ctx.fill();
+  });
+
+  if(predictionLine.length > 1){
+    ctx.strokeStyle = 'rgba(245,245,220,0.15)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4,6]);
+    ctx.beginPath();
+    ctx.moveTo(predictionLine[0].x, predictionLine[0].y);
+    predictionLine.forEach(function(p, i){
+      ctx.globalAlpha = 1 - (i / predictionLine.length);
+      ctx.lineTo(p.x, p.y);
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+  }
+
+  barriers.forEach(function(b){
+    const alpha = Math.min(1, b.life / 60);
+    ctx.strokeStyle = 'rgba(245,245,220,' + alpha + ')';
+    ctx.lineWidth = 3;
+    ctx.shadowColor = '#F5F5DC';
+    ctx.shadowBlur = 8 * alpha;
+    ctx.beginPath(); ctx.moveTo(b.x1, b.y1); ctx.lineTo(b.x2, b.y2); ctx.stroke();
+    ctx.shadowBlur = 0;
+    b.life--;
+  });
+  barriers = barriers.filter(function(b){ return b.life > 0; });
+
+  if(mouseDrawing && mouseStart && mouseEnd){
+    ctx.strokeStyle = 'rgba(255,215,0,0.6)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(mouseStart.x, mouseStart.y); ctx.lineTo(mouseEnd.x, mouseEnd.y); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  ball.trail.push({ x:ball.x, y:ball.y });
+  if(ball.trail.length > 15) ball.trail.shift();
+
+  ball.x += ball.vx;
+  ball.y += ball.vy;
+
+  if(ball.x < ball.r){ ball.x = ball.r; ball.vx = -ball.vx; }
+  if(ball.x > W - ball.r){ ball.x = W - ball.r; ball.vx = -ball.vx; }
+  if(ball.y < ball.r){ ball.y = ball.r; ball.vy = -ball.vy; }
+  if(ball.y > H - ball.r){ ball.y = H - ball.r; ball.vy = -ball.vy; }
+
+  gears.forEach(function(g){
+    const gx = g.x*W, gy = g.y*H;
+    const dist = Math.sqrt((ball.x-gx)*(ball.x-gx) + (ball.y-gy)*(ball.y-gy));
+    if(dist < g.r + ball.r && dist > 0){
+      const nx = (ball.x-gx)/dist, ny = (ball.y-gy)/dist;
+      const dot = ball.vx*nx + ball.vy*ny;
+      ball.vx = ball.vx - 2*dot*nx;
+      ball.vy = ball.vy - 2*dot*ny;
+      ball.vx *= 1.15; ball.vy *= 1.15;
+      const maxSpeed = 10;
+      const sp = Math.sqrt(ball.vx*ball.vx + ball.vy*ball.vy);
+      if(sp > maxSpeed){ ball.vx = (ball.vx/sp)*maxSpeed; ball.vy = (ball.vy/sp)*maxSpeed; }
+      ball.x = gx + nx*(g.r + ball.r + 1);
+      ball.y = gy + ny*(g.r + ball.r + 1);
+    }
+  });
+
+  barriers.forEach(function(b){
+    const dx = b.x2 - b.x1, dy = b.y2 - b.y1;
+    const len = Math.sqrt(dx*dx + dy*dy);
+    if(len < 0.001) return;
+    const nx = -dy/len, ny = dx/len;
+    const dist = (ball.x - b.x1)*nx + (ball.y - b.y1)*ny;
+    if(Math.abs(dist) < ball.r + 2){
+      const dot = ball.vx*nx + ball.vy*ny;
+      ball.vx = ball.vx - 2*dot*nx;
+      ball.vy = ball.vy - 2*dot*ny;
+      ball.vx *= 1.05; ball.vy *= 1.05;
+      if(dist > 0){ ball.x += nx*(ball.r + 2 - dist); ball.y += ny*(ball.r + 2 - dist); }
+      else { ball.x -= nx*(ball.r + 2 + dist); ball.y -= ny*(ball.r + 2 + dist); }
+    }
+  });
+
+  enemies.forEach(function(e){
+    if(!e.alive) return;
+    const ex = e.x*W, ey = e.y*H;
+    const dist = Math.sqrt((ball.x-ex)*(ball.x-ex) + (ball.y-ey)*(ball.y-ey));
+    if(dist < e.r + ball.r && dist > 0){
+      e.alive = false;
+      killCount++;
+      const nx = (ball.x-ex)/dist, ny = (ball.y-ey)/dist;
+      const dot = ball.vx*nx + ball.vy*ny;
+      ball.vx = ball.vx - 2*dot*nx;
+      ball.vy = ball.vy - 2*dot*ny;
+      for(let i = 0; i < 8; i++){
+        particles.push({
+          x:ex, y:ey,
+          vx:(Math.random()-0.5)*6,
+          vy:(Math.random()-0.5)*6,
+          life:30,
+          color:'#888'
+        });
+      }
+    }
+  });
+
+  ball.vx *= 0.998;
+  ball.vy *= 0.998;
+
+  const speed = Math.sqrt(ball.vx*ball.vx + ball.vy*ball.vy);
+  if(speed < 0.5){
+    respawnTimer++;
+    if(respawnTimer > 90){ resetBall(); respawnTimer = 0; }
+  } else {
+    respawnTimer = 0;
+  }
+
+  if(Math.random() < 0.5) predictTrajectory();
+
+  ball.trail.forEach(function(t, i){
+    const alpha = (i / ball.trail.length) * 0.5;
+    ctx.fillStyle = 'rgba(255,215,0,' + alpha + ')';
+    ctx.beginPath();
+    ctx.arc(t.x, t.y, ball.r * (i / ball.trail.length), 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  const grad = ctx.createRadialGradient(ball.x, ball.y, 0, ball.x, ball.y, ball.r*2);
+  grad.addColorStop(0, '#FFD700');
+  grad.addColorStop(0.5, '#B8860B');
+  grad.addColorStop(1, 'rgba(184,134,11,0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r*2, 0, Math.PI*2); ctx.fill();
+
+  ctx.fillStyle = '#FFD700';
+  ctx.shadowColor = '#FFD700';
+  ctx.shadowBlur = 15;
+  ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.fill();
+  ctx.shadowBlur = 0;
+
+  particles.forEach(function(p){
+    p.x += p.vx; p.y += p.vy; p.life--;
+    ctx.fillStyle = 'rgba(150,150,150,' + (p.life/30) + ')';
+    ctx.fillRect(p.x - 2, p.y - 2, 4, 4);
+  });
+  particles = particles.filter(function(p){ return p.life > 0; });
+
+  ctx.fillStyle = 'rgba(184,134,11,0.75)';
+  ctx.font = '14px Cinzel, serif';
+  ctx.fillText('KILLS: ' + killCount + '/' + enemies.length, 15, 25);
+  ctx.fillStyle = 'rgba(184,134,11,0.45)';
+  ctx.fillText('SPEED: ' + speed.toFixed(1), 15, 45);
+
+  if(killCount === 0){
+    ctx.fillStyle = 'rgba(245,245,220,0.22)';
+    ctx.font = '12px "Noto Serif SC", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('按住拖拽 → 画挡板改变弹道', W/2, H - 16);
+    ctx.textAlign = 'left';
+  }
+
+  requestAnimationFrame(animate);
+}
+
+resetBall();
+animate();
+</script>
+</body>
+</html>
